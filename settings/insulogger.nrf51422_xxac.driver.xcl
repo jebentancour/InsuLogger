@@ -1,0 +1,19 @@
+"--endian=little" 
+
+"--cpu=Cortex-M0" 
+
+"--fpu=None" 
+
+"-p" 
+
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\arm\CONFIG\debugger\NordicSemi\nRF51822_xxAA.ddf" 
+
+"--semihosting=none" 
+
+"--device=nRF51822_xxAA" 
+
+"--multicore_nr_of_cores=1" 
+
+
+
+
