@@ -13,10 +13,12 @@
 #include "nrf_delay.h"
 
 /* Placa insulogger */
-#define LED NRF_GPIO_PIN_MAP(0, 0)
+//#define LED NRF_GPIO_PIN_MAP(0, 0)
+
+/* Placa circular */
+#define LED NRF_GPIO_PIN_MAP(0, 29)
 
 /* Sacado pca20006.h */
-#define HWFC                            true
 #define NRF_CLOCK_LFCLKSRC              {.source = NRF_CLOCK_LF_SRC_XTAL, .rc_ctiv = 0, .rc_temp_ctiv = 0, .xtal_accuracy=NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}
 
 /* Ejemplo beacon */
@@ -231,9 +233,9 @@ int main(void)
         NRF_LOG_FLUSH();
       
         nrf_gpio_pin_clear(LED);
-        nrf_delay_ms(500);
+        nrf_delay_ms(1000);
         nrf_gpio_pin_set(LED);
-        nrf_delay_ms(500);
+        nrf_delay_ms(1000);
         
         i++;
     }

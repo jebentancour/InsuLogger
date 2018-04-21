@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\joseb\Documents\insulogger\settings\insulogger.nrf51822_xxac.general.xcl" --backend -f "C:\Users\joseb\Documents\insulogger\settings\insulogger.nrf51822_xxac.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\joseb\Documents\insulogger\InsuLogger\settings\insulogger.nrf51822_xxac.general.xcl" --backend -f "C:\Users\joseb\Documents\insulogger\InsuLogger\settings\insulogger.nrf51822_xxac.driver.xcl" 
 }
 else
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\joseb\Documents\insulogger\settings\insulogger.nrf51822_xxac.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\joseb\Documents\insulogger\settings\insulogger.nrf51822_xxac.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\joseb\Documents\insulogger\InsuLogger\settings\insulogger.nrf51822_xxac.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\joseb\Documents\insulogger\InsuLogger\settings\insulogger.nrf51822_xxac.driver.xcl" 
 }

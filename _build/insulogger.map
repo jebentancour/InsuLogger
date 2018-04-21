@@ -1,44 +1,48 @@
 ###############################################################################
 #
-# IAR ELF Linker V8.22.1.15669/W32 for ARM                20/Apr/2018  15:52:45
+# IAR ELF Linker V8.22.1.15669/W32 for ARM                21/Apr/2018  11:14:59
 # Copyright 2007-2018 IAR Systems AB.
 #
-#    Output file  =  C:\Users\joseb\Documents\insulogger\_build\insulogger.out
-#    Map file     =  C:\Users\joseb\Documents\insulogger\_build\insulogger.map
+#    Output file  =  
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\insulogger.out
+#    Map file     =  
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\insulogger.map
 #    Command line =  
-#        -f C:\Users\joseb\AppData\Local\Temp\EWEB10.tmp
-#        (C:\Users\joseb\Documents\insulogger\_build\app_button.o
-#        C:\Users\joseb\Documents\insulogger\_build\app_error.o
-#        C:\Users\joseb\Documents\insulogger\_build\app_error_weak.o
-#        C:\Users\joseb\Documents\insulogger\_build\app_timer.o
-#        C:\Users\joseb\Documents\insulogger\_build\app_util_platform.o
-#        C:\Users\joseb\Documents\insulogger\_build\ble_advdata.o
-#        C:\Users\joseb\Documents\insulogger\_build\ble_conn_params.o
-#        C:\Users\joseb\Documents\insulogger\_build\ble_srv_common.o
-#        C:\Users\joseb\Documents\insulogger\_build\boards.o
-#        C:\Users\joseb\Documents\insulogger\_build\bsp.o
-#        C:\Users\joseb\Documents\insulogger\_build\bsp_nfc.o
-#        C:\Users\joseb\Documents\insulogger\_build\hardfault_implementation.o
-#        C:\Users\joseb\Documents\insulogger\_build\iar_startup_nrf51.o
-#        C:\Users\joseb\Documents\insulogger\_build\main.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_assert.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_drv_clock.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_drv_common.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_drv_gpiote.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_drv_uart.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_log_backend_serial.o
-#        C:\Users\joseb\Documents\insulogger\_build\nrf_log_frontend.o
-#        C:\Users\joseb\Documents\insulogger\_build\RTT_Syscalls_IAR.o
-#        C:\Users\joseb\Documents\insulogger\_build\sdk_errors.o
-#        C:\Users\joseb\Documents\insulogger\_build\SEGGER_RTT.o
-#        C:\Users\joseb\Documents\insulogger\_build\SEGGER_RTT_printf.o
-#        C:\Users\joseb\Documents\insulogger\_build\softdevice_handler.o
-#        C:\Users\joseb\Documents\insulogger\_build\system_nrf51.o --redirect
-#        _Printf=_PrintfFull --redirect _Scanf=_ScanfFull -o
-#        C:\Users\joseb\Documents\insulogger\_build\insulogger.out --map
-#        C:\Users\joseb\Documents\insulogger\_build\insulogger.map --config
-#        C:\Users\joseb\Documents\insulogger\nRF5x.icf --warnings_are_errors
-#        --entry __iar_program_start --inline --vfe --text_out locale)
+#        -f C:\Users\joseb\AppData\Local\Temp\EWF8C6.tmp
+#        (C:\Users\joseb\Documents\insulogger\InsuLogger\_build\app_button.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\app_error.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\app_error_weak.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\app_timer.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\app_util_platform.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\ble_advdata.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\ble_conn_params.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\ble_srv_common.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\boards.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\bsp.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\bsp_nfc.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\hardfault_implementation.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\iar_startup_nrf51.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\main.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_assert.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_drv_clock.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_drv_common.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_drv_gpiote.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_drv_uart.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_log_backend_serial.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\nrf_log_frontend.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\RTT_Syscalls_IAR.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\sdk_errors.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\SEGGER_RTT.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\SEGGER_RTT_printf.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\softdevice_handler.o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\system_nrf51.o
+#        --redirect _Printf=_PrintfFull --redirect _Scanf=_ScanfFull -o
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\insulogger.out
+#        --map
+#        C:\Users\joseb\Documents\insulogger\InsuLogger\_build\insulogger.map
+#        --config C:\Users\joseb\Documents\insulogger\InsuLogger\nRF5x.icf
+#        --warnings_are_errors --entry __iar_program_start --inline --vfe
+#        --text_out locale)
 #
 ###############################################################################
 
@@ -79,7 +83,7 @@ keep { section .intvec };
   .intvec            ro code  0x0001b000    0xc0  iar_startup_nrf51.o [1]
                             - 0x0001b0c0    0xc0
 
-"P1":                                     0x3680
+"P1":                                     0x3684
   .text              ro code  0x0001b0c0   0xffa  xprintffull.o [3]
   .text              ro code  0x0001c0ba     0x2  iar_startup_nrf51.o [1]
   .text              ro code  0x0001c0bc    0xc8  xlocale_c.o [3]
@@ -123,26 +127,24 @@ keep { section .intvec };
   .text              ro code  0x0001de90    0x5c  nrf_drv_common.o [1]
   .text              ro code  0x0001deec   0x1f4  nrf_drv_gpiote.o [1]
   .text              ro code  0x0001e0e0   0x1d8  nrf_drv_uart.o [1]
-  .text              ro code  0x0001e2b8   0x190  main.o [1]
-  .text              ro code  0x0001e448    0xc4  system_nrf51.o [1]
-  .text              ro code  0x0001e50c    0x3c  zero_init3.o [5]
-  .text              ro code  0x0001e548    0x3c  packbits_init_single.o [5]
-  .text              ro code  0x0001e584    0x2c  iar_startup_nrf51.o [1]
-  .text              ro code  0x0001e5b0    0x28  data_init.o [5]
-  .iar.init_table    const    0x0001e5d8    0x20  - Linker created -
-  .text              ro code  0x0001e5f8    0x1e  cmain.o [5]
-  .text              ro code  0x0001e616     0x8  exit.o [3]
-  .text              ro code  0x0001e61e     0x2  iar_startup_nrf51.o [1]
-  .text              ro code  0x0001e620     0xa  cexit.o [5]
-  .text              ro code  0x0001e62a    0x1c  xsnprout.o [3]
-  .text              ro code  0x0001e646    0x1c  xencoding_8859_1.o [3]
-  .text              ro code  0x0001e662     0x2  iar_startup_nrf51.o [1]
-  .rodata            const    0x0001e664    0x18  app_error_weak.o [1]
-  .rodata            const    0x0001e67c    0x10  xprintffull.o [3]
-  .text              ro code  0x0001e68c     0xc  cstartup_M.o [5]
-  .rodata            const    0x0001e698     0x6  xlocale_c.o [3]
-  .text              ro code  0x0001e69e     0x2  iar_startup_nrf51.o [1]
-  .text              ro code  0x0001e6a0     0x2  iar_startup_nrf51.o [1]
+  .text              ro code  0x0001e2b8   0x194  main.o [1]
+  .text              ro code  0x0001e44c    0xc4  system_nrf51.o [1]
+  .text              ro code  0x0001e510    0x3c  zero_init3.o [5]
+  .text              ro code  0x0001e54c    0x3c  packbits_init_single.o [5]
+  .text              ro code  0x0001e588    0x2c  iar_startup_nrf51.o [1]
+  .text              ro code  0x0001e5b4    0x28  data_init.o [5]
+  .iar.init_table    const    0x0001e5dc    0x20  - Linker created -
+  .text              ro code  0x0001e5fc    0x1e  cmain.o [5]
+  .text              ro code  0x0001e61a     0x8  exit.o [3]
+  .text              ro code  0x0001e622     0x2  iar_startup_nrf51.o [1]
+  .text              ro code  0x0001e624     0xa  cexit.o [5]
+  .text              ro code  0x0001e62e    0x1c  xsnprout.o [3]
+  .text              ro code  0x0001e64a    0x1c  xencoding_8859_1.o [3]
+  .text              ro code  0x0001e666     0x2  iar_startup_nrf51.o [1]
+  .rodata            const    0x0001e668    0x18  app_error_weak.o [1]
+  .rodata            const    0x0001e680    0x10  xprintffull.o [3]
+  .text              ro code  0x0001e690     0xc  cstartup_M.o [5]
+  .rodata            const    0x0001e69c     0x6  xlocale_c.o [3]
   .text              ro code  0x0001e6a2     0x2  iar_startup_nrf51.o [1]
   .text              ro code  0x0001e6a4     0x2  iar_startup_nrf51.o [1]
   .text              ro code  0x0001e6a6     0x2  iar_startup_nrf51.o [1]
@@ -157,10 +159,12 @@ keep { section .intvec };
   .text              ro code  0x0001e6b8     0x2  iar_startup_nrf51.o [1]
   .text              ro code  0x0001e6ba     0x2  iar_startup_nrf51.o [1]
   .text              ro code  0x0001e6bc     0x2  iar_startup_nrf51.o [1]
-  .rodata            const    0x0001e6be     0x0  zero_init3.o [5]
-  .rodata            const    0x0001e6be     0x0  packbits_init_single.o [5]
-  Initializer bytes  const    0x0001e6be    0x82  <for P2-1>
-                            - 0x0001e740  0x3680
+  .text              ro code  0x0001e6be     0x2  iar_startup_nrf51.o [1]
+  .text              ro code  0x0001e6c0     0x2  iar_startup_nrf51.o [1]
+  .rodata            const    0x0001e6c2     0x0  zero_init3.o [5]
+  .rodata            const    0x0001e6c2     0x0  packbits_init_single.o [5]
+  Initializer bytes  const    0x0001e6c2    0x82  <for P2-1>
+                            - 0x0001e744  0x3684
 
 "P2", part 1 of 3:                         0x100
   P2-1                        0x20001870   0x100  <Init block>
@@ -201,7 +205,7 @@ Zero (__iar_zero_init3)
 
 Copy/packbits (__iar_packbits_init_single3)
     1 source range, total size 0x82 (50% of destination):
-          0x0001e6be   0x82
+          0x0001e6c2   0x82
     1 destination range, total size 0x100:
           0x20001870  0x100
 
@@ -213,7 +217,7 @@ Copy/packbits (__iar_packbits_init_single3)
 
     Module                    ro code  ro data  rw data
     ------                    -------  -------  -------
-C:\Users\joseb\Documents\insulogger\_build: [1]
+C:\Users\joseb\Documents\insulogger\InsuLogger\_build: [1]
     SEGGER_RTT.o                  404               648
     app_error.o                    32
     app_error_weak.o               56       24
@@ -221,7 +225,7 @@ C:\Users\joseb\Documents\insulogger\_build: [1]
     app_util_platform.o           116                 8
     ble_advdata.o               1 392
     iar_startup_nrf51.o           284
-    main.o                        400       62      124
+    main.o                        404       62      124
     nrf_drv_clock.o               236                20
     nrf_drv_common.o               92
     nrf_drv_gpiote.o              500                72
@@ -231,7 +235,7 @@ C:\Users\joseb\Documents\insulogger\_build: [1]
     softdevice_handler.o          700                20
     system_nrf51.o                196        3        4
     ---------------------------------------------------
-    Total:                      7 292       89    2 006
+    Total:                      7 296       89    2 006
 
 command line: [2]
     ---------------------------------------------------
@@ -284,7 +288,7 @@ rt6M_tl.a: [5]
 
     Linker created                          32    2 048
 -------------------------------------------------------
-    Grand Total:               13 936      208    4 186
+    Grand Total:               13 940      208    4 186
 
 
 *******************************************************************************
@@ -293,9 +297,9 @@ rt6M_tl.a: [5]
 
 Entry                      Address   Size  Type      Object
 -----                      -------   ----  ----      ------
-.iar.init_table$$Base   0x0001e5d8          --   Gb  - Linker created -
-.iar.init_table$$Limit  0x0001e5f8          --   Gb  - Linker created -
-?main                   0x0001e5f9         Code  Gb  cmain.o [5]
+.iar.init_table$$Base   0x0001e5dc          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x0001e5fc          --   Gb  - Linker created -
+?main                   0x0001e5fd         Code  Gb  cmain.o [5]
 CSTACK$$Base            0x200020d0          --   Gb  - Linker created -
 CSTACK$$Limit           0x200028d0          --   Gb  - Linker created -
 CacheMore               0x0001c0ff   0x28  Code  Lc  xlocale_c.o [3]
@@ -303,20 +307,20 @@ GPIOTE_IRQHandler       0x0001df61  0x168  Code  Gb  nrf_drv_gpiote.o [1]
 LoadInt                 0x0001b2ad   0x74  Code  Lc  xprintffull.o [3]
 POWER_CLOCK_IRQHandler  0x0001de09   0x36  Code  Gb  nrf_drv_clock.o [1]
 RTC1_IRQHandler         0x0001d179   0x8a  Code  Gb  app_timer.o [1]
-Region$$Table$$Base     0x0001e5d8          --   Gb  - Linker created -
-Region$$Table$$Limit    0x0001e5f8          --   Gb  - Linker created -
+Region$$Table$$Base     0x0001e5dc          --   Gb  - Linker created -
+Region$$Table$$Limit    0x0001e5fc          --   Gb  - Linker created -
 SEGGER_RTT_Init         0x0001da61   0x12  Code  Gb  SEGGER_RTT.o [1]
 SEGGER_RTT_WriteNoLock  0x0001da03   0x56  Code  Gb  SEGGER_RTT.o [1]
 SWI0_IRQHandler         0x0001d211    0x8  Code  Gb  app_timer.o [1]
 SWI2_IRQHandler         0x0001dc39   0x1c  Code  Gb  softdevice_handler.o [1]
 SystemCoreClock         0x200018ec    0x4  Data  Gb  system_nrf51.o [1]
-SystemInit              0x0001e449   0xa6  Code  Gb  system_nrf51.o [1]
+SystemInit              0x0001e44d   0xa6  Code  Gb  system_nrf51.o [1]
 UART0_IRQHandler        0x0001e2a5    0xc  Code  Gb  nrf_drv_uart.o [1]
 _DoInit                 0x0001d8e5   0x52  Code  Lc  SEGGER_RTT.o [1]
 _Encoding_8859_1_Mbrlen
-                        0x0001e657    0x2  Code  Gb  xencoding_8859_1.o [3]
+                        0x0001e65b    0x2  Code  Gb  xencoding_8859_1.o [3]
 _Encoding_8859_1_Wctomb
-                        0x0001e647   0x10  Code  Gb  xencoding_8859_1.o [3]
+                        0x0001e64b   0x10  Code  Gb  xencoding_8859_1.o [3]
 _GenldFull              0x0001be09  0x27c  Code  Lc  xprintffull.o [3]
 _GetAvailWriteSpace     0x0001d9eb   0x18  Code  Lc  SEGGER_RTT.o [1]
 _LdtobFull              0x0001b991  0x462  Code  Lc  xprintffull.o [3]
@@ -332,7 +336,7 @@ _PutfldFull             0x0001b321  0x2cc  Code  Lc  xprintffull.o [3]
 _PutstrFull             0x0001b759   0xbe  Code  Lc  xprintffull.o [3]
 _PuttxtFull             0x0001b655  0x102  Code  Lc  xprintffull.o [3]
 _SEGGER_RTT             0x20001d88   0x78  Data  Gb  SEGGER_RTT.o [1]
-_SNProut                0x0001e62b   0x1c  Code  Gb  xsnprout.o [3]
+_SNProut                0x0001e62f   0x1c  Code  Gb  xsnprout.o [3]
 _WriteBlocking          0x0001d94d   0x5e  Code  Lc  SEGGER_RTT.o [1]
 _WriteNoCheck           0x0001d9ab   0x40  Code  Lc  SEGGER_RTT.o [1]
 __ICFEDIT_region_RAM_end__ {Abs}
@@ -361,24 +365,24 @@ __aeabi_ui2d            0x0001c51d         Code  Gb  IxxToDbl.o [4]
 __aeabi_uidiv           0x0001c72b         Code  Gb  I32DivModFast.o [5]
 __aeabi_uidivmod        0x0001c72b         Code  Gb  I32DivModFast.o [5]
 __aeabi_uldivmod        0x0001c275         Code  Gb  I64DivMod.o [5]
-__cmain                 0x0001e5f9         Code  Gb  cmain.o [5]
+__cmain                 0x0001e5fd         Code  Gb  cmain.o [5]
 __exit                  0x0001c8dd         Code  Gb  XXexit.o [5]
 __iar_Fail_s            0x0001c19d   0x22  Code  Gb  xfail_s.o [3]
 __iar_Mbcurmax          0x0001c20d    0xa  Code  Gb  xmbcurmax.o [3]
 __iar_Memset4_word      0x0001d26d         Code  Gb  ABImemset.o [5]
 __iar_Memset_word       0x0001d259         Code  Gb  ABImemset.o [5]
 __iar_d2uiz             0x0001c4f1         Code  Gb  DblToI32.o [4]
-__iar_data_init3        0x0001e5b1   0x28  Code  Gb  data_init.o [5]
+__iar_data_init3        0x0001e5b5   0x28  Code  Gb  data_init.o [5]
 __iar_globLocale        0x20001928   0x48  Data  Lc  xlocale_c.o [3]
 __iar_global_Locale     0x0001c0fb    0x4  Code  Gb  xlocale_c.o [3]
 __iar_packbits_init_single3
-                        0x0001e549   0x3c  Code  Gb  packbits_init_single.o [5]
-__iar_program_start     0x0001e68d         Code  Gb  cstartup_M.o [5]
+                        0x0001e54d   0x3c  Code  Gb  packbits_init_single.o [5]
+__iar_program_start     0x0001e691         Code  Gb  cstartup_M.o [5]
 __iar_small_uidiv       0x0001c89d         Code  Gb  I32DivMod.o [5]
 __iar_small_uidivmod    0x0001c89d         Code  Gb  I32DivMod.o [5]
 __iar_systems$$module {Abs}
                         0x00000001         Data  Gb  command line/config [2]
-__iar_zero_init3        0x0001e50d   0x3c  Code  Gb  zero_init3.o [5]
+__iar_zero_init3        0x0001e511   0x3c  Code  Gb  zero_init3.o [5]
 __sd_nvic_app_accessible_irq
                         0x0001dae9   0x12  Code  Lc  softdevice_handler.o [1]
 __sd_nvic_irq_disable   0x0001d871    0x8  Code  Lc  app_util_platform.o [1]
@@ -386,13 +390,13 @@ __sd_nvic_irq_enable    0x0001d879    0x4  Code  Lc  app_util_platform.o [1]
 __vector_table          0x0001b000         Data  Gb  iar_startup_nrf51.o [1]
 _acDownBuffer           0x20002000   0x10  Data  Lc  SEGGER_RTT.o [1]
 _acUpBuffer             0x20001e00  0x200  Data  Lc  SEGGER_RTT.o [1]
-_call_main              0x0001e605         Code  Gb  cmain.o [5]
-_exit                   0x0001e621         Code  Gb  cexit.o [5]
+_call_main              0x0001e609         Code  Gb  cmain.o [5]
+_exit                   0x0001e625         Code  Gb  cexit.o [5]
 _gLocale_mblen          0x0001c163    0xa  Code  Gb  xlocale_c.o [3]
 _gLocale_mblenInt       0x0001c127   0x34  Code  Gb  xlocale_c.o [3]
 _gLocale_wctomb         0x0001c16d    0xa  Code  Gb  xlocale_c.o [3]
 _gLocale_wctombInt      0x0001c15b    0x8  Code  Gb  xlocale_c.o [3]
-_main                   0x0001e613         Code  Gb  cmain.o [5]
+_main                   0x0001e617         Code  Gb  cmain.o [5]
 abort                   0x0001c8d3    0xa  Code  Gb  abort.o [3]
 adv_data_encode         0x0001cc65  0x18e  Code  Gb  ble_advdata.o [1]
 advertising_init        0x0001e2fb   0x56  Code  Lc  main.o [1]
@@ -413,7 +417,7 @@ clock_clk_started_notify
                         0x0001dde3   0x26  Code  Lc  nrf_drv_clock.o [1]
 compare_reg_update      0x0001d025   0x88  Code  Lc  app_timer.o [1]
 conn_int_encode         0x0001cadf   0x90  Code  Lc  ble_advdata.o [1]
-exit                    0x0001e617    0x8  Code  Gb  exit.o [3]
+exit                    0x0001e61b    0x8  Code  Gb  exit.o [3]
 i                       0x20001888    0x4  Data  Lc  main.o [1]
 intern_softdevice_events_execute
                         0x0001db71   0x7a  Code  Gb  softdevice_handler.o [1]
@@ -447,7 +451,7 @@ m_ticks_elapsed_q_read_ind
 m_ticks_elapsed_q_write_ind
                         0x20002061    0x1  Data  Lc  app_timer.o [1]
 m_ticks_latest          0x20002068    0x4  Data  Lc  app_timer.o [1]
-main                    0x0001e359   0xa4  Code  Gb  main.o [1]
+main                    0x0001e359   0xa8  Code  Gb  main.o [1]
 manuf_specific_data_encode
                         0x0001cb79   0x68  Code  Lc  ble_advdata.o [1]
 memchr                  0x0001c1f5   0x18  Code  Gb  memchr.o [5]
@@ -522,13 +526,13 @@ uuid_list_encode        0x0001cab3   0x2c  Code  Lc  ble_advdata.o [1]
 uuid_list_sized_encode  0x0001c9fb   0xb8  Code  Lc  ble_advdata.o [1]
 
 
-[1] = C:\Users\joseb\Documents\insulogger\_build
+[1] = C:\Users\joseb\Documents\insulogger\InsuLogger\_build
 [2] = command line
 [3] = dl6M_tlf.a
 [4] = m6M_tl.a
 [5] = rt6M_tl.a
 
-  13 936 bytes of readonly  code memory
+  13 940 bytes of readonly  code memory
      208 bytes of readonly  data memory
    4 186 bytes of readwrite data memory
 
