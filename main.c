@@ -233,9 +233,9 @@ int main(void)
         NRF_LOG_FLUSH();
       
         nrf_gpio_pin_clear(LED);
-        nrf_delay_ms(1000);
+        nrf_delay_ms(100);
         nrf_gpio_pin_set(LED);
-        nrf_delay_ms(1000);
+        nrf_delay_ms(100);
         
         i++;
     }
