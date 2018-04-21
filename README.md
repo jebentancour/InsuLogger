@@ -52,7 +52,7 @@ The following boards are supported:
 |Board       |SoC                                                     |
 |------------|--------------------------------------------------------|	    
 |nRF6310     |(part of nRFgo Starter Kit)                             |                    
-|**PCA10000**|**(nRF51822 USB dongle) **                                  |
+|**PCA10000**|**(nRF51822 USB dongle)**                                  |
 |**PCA10001**|**(part of nRF51822 Evaluation Kit)**                       |
 |PCA10002    |(nRF51422 USB dongle)                                   |
 |PCA10003    |(part of nRF51422 Evaluation Kit, BLE + ANT)            |
