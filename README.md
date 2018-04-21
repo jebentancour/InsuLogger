@@ -20,7 +20,7 @@ SoftDevices can be programmed in nRF5 series devices, and are freely downloadabl
 |S120-SD-v1	|S120 nRF51822 SoftDevice v1.0.1 (Production ready)	|1.0.1  |    
 |S120-SD-v2	|S120 nRF51 SoftDevice (Production ready)	        |2.1.0  |    
 |S130-SD	|S130 nRF51 Series SoftDevice (production ready)	|1.0.0  |    
-|S130-SD-v2	|S130 nRF51 SoftDevice (Production ready)	        |2.0.1  |    
+|**S130-SD-v2**	|**S130 nRF51 SoftDevice (Production ready)**	        |**2.0.1**  |    
 
 ## Software Development Kit
 Nordic Semiconductor's Software Development Kits (SDK) are your starting point for software 
@@ -34,19 +34,17 @@ serialization libraries and more.
 |Code	            |Name	                                            |Version|
 |-------------------|---------------------------------------------------|-------|
 |nRF5-SDK-for-Mesh	|nRF5 SDK for Mesh zip file	                        |1.0.1  |
-|nRF5-SDK-v12-zip	|nRF5 SDK Zip File - works with S132 v3 and S130 v2	|12.3.0 |
+|**nRF5-SDK-v12-zip**	|**nRF5 SDK Zip File - works with S132 v3 and S130 v2**	|**12.3.0** |
 
 ## nRF5 SDK v12.3.0
 This version of the SDK supports the following SoftDevices:
 
 |Name            |Version|
 |----------------|-------|
-|S130 SoftDevice |v2.0.1 |
+|**S130 SoftDevice** |**v2.0.1** |
 |S132 SoftDevice |v3.0.0 |
 |S212 SoftDevice |v2.0.0 |
 |S332 SoftDevice |v2.0.0 |
-
-**nRF5 SDK v12.3.0 - S130 SoftDevice v2.0.1**
 
 ## nRF DK
 The following boards are supported:
