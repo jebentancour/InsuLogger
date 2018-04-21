@@ -1,7 +1,9 @@
 # InsuLogger
 
 SoC nRF51822 QFAAH10
+
 Code size: 256kB
+
 RAM size: 16 kB
 
 ## SoftDevices
@@ -44,26 +46,26 @@ This version of the SDK supports the following SoftDevices:
 |S212 SoftDevice |v2.0.0 |
 |S332 SoftDevice |v2.0.0 |
 
-*nRF5 SDK v12.3.0 - S130 SoftDevice v2.0.1*
+**nRF5 SDK v12.3.0 - S130 SoftDevice v2.0.1**
 
 ## nRF DK
 The following boards are supported:
 
-|Board                                                              |
-|-------------------------------------------------------------------|	    
-|nRF6310    (part of nRFgo Starter Kit)                             |                    
-|*PCA10000*   (nRF51822 USB dongle)                                   |
-|*PCA10001*   (part of nRF51822 Evaluation Kit)                       |
-|PCA10002   (nRF51422 USB dongle)                                   |
-|PCA10003   (part of nRF51422 Evaluation Kit, BLE + ANT)            |
-|PCA10028   (part of nRF51422 Evaluation Kit, Arduino form factor)  |
-|PCA10031   (nRF51422 USB dongle)	                                |
-|PCA10036   (part of nRF52832 Preview Development Kit)              |
-|PCA10040   (part of nRF52832 Development Kit)                      |
-|PCA10056   (part of nRF52840 Preview Development Kit)              |
-|*PCA20006*   (nRF51822 Beacon board)                                 |
-|D52DK1     (Dynastream D52 Starter Kit)                            |
-|WT51822    (Wavetek shield)                                        |   
+|Board       |SoC                                                     |
+|------------|--------------------------------------------------------|	    
+|nRF6310     |(part of nRFgo Starter Kit)                             |                    
+|**PCA10000**|(nRF51822 USB dongle)                                   |
+|**PCA10001**|(part of nRF51822 Evaluation Kit)                       |
+|PCA10002    |(nRF51422 USB dongle)                                   |
+|PCA10003    |(part of nRF51422 Evaluation Kit, BLE + ANT)            |
+|PCA10028    |(part of nRF51422 Evaluation Kit, Arduino form factor)  |
+|PCA10031    |(nRF51422 USB dongle)	                                  |
+|PCA10036    |(part of nRF52832 Preview Development Kit)              |
+|PCA10040    |(part of nRF52832 Development Kit)                      |
+|PCA10056    |(part of nRF52840 Preview Development Kit)              |
+|**PCA20006**|(nRF51822 Beacon board)                                 |
+|D52DK1      |(Dynastream D52 Starter Kit)                            |
+|WT51822     |(Wavetek shield)                                        |   
 
 # Hardware
 
