@@ -103,7 +103,12 @@ The following boards are supported:
 |D52DK1      |(Dynastream D52 Starter Kit)                            |
 |WT51822     |(Wavetek shield)                                        |   
 
-# SoftDevice Specification
+## Nordic Uart Service
+
+Nordic uart service uses the SoftDevice and Timer library.
+
+### S130 SoftDevice Specification
+
 [S130_SDS_v2.0](http://infocenter.nordicsemi.com/pdf/S130_SDS_v2.0.pdf)
 
 Peripheral protection and usage by SoftDevice:
@@ -145,13 +150,26 @@ Peripheral protection and usage by SoftDevice:
 |NA|0x50000000    | GPIO P0                     |Open           |Open      |
 |NA|0xE000E100    | NVIC                        |Restricted     |Open      |
 
-# Nordic Uart Service
+### Timer library
 
-Nordic uart service uses the timer library.
+The timer library enables the application to create multiple timer instances based on the **RTC1** peripheral. Checking for time-outs and invoking the user time-out handlers is performed in the RTC1 interrupt handler. List handling is done using a software interrupt (**SWI0**). Both interrupt handlers are running in ```APP_LOW``` priority level.
 
-The timer library enables the application to create multiple timer instances based on the **RTC1** peripheral. Checking for time-outs and invoking the user time-out handlers is performed in the RTC1 interrupt handler. List handling is done using a software interrupt (**SWI0**). Both interrupt handlers are running in APP_LOW priority level.
+Use the macro ```APP_TIMER_INIT``` to initialize the library. This macro allocates memory for internal queues and performs the library initialization. **Because of the memory initialization, it should not be called more than once**. During initialization, you can provide a pointer to a scheduler function that will be called when any timer expires. This function can forward the handling of timer expiration to a different context.
 
-# GPIOs
+```c
+APP_TIMER_INIT(PRESCALER, OP_QUEUE_SIZE, scheduler_function)
+```
+
+To define a timer, use the APP_TIMER_DEF macro. This macro allocates memory for the timer instance and declares an identifier that can later on be used to refer to the specific instance. Before starting a timer, the timer must be created.
+
+```c
+APP_TIMER_DEF(my_timer_id);
+err_code = app_timer_create(&my_timer_id, mode, timeout_handler)
+```
+
+After the timer is created, it can be controlled using ```app_timer_start``` and ```app_timer_stop```.
+
+## GPIOs
 
 Circular:
 
