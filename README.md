@@ -105,7 +105,13 @@ The following boards are supported:
 
 ## Nordic Uart Service
 
-Nordic uart service uses the SoftDevice and Timer library.
+The Nordic UART Service is a proprietary bluetooth service. This essentially means that it has a 128 bit UUID base, which is random generated (according to UUID generation spec), as compared to adopted profiles and services from Bluetooth SIG which are addressed using a 16 bit UUID.
+
+BLE NUS is a proprietary BLE service, which has a service named "UART service" to mimic the older Bluetooth classic RFCOMM profile (UART over BT). This is one of the proprietary profiles included in the nRF5x SDK, and it is provided with support both on the nRF side, as well as the central side (Android/PC/iOS).
+
+NUS sets up one "RX" (characteristic with "write" properties) and one "TX" (characteristic with "notify" properties) datachannel, to fit basic UART communication needs.
+
+NUS uses the SoftDevice and Timer library.
 
 ### S130 SoftDevice Specification
 
