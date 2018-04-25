@@ -5,6 +5,7 @@ typedef struct {
     uint8_t advertising;
     uint8_t connected;
     uint8_t rx_buffer_full;
+    uint8_t tx_buffer_empty;
 } ble_uart_status_t;
 
 

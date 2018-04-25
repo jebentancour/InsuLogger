@@ -69,7 +69,7 @@
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS      60                                          /**< The advertising timeout (in units of seconds). */
+#define APP_ADV_TIMEOUT_IN_SECONDS      30                                          /**< The advertising timeout (in units of seconds). */
 
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
@@ -89,7 +89,7 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-#define MAX_LEN                         30                      /* Largo de mensaje maximo */
+#define MAX_LEN                         20                      /* Largo de mensaje maximo */
 
 ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo */
 static uint8_t*                         m_flag;                 /* Bandera que indica nuevo mensaje */
@@ -121,8 +121,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  */
 static void gap_params_init(void)
 {
-    NRF_LOG_DEBUG("gap_params_init\r\n");
-    
     uint32_t                err_code;
     ble_gap_conn_params_t   gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
@@ -156,9 +154,7 @@ static void gap_params_init(void)
  * @param length   Length of the data.
  */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
-{    
-    //NRF_LOG_HEXDUMP_DEBUG(p_data, length);
-    
+{
     if (!*m_flag)    /* La recepcion queda bloqueada hasta que se reconozca el mensaje recibido */
     {
         for (uint32_t i = 0; i < length; i++)
@@ -175,7 +171,6 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             if (p_data[i] == 0x0A)          /* El caracter '\n' indica el fin del mensaje */   
             {
                 *m_flag = 1;
-                ///NRF_LOG_DEBUG("new_message! len = %d\r\n", m_len);
                 break;
             }
         }
@@ -186,9 +181,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
 /**@brief Function for initializing services that will be used by the application.
  */
 static void services_init(void)
-{
-    NRF_LOG_DEBUG("services_init\r\n");
-    
+{  
     uint32_t       err_code;
     ble_nus_init_t nus_init;
 
@@ -207,16 +200,14 @@ static void services_init(void)
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
-    NRF_LOG_DEBUG("conn_params_error_handler\r\n");
+    NRF_LOG_ERROR("conn_params_error_handler\r\n");
 }
 
 
 /**@brief Function for initializing the Connection Parameters module.
  */
 static void conn_params_init(void)
-{
-    NRF_LOG_DEBUG("conn_params_init\r\n");
-    
+{    
     uint32_t               err_code;
     ble_conn_params_init_t cp_init;
 
@@ -282,7 +273,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             break; // BLE_GAP_EVT_DISCONNECTED
 
         case BLE_GAP_EVT_SEC_PARAMS_REQUEST:
-            NRF_LOG_DEBUG("on_ble_evt BLE_GAP_EVT_SEC_PARAMS_REQUEST\r\n");
             // Pairing not supported
             err_code = sd_ble_gap_sec_params_reply(m_conn_handle, BLE_GAP_SEC_STATUS_PAIRING_NOT_SUPP, NULL, NULL);
             APP_ERROR_CHECK(err_code);
@@ -312,6 +302,11 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = sd_ble_user_mem_reply(p_ble_evt->evt.gattc_evt.conn_handle, NULL);
             APP_ERROR_CHECK(err_code);
             break; // BLE_EVT_USER_MEM_REQUEST
+            
+        case BLE_EVT_TX_COMPLETE:
+            // Transmission complete.
+            NRF_LOG_DEBUG("on_ble_evt: BLE_EVT_TX_COMPLETE\r\n");
+            break; // BLE_EVT_TX_COMPLETE
 
         case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
         {
@@ -454,6 +449,7 @@ void ble_uart_init(void)
     m_ble_uart_status.advertising = 0;
     m_ble_uart_status.connected = 0;
     m_ble_uart_status.rx_buffer_full = 0;
+    m_ble_uart_status.tx_buffer_empty = 1;
 
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 

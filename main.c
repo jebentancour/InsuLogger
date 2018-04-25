@@ -36,7 +36,6 @@ int main(void)
     for (;;)
     {
         ble_uart_status = ble_uart_get_status();
-        
         btn_new = nrf_gpio_pin_read(BTN);
         if (btn_new != btn_old) {
             if (!btn_new) {
@@ -64,13 +63,10 @@ int main(void)
         
         if (ble_uart_flag) {
             uint16_t length = ble_uart_get_msg(ble_uart_msg);
+            ble_uart_data_send(ble_uart_msg, length);
+            ble_uart_flag = 0;            
             NRF_LOG_DEBUG("main_new_msg! len = %d\r\n", length);
             NRF_LOG_HEXDUMP_DEBUG(ble_uart_msg, length);
-            ble_uart_flag = 0;
-            
-            uint8_t* test_msg = "This is a test\n";
-            length = 15;
-            ble_uart_data_send(test_msg, length);
         }
         
         NRF_LOG_FLUSH();
