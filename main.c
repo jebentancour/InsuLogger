@@ -28,11 +28,11 @@ int main(void)
     NRF_LOG_INIT(NULL);
     NRF_LOG_INFO("main\r\n");
 
-    // Initialize.
+    /* Initialize. */
     ble_uart_set_flag(&ble_uart_flag);
     ble_uart_init();
     
-    // Enter main loop.
+    /* Enter main loop. */
     for (;;)
     {
         ble_uart_status = ble_uart_get_status();
@@ -51,7 +51,6 @@ int main(void)
         }
         btn_old = btn_new;
         
-        
         if (ble_uart_status.connected) {
             nrf_gpio_pin_set(LED);
         } else {
@@ -63,24 +62,17 @@ int main(void)
             }
         }
         
-        if (ble_uart_status.connected) {
-            uint8_t* test_msg = "This is a test\n";
-            uint16_t length = 15;
-            ble_uart_data_send(test_msg, length);
-            nrf_delay_ms(500);
-        }
-        
         if (ble_uart_flag) {
             uint16_t length = ble_uart_get_msg(ble_uart_msg);
+            NRF_LOG_DEBUG("main_new_msg! len = %d\r\n", length);
             NRF_LOG_HEXDUMP_DEBUG(ble_uart_msg, length);
             ble_uart_flag = 0;
+            
+            uint8_t* test_msg = "This is a test\n";
+            length = 15;
+            ble_uart_data_send(test_msg, length);
         }
         
         NRF_LOG_FLUSH();
     }
 }
-
-
-/**
- * @}
- */

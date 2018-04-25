@@ -89,10 +89,12 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-ble_uart_status_t                       m_ble_uart_status;
-static uint8_t*                         m_flag;
-static uint8_t                          m_msg[20];
-static uint16_t                         m_len;
+#define MAX_LEN                         30                      /* Largo de mensaje maximo */
+
+ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo */
+static uint8_t*                         m_flag;                 /* Bandera que indica nuevo mensaje */
+static uint8_t                          m_msg[MAX_LEN];         /* Buffer que guarda el mensaje recibido */
+static uint16_t                         m_len;                  /* Largo del mensaje recibido */
 
 
 /**@brief Function for assert macro callback.
@@ -101,8 +103,8 @@ static uint16_t                         m_len;
  *
  * @warning On assert from the SoftDevice, the system can only recover on reset.
  *
- * @param[in] line_num    Line number of the failing ASSERT call.
- * @param[in] p_file_name File name of the failing ASSERT call.
+ * @param line_num    Line number of the failing ASSERT call.
+ * @param p_file_name File name of the failing ASSERT call.
  */
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
@@ -149,30 +151,36 @@ static void gap_params_init(void)
  * @details This function will process the data received from the Nordic UART BLE Service and send
  *          it to the UART module.
  *
- * @param[in] p_nus    Nordic UART Service structure.
- * @param[in] p_data   Data to be send to UART module.
- * @param[in] length   Length of the data.
+ * @param p_nus    Nordic UART Service structure.
+ * @param p_data   Data to be send to UART module.
+ * @param length   Length of the data.
  */
-/**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {    
-    NRF_LOG_HEXDUMP_DEBUG(p_data, length);
+    //NRF_LOG_HEXDUMP_DEBUG(p_data, length);
     
-    if (!m_flag)
+    if (!*m_flag)    /* La recepcion queda bloqueada hasta que se reconozca el mensaje recibido */
     {
         for (uint32_t i = 0; i < length; i++)
         {
+            if (m_len >= MAX_LEN)            /* El mensaje que truncado en MAX_LEN */
+            {
+                m_ble_uart_status.rx_buffer_full = 1;
+                m_len = MAX_LEN - 1;
+            }
+            
+            m_msg[m_len] = p_data[i];
             m_len++;
-            m_msg[i] = p_data[i];
-            if (p_data[i] == '\n')
+            
+            if (p_data[i] == 0x0A)          /* El caracter '\n' indica el fin del mensaje */   
             {
                 *m_flag = 1;
+                ///NRF_LOG_DEBUG("new_message! len = %d\r\n", m_len);
                 break;
             }
         }
     }
 }
-/**@snippet [Handling the data received over BLE] */
 
 
 /**@brief Function for initializing services that will be used by the application.
@@ -195,7 +203,7 @@ static void services_init(void)
 
 /**@brief Function for handling errors from the Connection Parameters module.
  *
- * @param[in] nrf_error  Error code containing information about what went wrong.
+ * @param nrf_error  Error code containing information about what went wrong.
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
@@ -231,7 +239,7 @@ static void conn_params_init(void)
  *
  * @details This function will be called for advertising events which are passed to the application.
  *
- * @param[in] ble_adv_evt  Advertising event.
+ * @param ble_adv_evt  Advertising event.
  */
 static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 {
@@ -253,7 +261,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 
 /**@brief Function for the application's SoftDevice event handler.
  *
- * @param[in] p_ble_evt SoftDevice event.
+ * @param p_ble_evt SoftDevice event.
  */
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {    
@@ -355,7 +363,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  * @details This function is called from the SoftDevice event interrupt handler after a
  *          SoftDevice event has been received.
  *
- * @param[in] p_ble_evt  SoftDevice event.
+ * @param p_ble_evt  SoftDevice event.
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
@@ -437,11 +445,15 @@ static void advertising_init(void)
 }
 
 
-/**@brief Module init function.
+/**@brief Funcion de inicializacion del modulo.
  */
 void ble_uart_init(void)
 {
     NRF_LOG_INFO("ble_uart_init\r\n");
+    
+    m_ble_uart_status.advertising = 0;
+    m_ble_uart_status.connected = 0;
+    m_ble_uart_status.rx_buffer_full = 0;
 
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
@@ -452,16 +464,39 @@ void ble_uart_init(void)
     conn_params_init();
 }
 
+
+/**@brief Funcion para obtener el estado del modulo.
+ */
 ble_uart_status_t ble_uart_get_status(void)
 {
-    return m_ble_uart_status;
+    ble_uart_status_t aux_ble_uart_status;
+    CRITICAL_REGION_ENTER();
+    aux_ble_uart_status = m_ble_uart_status;
+    CRITICAL_REGION_EXIT();
+    return aux_ble_uart_status;
 };
 
-void ble_uart_set_flag(uint8_t* flag_main){
+
+/**@brief Funcion para setear la flag donde indicar la llegada de un mensaje completo.
+ *
+ * @details Se considera que un mensaje esta completo cuando se recibe el caracter '\n'.
+ *
+ * @param flag_main    Puntero a una flag donde se indicara la llegada de un mensaje completo.
+ */
+void ble_uart_set_flag(uint8_t* flag_main)
+{
     m_flag = flag_main;
 }
 
-uint16_t ble_uart_get_msg(uint8_t* msg_main){
+
+/**@brief Funcion para obtener el mensaje recibido.
+ *
+ * @param msg_main    Puntero al arreglo donde se copiara el mensaje.
+ *
+ * @return len        El largo del mensaje.
+ */
+uint16_t ble_uart_get_msg(uint8_t* msg_main)
+{
     uint16_t len;
     uint8_t i;
     CRITICAL_REGION_ENTER();
@@ -469,13 +504,35 @@ uint16_t ble_uart_get_msg(uint8_t* msg_main){
     i = 0;
     while (i < len)
     {
-      msg_main[i] = m_msg[i];
-      i++;
+        msg_main[i] = m_msg[i];
+        i++;
     }
+    m_len = 0;
+    m_ble_uart_status.rx_buffer_full = 0;
     CRITICAL_REGION_EXIT();
     return len;
 }
 
+
+/**@brief Funcion para enviar un mensaje.
+ *
+ * @warning El largo del mensaje debe ser menor a 20.
+ *
+ * @param p_data    Puntero al arreglo donde se encuentra el mensaje.
+ * @param length    El largo del mensaje.
+ *
+ * @return NRF_SUCCESS Si el mensaje fue enviado correctamente.
+ */
+uint32_t  ble_uart_data_send(uint8_t * p_data, uint16_t length)
+{
+    return ble_nus_string_send(&m_nus, p_data, length);
+}
+
+
+/**@brief Funcion iniciar el descubrimiento por bluetooth.
+ *
+ * @details Se debe esperar a que transcurra el tiempo APP_ADV_TIMEOUT_IN_SECONDS para volver a llamarla.
+ */
 void ble_uart_advertising_start(void)
 {
     uint32_t err_code;
@@ -487,6 +544,9 @@ void ble_uart_advertising_start(void)
     }
 }
 
+
+/**@brief Funcion detener el descubrimiento por bluetooth.
+ */
 void ble_uart_advertising_stop(void)
 {
     uint32_t err_code;
@@ -498,6 +558,9 @@ void ble_uart_advertising_stop(void)
     }
 }
 
+
+/**@brief Funcion terminar la conexion bluetooth con otro dispositivo.
+ */
 void ble_uart_disconnect(void)
 {
     uint32_t err_code;
@@ -505,20 +568,13 @@ void ble_uart_disconnect(void)
     err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
     if (err_code != NRF_ERROR_INVALID_STATE || err_code != NRF_SUCCESS)
     {
-        if ( err_code == NRF_ERROR_INVALID_PARAM){
+        if ( err_code == NRF_ERROR_INVALID_PARAM)
+        {
             NRF_LOG_DEBUG("ble_uart_disconnect NRF_ERROR_INVALID_PARAM\r\n");
         }
-        if ( err_code == BLE_ERROR_INVALID_CONN_HANDLE){
+        if ( err_code == BLE_ERROR_INVALID_CONN_HANDLE)
+        {
             NRF_LOG_DEBUG("ble_uart_disconnect BLE_ERROR_INVALID_CONN_HANDLE\r\n");
         }
     }
 }
-
-uint32_t  ble_uart_data_send(uint8_t * p_data, uint16_t length)
-{
-    return ble_nus_string_send(&m_nus, p_data, length);
-}
-
-/**
- * @}
- */
