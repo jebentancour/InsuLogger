@@ -7,31 +7,45 @@
 #include "ble_uart.h"
 
 /* Placa circular */
-#define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN NRF_GPIO_PIN_MAP(0, 28)
+//#define LED NRF_GPIO_PIN_MAP(0, 29)
+//#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
+
+/* Placa InsuLogger */
+#define LED NRF_GPIO_PIN_MAP(0, 0)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
+#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
+#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
+
 
 ble_uart_status_t ble_uart_status;
 uint32_t btn_new;
 uint32_t btn_old;
+uint32_t btn_down_new;
+uint32_t btn_down_old;
+uint32_t btn_up_new;
+uint32_t btn_up_old;
 uint8_t ble_uart_rx_flag;
 uint8_t ble_uart_tx_flag;
 uint8_t ble_uart_tx_flag_old;
-uint8_t ble_uart_rx_msg[20];
+uint8_t ble_uart_rx_msg[MAX_LEN];
 
 /**@brief Application main function.
  */
 int main(void)
 {    
-    nrf_gpio_cfg_input(BTN, NRF_GPIO_PIN_PULLUP);
+    nrf_gpio_cfg_input(BTN_OK, NRF_GPIO_PIN_PULLUP);
+    nrf_gpio_cfg_input(BTN_DOWN, NRF_GPIO_PIN_PULLUP);
+    nrf_gpio_cfg_input(BTN_UP, NRF_GPIO_PIN_PULLUP);
     
     nrf_gpio_pin_dir_set(LED, NRF_GPIO_PIN_DIR_OUTPUT);
     nrf_gpio_pin_clear(LED);
     
     NRF_LOG_INIT(NULL);
-    NRF_LOG_INFO("main\r\n");
+    NRF_LOG_INFO("main init\r\n");
 
     /* Initialize. */
     ble_uart_rx_set_flag(&ble_uart_rx_flag);
+    ble_uart_tx_flag = 1;
     ble_uart_tx_set_flag(&ble_uart_tx_flag);
     ble_uart_init();
     
@@ -39,7 +53,8 @@ int main(void)
     for (;;)
     {
         ble_uart_status = ble_uart_get_status();
-        btn_new = nrf_gpio_pin_read(BTN);
+        
+        btn_new = nrf_gpio_pin_read(BTN_OK);
         if (btn_new != btn_old) {
             if (!btn_new) {
                 if (ble_uart_status.connected) {
@@ -52,6 +67,28 @@ int main(void)
             }
         }
         btn_old = btn_new;
+        
+        btn_down_new = nrf_gpio_pin_read(BTN_DOWN);
+        if (btn_down_new != btn_down_old) {
+            if (!btn_down_new) {
+                if (ble_uart_status.connected) {
+                    while(!ble_uart_tx_flag){};
+                    ble_uart_data_send("BTN_DOWN\n", 9);
+                }
+            }
+        }
+        btn_down_old = btn_down_new;
+        
+        btn_up_new = nrf_gpio_pin_read(BTN_UP);
+        if (btn_up_new != btn_up_old) {
+            if (!btn_up_new) {
+                if (ble_uart_status.connected) {
+                    while(!ble_uart_tx_flag){};
+                    ble_uart_data_send("BTN_UP\n", 7);
+                }
+            }
+        }
+        btn_up_old = btn_up_new;
         
         if (ble_uart_status.connected) {
             nrf_gpio_pin_set(LED);
@@ -67,7 +104,7 @@ int main(void)
         if (ble_uart_rx_flag) {
             uint16_t length = ble_uart_get_msg(ble_uart_rx_msg);
             ble_uart_rx_flag = 0;            
-            NRF_LOG_DEBUG("main_new_msg! len = %d\r\n", length);
+            NRF_LOG_DEBUG("main new msg, len = %d\r\n", length);
             NRF_LOG_HEXDUMP_DEBUG(ble_uart_rx_msg, length);
             ble_uart_data_send(ble_uart_rx_msg, length);
         }
@@ -76,7 +113,7 @@ int main(void)
         {
             if (ble_uart_tx_flag)
             {
-                NRF_LOG_DEBUG("main tx complete!\r\n");
+                NRF_LOG_DEBUG("main tx complete\r\n");
             }
         }
         ble_uart_tx_flag_old = ble_uart_tx_flag;

@@ -89,8 +89,6 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-#define MAX_LEN                         50                      /* Largo de mensaje maximo */
-
 ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo */
 static uint8_t*                         m_rx_flag;              /* Bandera que indica nuevo mensaje recibido */
 static uint8_t*                         m_tx_flag;              /* Bandera que indica mensaje trasmitido */
@@ -313,7 +311,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             {
                 uint16_t len;
                 len = m_tx_len - m_tx_index;
-                NRF_LOG_DEBUG("%d bytes remaining...\r\n", len);
                 if (len > 20)
                 {
                     len = 20;
@@ -323,7 +320,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             }
             else
             {
-                NRF_LOG_DEBUG("tx complete!\r\n");
                 *m_tx_flag = 1;
             }            
             break; // BLE_EVT_TX_COMPLETE

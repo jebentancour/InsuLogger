@@ -181,11 +181,14 @@ Circular:
 
 ```c
 #define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN NRF_GPIO_PIN_MAP(0, 28)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
 ```
 
 InsuLogger:
 
 ```c
 #define LED NRF_GPIO_PIN_MAP(0, 0)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
+#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
+#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
 ```
