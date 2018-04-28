@@ -89,12 +89,16 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-#define MAX_LEN                         20                      /* Largo de mensaje maximo */
+#define MAX_LEN                         50                      /* Largo de mensaje maximo */
 
 ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo */
-static uint8_t*                         m_flag;                 /* Bandera que indica nuevo mensaje */
-static uint8_t                          m_msg[MAX_LEN];         /* Buffer que guarda el mensaje recibido */
-static uint16_t                         m_len;                  /* Largo del mensaje recibido */
+static uint8_t*                         m_rx_flag;              /* Bandera que indica nuevo mensaje recibido */
+static uint8_t*                         m_tx_flag;              /* Bandera que indica mensaje trasmitido */
+static uint8_t                          m_rx_msg[MAX_LEN];      /* Buffer que guarda el mensaje recibido */
+static uint8_t                          m_tx_msg[MAX_LEN];      /* Buffer que guarda el mensaje a enviar */
+static uint16_t                         m_rx_len;               /* Largo del mensaje recibido */
+static uint16_t                         m_tx_len;               /* Largo del mensaje a enviar */
+static uint16_t                         m_tx_index;             /* Indice del buffer de salida */
 
 
 /**@brief Function for assert macro callback.
@@ -155,22 +159,21 @@ static void gap_params_init(void)
  */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    if (!*m_flag)    /* La recepcion queda bloqueada hasta que se reconozca el mensaje recibido */
+    if (!*m_rx_flag)    // La recepcion queda bloqueada hasta que se reconozca el mensaje recibido
     {
         for (uint32_t i = 0; i < length; i++)
         {
-            if (m_len >= MAX_LEN)            /* El mensaje que truncado en MAX_LEN */
+            if (m_rx_len >= MAX_LEN)            // El mensaje que truncado en MAX_LEN
             {
-                m_ble_uart_status.rx_buffer_full = 1;
-                m_len = MAX_LEN - 1;
+                m_rx_len = MAX_LEN - 1;
             }
             
-            m_msg[m_len] = p_data[i];
-            m_len++;
+            m_rx_msg[m_rx_len] = p_data[i];
+            m_rx_len++;
             
-            if (p_data[i] == 0x0A)          /* El caracter '\n' indica el fin del mensaje */   
+            if (p_data[i] == 0x0A)          // El caracter '\n' indica el fin del mensaje    
             {
-                *m_flag = 1;
+                *m_rx_flag = 1;
                 break;
             }
         }
@@ -306,6 +309,23 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         case BLE_EVT_TX_COMPLETE:
             // Transmission complete.
             NRF_LOG_DEBUG("on_ble_evt: BLE_EVT_TX_COMPLETE\r\n");
+            if (m_tx_index < m_tx_len)
+            {
+                uint16_t len;
+                len = m_tx_len - m_tx_index;
+                NRF_LOG_DEBUG("%d bytes remaining...\r\n", len);
+                if (len > 20)
+                {
+                    len = 20;
+                }
+                ble_nus_string_send(&m_nus, &m_tx_msg[m_tx_index], len);
+                m_tx_index += len;
+            }
+            else
+            {
+                NRF_LOG_DEBUG("tx complete!\r\n");
+                *m_tx_flag = 1;
+            }            
             break; // BLE_EVT_TX_COMPLETE
 
         case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
@@ -448,8 +468,6 @@ void ble_uart_init(void)
     
     m_ble_uart_status.advertising = 0;
     m_ble_uart_status.connected = 0;
-    m_ble_uart_status.rx_buffer_full = 0;
-    m_ble_uart_status.tx_buffer_empty = 1;
 
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
@@ -477,11 +495,20 @@ ble_uart_status_t ble_uart_get_status(void)
  *
  * @details Se considera que un mensaje esta completo cuando se recibe el caracter '\n'.
  *
- * @param flag_main    Puntero a una flag donde se indicara la llegada de un mensaje completo.
+ * @param main_rx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
-void ble_uart_set_flag(uint8_t* flag_main)
+void ble_uart_rx_set_flag(uint8_t* main_rx_flag)
 {
-    m_flag = flag_main;
+    m_rx_flag = main_rx_flag;
+}
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
+ *
+ * @param main_tx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
+ */
+void ble_uart_tx_set_flag(uint8_t* main_tx_flag)
+{
+    m_tx_flag = main_tx_flag;
 }
 
 
@@ -496,15 +523,14 @@ uint16_t ble_uart_get_msg(uint8_t* msg_main)
     uint16_t len;
     uint8_t i;
     CRITICAL_REGION_ENTER();
-    len = m_len;
+    len = m_rx_len;
     i = 0;
     while (i < len)
     {
-        msg_main[i] = m_msg[i];
+        msg_main[i] = m_rx_msg[i];
         i++;
     }
-    m_len = 0;
-    m_ble_uart_status.rx_buffer_full = 0;
+    m_rx_len = 0;
     CRITICAL_REGION_EXIT();
     return len;
 }
@@ -512,16 +538,33 @@ uint16_t ble_uart_get_msg(uint8_t* msg_main)
 
 /**@brief Funcion para enviar un mensaje.
  *
- * @warning El largo del mensaje debe ser menor a 20.
- *
- * @param p_data    Puntero al arreglo donde se encuentra el mensaje.
+ * @param msg_main  Puntero al arreglo donde se encuentra el mensaje.
  * @param length    El largo del mensaje.
  *
- * @return NRF_SUCCESS Si el mensaje fue enviado correctamente.
  */
-uint32_t  ble_uart_data_send(uint8_t * p_data, uint16_t length)
+void ble_uart_data_send(uint8_t * msg_main, uint16_t length)
 {
-    return ble_nus_string_send(&m_nus, p_data, length);
+    uint8_t i;
+    CRITICAL_REGION_ENTER();
+    i = 0;
+    while (i < length)
+    {
+        m_tx_msg[i] = msg_main[i];
+        i++;
+    }
+    *m_tx_flag = 0;
+    CRITICAL_REGION_EXIT();
+    
+    m_tx_len = length;
+    uint16_t len;
+    len = 20;
+    if (m_tx_len < 20)
+    {
+        len = m_tx_len;
+    }
+    m_tx_index = len;
+    ble_nus_string_send(&m_nus, &m_tx_msg[0], len);
+
 }
 
 

@@ -4,8 +4,6 @@
 typedef struct {
     uint8_t advertising;
     uint8_t connected;
-    uint8_t rx_buffer_full;
-    uint8_t tx_buffer_empty;
 } ble_uart_status_t;
 
 
@@ -23,9 +21,16 @@ ble_uart_status_t ble_uart_get_status(void);
  *
  * @details Se considera que un mensaje esta completo cuando se recibe el caracter '\n'.
  *
- * @param flag_main    Puntero a una flag donde se indicara la llegada de un mensaje completo.
+ * @param main_rx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
-void ble_uart_set_flag(uint8_t*);
+void ble_uart_rx_set_flag(uint8_t*);
+
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
+ *
+ * @param main_tx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
+ */
+void ble_uart_tx_set_flag(uint8_t*);
 
 
 /**@brief Funcion para obtener el mensaje recibido.
@@ -38,14 +43,11 @@ uint16_t ble_uart_get_msg(uint8_t*);
 
 /**@brief Funcion para enviar un mensaje.
  *
- * @warning El largo del mensaje debe ser menor a 20.
- *
- * @param p_data    Puntero al arreglo donde se encuentra el mensaje.
+ * @param msg_main  Puntero al arreglo donde se encuentra el mensaje.
  * @param length    El largo del mensaje.
  *
- * @return NRF_SUCCESS Si el mensaje fue enviado correctamente.
  */
-uint32_t ble_uart_data_send(uint8_t * p_data, uint16_t length);
+void ble_uart_data_send(uint8_t * p_data, uint16_t length);
 
 
 /**@brief Funcion iniciar el descubrimiento por bluetooth.

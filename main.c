@@ -13,8 +13,10 @@
 ble_uart_status_t ble_uart_status;
 uint32_t btn_new;
 uint32_t btn_old;
-uint8_t ble_uart_flag;
-uint8_t ble_uart_msg[20];
+uint8_t ble_uart_rx_flag;
+uint8_t ble_uart_tx_flag;
+uint8_t ble_uart_tx_flag_old;
+uint8_t ble_uart_rx_msg[20];
 
 /**@brief Application main function.
  */
@@ -29,7 +31,8 @@ int main(void)
     NRF_LOG_INFO("main\r\n");
 
     /* Initialize. */
-    ble_uart_set_flag(&ble_uart_flag);
+    ble_uart_rx_set_flag(&ble_uart_rx_flag);
+    ble_uart_tx_set_flag(&ble_uart_tx_flag);
     ble_uart_init();
     
     /* Enter main loop. */
@@ -61,13 +64,23 @@ int main(void)
             }
         }
         
-        if (ble_uart_flag) {
-            uint16_t length = ble_uart_get_msg(ble_uart_msg);
-            ble_uart_data_send(ble_uart_msg, length);
-            ble_uart_flag = 0;            
+        if (ble_uart_rx_flag) {
+            uint16_t length = ble_uart_get_msg(ble_uart_rx_msg);
+            ble_uart_rx_flag = 0;            
             NRF_LOG_DEBUG("main_new_msg! len = %d\r\n", length);
-            NRF_LOG_HEXDUMP_DEBUG(ble_uart_msg, length);
+            NRF_LOG_HEXDUMP_DEBUG(ble_uart_rx_msg, length);
+            ble_uart_data_send(ble_uart_rx_msg, length);
         }
+        
+        if (ble_uart_tx_flag != ble_uart_tx_flag_old)
+        {
+            if (ble_uart_tx_flag)
+            {
+                NRF_LOG_DEBUG("main tx complete!\r\n");
+            }
+        }
+        ble_uart_tx_flag_old = ble_uart_tx_flag;
+        
         
         NRF_LOG_FLUSH();
     }
