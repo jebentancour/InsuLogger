@@ -177,13 +177,6 @@ After the timer is created, it can be controlled using ```app_timer_start``` and
 
 ## GPIOs
 
-Circular:
-
-```c
-#define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
-```
-
 InsuLogger:
 
 ```c
@@ -191,4 +184,11 @@ InsuLogger:
 #define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
 #define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
 #define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
+```
+
+Circular:
+
+```c
+#define LED NRF_GPIO_PIN_MAP(0, 29)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
 ```
