@@ -78,7 +78,6 @@ void modulo_init(void);
 
 Las secciones críticas del código deben manejarse de la siguiente forma:
 
-
 ```c
 CRITICAL_REGION_ENTER();
     /* Seccion critica */
@@ -87,7 +86,7 @@ CRITICAL_REGION_EXIT();
 
 ## Flags
 
-Las banderas que sean necesarias usar en el Round Robin y sean modificadas por le módulo serán pasadas al mismo utilizando el mecanismo:
+Las banderas que sean necesarias usar en el Round Robin y sean modificadas por el módulo serán pasadas al mismo utilizando el mecanismo:
 
 ```c
 /**@brief Funcion para setear una flag.
