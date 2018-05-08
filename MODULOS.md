@@ -62,7 +62,7 @@ El SoC cuenta con dos Real Time Counters (RTC0 y RTC1) uno de ellos es utilizado
 Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstracción de hardware.
 
 ## Generalidades
-Los nombres de los módulos serán escritos en minúsculas y _ en lugar de espacios. Todas las funciones del módulo comenzarán con ```nombre_```.
+Los nombres de los módulos serán escritos en minúsculas y _ en lugar de espacios. Todas las funciones del módulo comenzarán con su nombre ```modulo_```.
 
 Los tipos de datos serán los de la librería ```stdint.h```.
 
