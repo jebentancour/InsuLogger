@@ -3,6 +3,111 @@
 
 ## Funcionalidades
 
+### RTC
+
+Módulo que implementa un reloj de tiempo real (Real Time Clock), utilizado para llevar la cuenta del tiempo entre los eventos.
+El SoC cuenta con dos Real Time Counters (RTC0 y RTC1) uno de ellos es utilizado por SOFTDEVICE y el otro por TIMER LIBRARY.
+Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstracción de hardware.
+
+Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el primero es el que inicializa TIMER LIBRARY, con el cual se comparte el RTC1 (llamar a **ble_uart_init**). Hay que leer el infocenter sobre Timer Library (Software Development Kit > nRF5 SDK > nRF5 SDK v12.3.0 > Libraries > Timer Library).
+
+```c
+
+define tiempo
+
+/** brief 
+* Setar el timer por software con el tiempo que querramos. Se pasa una funcion para hacer un callback
+*/
+void rtc_init()
+
+/** brief 
+* Funcion a la que se llamará cuando se genera una interrupcion del RTC
+* Incrementa el tiempo
+*/
+void rtc_callback()
+
+/** brief 
+*/
+void rtc_reset()
+
+/** brief 
+*/
+void rtc_set()
+
+/** brief 
+*/
+void rtc_get()
+
+```
+
+### I2C
+
+Proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C) del SoC.
+Imitar comportamiento de libreria: [Wire](https://www.arduino.cc/en/Reference/Wire)
+```c
+/** brief 
+*/
+void i2c_init()
+
+/** brief 
+*/
+requestFrom()
+
+beginTransmission()
+
+endTransmission()
+
+write()
+
+available()
+
+read()
+SetClock()
+onReceive()
+onRequest()
+```
+
+### GPIO
+
+Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
+Poner debouncing de 1ms/5ms
+```c
+/** brief
+Botones con Pull up porque estan cortocicuitados a + (Apretado = 0)
+Salidas: LED y Pin On/Off del display
+*/
+void gpio_inti()
+
+void gpio_display_on()
+
+void gpio_display_off()
+
+void gpio_led_on()
+
+void gpio_led_off()
+
+/**
+Conmutar estado led
+*/
+void gpio_led_toggle()
+
+/**
+*/
+void gpio_boton_ok_set_flag(uint8_t *gpio_boton_ok_flag)
+
+/**
+*/
+void gpio_boton_up_set_flag(uint8_t)
+
+/**
+*/
+void gpio_boton_down_set_flag(uint8_t)
+
+/**
+ACA VAN LAS ISR TMAMBÉN
+*/
+```
+
 ### ESTADOS
 
 Es el encargado de gestionar el estado general del sistema, distribuir tareas y enviar el chip a dormir.
@@ -21,14 +126,6 @@ Es el encargado de la interacción con el usuario. Muestra los diferentes menús
 
 Libreria que permite el manejo del display utilizado.
 Proporciona funciones para la inicializar el hardware y controlar los píxeles.
-
-### I2C
-
-Proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C) del SoC.
-
-### GPIO
-
-Proporciona funciones para manejar pines de dentrada (botones) y salida (led y ON/OFF de display).
 
 ### SHELL
 
@@ -54,12 +151,6 @@ Es un archivo binario precompilado proporcionado por Nordic que implementa el st
 ### TIMER LIBRARY
 
 Es una librería proporcionada por Nordic que permite crear diferentes timers en software partiendo de un mismo recurso de hardware.
-
-### RTC
-
-Módulo que implementa un reloj de tiempo real (Real Time Clock), utilizado para llevar la cuenta del tiempo entre los eventos.
-El SoC cuenta con dos Real Time Counters (RTC0 y RTC1) uno de ellos es utilizado por SOFTDEVICE y el otro por TIMER LIBRARY.
-Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstracción de hardware.
 
 ## Generalidades
 Los nombres de los módulos serán escritos en minúsculas y _ en lugar de espacios. Todas las funciones del módulo comenzarán con su nombre ```modulo_```.
