@@ -43,6 +43,8 @@ SoC [nRF51822](https://www.nordicsemi.com/eng/nordic/download_resource/62726/14/
 |NA |0x10000000   |FICR        |FICR        |Factory Information Configuration Registers. |SoftDevice        |
 |NA |0x10001000   |UICR        |UICR        |User Information Configuration Registers.    |SoftDevice        |
 
+[INFOCENTER](http://infocenter.nordicsemi.com)
+
 ## SoftDevices
 Nordic Semiconductor protocol stacks are known as SoftDevices.
 SoftDevices are pre-compiled, pre-linked binary files. 
