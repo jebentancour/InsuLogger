@@ -1188,6 +1188,12 @@
     <group>
         <name>Application</name>
         <file>
+            <name>$PROJ_DIR$\ble_uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\ble_uart.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\main.c</name>
         </file>
         <file>
@@ -1198,15 +1204,6 @@
         <name>Board Definition</name>
         <file>
             <name>$PROJ_DIR$\components\boards\boards.c</name>
-        </file>
-    </group>
-    <group>
-        <name>Board Support</name>
-        <file>
-            <name>$PROJ_DIR$\components\libraries\bsp\bsp.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\components\libraries\bsp\bsp_nfc.c</name>
         </file>
     </group>
     <group>
@@ -1224,7 +1221,31 @@
             <name>$PROJ_DIR$\components\ble\common\ble_advdata.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\components\ble\ble_advertising\ble_advertising.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_advertising\ble_advertising.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\components\ble\common\ble_conn_params.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_db_discovery\ble_db_discovery.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_db_discovery\ble_db_discovery.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_services\ble_nus\ble_nus.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_services\ble_nus\ble_nus.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_services\ble_nus_c\ble_nus_c.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\ble\ble_services\ble_nus_c\ble_nus_c.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\components\ble\common\ble_srv_common.c</name>
@@ -1261,6 +1282,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\components\libraries\util\app_util_platform.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\libraries\fstorage\fstorage.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\libraries\fstorage\fstorage.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\libraries\fstorage\fstorage_internal_defs.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\components\libraries\fstorage\fstorage_nosd.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\components\libraries\hardfault\hardfault_implementation.c</name>
