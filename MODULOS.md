@@ -13,98 +13,95 @@ Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el prime
 
 ```c
 
-define tiempo
+/* Definir una estructura para el tiempo */
 
-/** brief 
+/**
 * Setar el timer por software con el tiempo que querramos. Se pasa una funcion para hacer un callback
 */
-void rtc_init()
+void rtc_init();
 
-/** brief 
+/** 
 * Funcion a la que se llamará cuando se genera una interrupcion del RTC
 * Incrementa el tiempo
 */
-void rtc_callback()
+void rtc_callback();
 
-/** brief 
+/**
 */
-void rtc_reset()
+void rtc_reset();
 
-/** brief 
+/**
 */
-void rtc_set()
+void rtc_set();
 
-/** brief 
+/**
 */
-void rtc_get()
+void rtc_get();
 
 ```
 
 ### I2C
 
 Proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C) del SoC.
-Imitar comportamiento de libreria: [Wire](https://www.arduino.cc/en/Reference/Wire)
+
+Imitar comportamiento de libreria [Wire](https://www.arduino.cc/en/Reference/Wire) de Arduino.
+
 ```c
-/** brief 
+/**
 */
-void i2c_init()
+void i2c_init();
 
-/** brief 
-*/
-requestFrom()
-
-beginTransmission()
-
-endTransmission()
-
-write()
-
-available()
-
-read()
-SetClock()
-onReceive()
-onRequest()
+requestFrom();
+beginTransmission();
+endTransmission();
+write();
+available();
+read();
+SetClock();
+onReceive();
+onRequest();
 ```
 
 ### GPIO
 
 Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
-Poner debouncing de 1ms/5ms
+
+Poner debouncing de 1ms/5ms.
+
 ```c
-/** brief
-Botones con Pull up porque estan cortocicuitados a + (Apretado = 0)
-Salidas: LED y Pin On/Off del display
+/**
+* Botones con Pull up porque estan cortocicuitados a + (Apretado = 0)
+* Salidas: LED y Pin On/Off del display
 */
-void gpio_inti()
+void gpio_inti();
 
-void gpio_display_on()
+void gpio_display_on();
 
-void gpio_display_off()
+void gpio_display_off();
 
-void gpio_led_on()
+void gpio_led_on();
 
-void gpio_led_off()
+void gpio_led_off();
 
 /**
-Conmutar estado led
+* Conmutar estado led
 */
-void gpio_led_toggle()
-
-/**
-*/
-void gpio_boton_ok_set_flag(uint8_t *gpio_boton_ok_flag)
+void gpio_led_toggle();
 
 /**
 */
-void gpio_boton_up_set_flag(uint8_t)
+void gpio_boton_ok_set_flag(uint8_t* gpio_boton_ok_flag);
 
 /**
 */
-void gpio_boton_down_set_flag(uint8_t)
+void gpio_boton_up_set_flag(uint8_t* gpio_boton_up_flag);
 
 /**
-ACA VAN LAS ISR TMAMBÉN
+*/
+void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
+
+/**
+* ACA VAN LAS ISR TMAMBÉN (son static)
 */
 ```
 
