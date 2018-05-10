@@ -176,21 +176,3 @@ err_code = app_timer_create(&my_timer_id, mode, timeout_handler)
 ```
 
 After the timer is created, it can be controlled using ```app_timer_start``` and ```app_timer_stop```.
-
-## GPIOs
-
-InsuLogger:
-
-```c
-#define LED NRF_GPIO_PIN_MAP(0, 0)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
-#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
-#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
-```
-
-Circular:
-
-```c
-#define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
-```
