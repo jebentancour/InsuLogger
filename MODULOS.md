@@ -70,8 +70,8 @@ Poner debouncing de 1ms/5ms.
 
 ```c
 /**
-* Botones con Pull up porque estan cortocicuitados a + (Apretado = 0)
-* Salidas: LED y Pin On/Off del display
+* Entradas: botones con pull up, el boton lo lleva a 0 cuando se presiona
+* Salidas: led y pin on/off del display
 */
 void gpio_inti();
 
