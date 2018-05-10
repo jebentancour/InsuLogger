@@ -105,6 +105,22 @@ void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
 */
 ```
 
+InsuLogger:
+
+```c
+#define LED NRF_GPIO_PIN_MAP(0, 0)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
+#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
+#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
+```
+
+Circular:
+
+```c
+#define LED NRF_GPIO_PIN_MAP(0, 29)
+#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
+```
+
 ### ESTADOS
 
 Es el encargado de gestionar el estado general del sistema, distribuir tareas y enviar el chip a dormir.
@@ -230,4 +246,3 @@ int main(void)
     }
 }
 ```
-
