@@ -311,6 +311,17 @@ Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este
 
 ```
 
+Interrupts are essentially enabled by using two steps:
+
+- Enable the interrupt vector using ```NVIC_EnableIRQ(IRQ_type);```
+- Set the appropriate bit in ```NRF_wantedperipheral->INTENSET = MASK_ENABLE;```
+
+The interrupt handler is located in the file ```startup_nrf51.s``` under the comment ```External Interrupts```. These should be declared in your source file in this fashion: ```void PERIPHERALX_IRQHandler(void){ .. }```.
+
+When enabling the IRQ, using NVIC-functions, they take in the type ```IRQn_Type```. This is declared in ```nrf51.h```, line 65.
+
+NVIC significa Nested Vector Interrupt Controller y dado que estamos usando el SoftDevice lo correcto sería llamar a la función ```sd_nvic_EnableIRQ(IRQn_Type IRQn)``` para no pisarnos con las interrupciones.
+
 ### GPIO
 
 Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
