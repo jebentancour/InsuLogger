@@ -44,22 +44,70 @@ void rtc_get();
 
 Proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C) del SoC.
 
-Imitar comportamiento de libreria [Wire](https://www.arduino.cc/en/Reference/Wire) de Arduino.
+Se imitará comportamiento de libreria [Wire](https://www.arduino.cc/en/Reference/Wire) de Arduino.
 
 ```c
-/**
-*/
-void i2c_init();
-
+begin();
 requestFrom();
 beginTransmission();
 endTransmission();
 write();
 available();
 read();
-SetClock();
+setClock();
 onReceive();
 onRequest();
+```
+
+Circuito integrado utilizado para manejar el display [SSD1306](https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf).
+
+La librería Arduino de referencia es [ACROBOTIC_SSD1306](https://github.com/kodera2t/nRF51822_sample/tree/master/ACROBOTIC_SSD1306). Esta solo llama a las funciones de Wire en las siguientes funciones:
+
+```c
+void ACROBOTIC_SSD1306::sendCommand(unsigned char command)
+{
+  Wire.beginTransmission(SSD1306_Address);    // begin I2C communication
+  Wire.write(SSD1306_Command_Mode);           // Set OLED Command mode
+  Wire.write(command);
+  Wire.endTransmission();                       // End I2C communication
+}
+
+void ACROBOTIC_SSD1306::sendData(unsigned char Data)
+{
+     Wire.beginTransmission(SSD1306_Address); // begin I2C transmission
+     Wire.write(SSD1306_Data_Mode);            // data mode
+     Wire.write(Data);
+     Wire.endTransmission();                    // stop I2C transmission
+}
+```
+
+Se plantea implementar las siguientes funciones:
+
+```c
+/**
+* Initiate the moduley and join the I2C bus as a master.
+*/
+void i2c_init();
+
+/**
+* Begin a transmission to the I2C slave device with the given address. 
+* Subsequently, queue bytes for transmission with the i2c_write() function and transmit them by calling i2c_end_transmission().
+* address: the 7-bit address of the device to transmit to
+*/
+void i2c_begin_transmission(uint8_t address);
+
+/**
+* Queues bytes for transmission from a master to slave device.
+* Must be called in-between calls to i2c_begin_transmission() and i2c_end_transmission().
+* value: a value to send as a single byte
+*/
+void i2c_write(uint8_t value);
+
+/**
+* Ends a transmission to a slave device that was begun by i2c_begin_transmission() 
+* and transmits the bytes that were queued by i2c_write().
+*/
+void i2c_end_transmission();
 ```
 
 ### GPIO
