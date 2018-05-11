@@ -84,6 +84,71 @@ int main(void)
 
 ## Funcionalidades
 
+### SOFTDEVICE
+
+Es el encargado de manejar la radio del SoC.
+Es un archivo binario precompilado proporcionado por Nordic que implementa el stack Bluetooth.
+
+### NUS
+
+Librería proporcionada por Nordic.
+BLE NUS es un servicio patentado BLE, que tiene un servicio llamado "UART Service" para imitar una comunicación serial sobre Bluetooth.
+NUS configura un "RX" (característica con propiedades de "escritura") y un canal de transmisión "TX" (característica con propiedades de "notificación"), para adaptarse a las necesidades básicas de comunicación UART.
+Depende de SOFTDEVICE y TIMER LIBRARY.
+
+### UART
+
+Módulo que enmascara y adapta al proyecto la librería NUS (Nordic UART Service).
+Posee buffers de recepción y transmisión que permiten enviar y recibir más de 20 bytes (limitación de NUS).
+
+```c
+/* Estructura que repesenta el estado interno del modulo */
+typedef struct {
+    uint8_t advertising;
+    uint8_t connected;
+} ble_uart_status_t;
+
+/**@brief Funcion de inicializacion del modulo.
+ */
+void ble_uart_init(void);
+
+/**@brief Funcion para obtener el estado del modulo.
+ */
+ble_uart_status_t ble_uart_get_status(void);
+
+/**@brief Funcion para setear la flag donde indicar la llegada de un mensaje completo.
+ */
+void ble_uart_rx_set_flag(uint8_t*);
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
+ */
+void ble_uart_tx_set_flag(uint8_t*);
+
+/**@brief Funcion para obtener el mensaje recibido.
+ */
+uint16_t ble_uart_get_msg(uint8_t*);
+
+/**@brief Funcion para enviar un mensaje.
+ */
+void ble_uart_data_send(uint8_t * p_data, uint16_t length);
+
+/**@brief Funcion iniciar el descubrimiento por bluetooth.
+ */
+void ble_uart_advertising_start(void);
+
+/**@brief Funcion detener el descubrimiento por bluetooth.
+ */
+void ble_uart_advertising_stop(void);
+
+/**@brief Funcion terminar la conexion bluetooth con otro dispositivo.
+ */
+void ble_uart_disconnect(void);
+```
+
+### TIMER LIBRARY
+
+Es una librería proporcionada por Nordic que permite crear diferentes timers en software partiendo de un mismo recurso de hardware (RTC1).
+
 ### RTC
 
 Módulo que implementa un reloj de tiempo real (Real Time Clock), utilizado para llevar la cuenta del tiempo entre los eventos.
@@ -327,68 +392,3 @@ Proporciona funciones para la inicializar el hardware y controlar los píxeles.
 ### SHELL
 
 Es capaz de procesar los comandos recibidos por UART, llamar a las funciones correspondientes y devolver el resultado.
-
-### UART
-
-Módulo que enmascara y adapta al proyecto la librería NUS (Nordic UART Service).
-Posee buffers de recepción y transmisión que permiten enviar y recibir más de 20 bytes (limitación de NUS).
-
-```c
-/* Estructura que repesenta el estado interno del modulo */
-typedef struct {
-    uint8_t advertising;
-    uint8_t connected;
-} ble_uart_status_t;
-
-/**@brief Funcion de inicializacion del modulo.
- */
-void ble_uart_init(void);
-
-/**@brief Funcion para obtener el estado del modulo.
- */
-ble_uart_status_t ble_uart_get_status(void);
-
-/**@brief Funcion para setear la flag donde indicar la llegada de un mensaje completo.
- */
-void ble_uart_rx_set_flag(uint8_t*);
-
-/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
- */
-void ble_uart_tx_set_flag(uint8_t*);
-
-/**@brief Funcion para obtener el mensaje recibido.
- */
-uint16_t ble_uart_get_msg(uint8_t*);
-
-/**@brief Funcion para enviar un mensaje.
- */
-void ble_uart_data_send(uint8_t * p_data, uint16_t length);
-
-/**@brief Funcion iniciar el descubrimiento por bluetooth.
- */
-void ble_uart_advertising_start(void);
-
-/**@brief Funcion detener el descubrimiento por bluetooth.
- */
-void ble_uart_advertising_stop(void);
-
-/**@brief Funcion terminar la conexion bluetooth con otro dispositivo.
- */
-void ble_uart_disconnect(void);
-```
-
-### NUS
-
-Librería proporcionada por Nordic.
-BLE NUS es un servicio patentado BLE, que tiene un servicio llamado "UART Service" para imitar una comunicación serial sobre Bluetooth.
-NUS configura un "RX" (característica con propiedades de "escritura") y un canal de transmisión "TX" (característica con propiedades de "notificación"), para adaptarse a las necesidades básicas de comunicación UART.
-Depende de SOFTDEVICE y TIMER LIBRARY.
-
-### SOFTDEVICE
-
-Es el encargado de manejar la radio del SoC.
-Es un archivo binario precompilado proporcionado por Nordic que implementa el stack Bluetooth.
-
-### TIMER LIBRARY
-
-Es una librería proporcionada por Nordic que permite crear diferentes timers en software partiendo de un mismo recurso de hardware.
