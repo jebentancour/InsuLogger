@@ -11,8 +11,8 @@ SoC [nRF51822](https://www.nordicsemi.com/eng/nordic/download_resource/62726/14/
 |0  |0x40000000   |MPU         |MPU         |Memory Protection Unit.                      |SoftDevice        |
 |1  |0x40001000   |RADIO       |RADIO       |2.4 GHz Radio.                               |SoftDevice        |
 |2  |0x40002000   |UART        |UART0       |Universal Asynchronous Receiver/Transmitter. |                  |
-|3  |0x40003000   |SPI         |SPI0        |SPI Master.                                  |                  |
-|3  |0x40003000   |TWI         |TWI0        |I2C compatible Two-Wire Interface 0.         |                  |
+|3  |0x40003000   |SPI         |SPI0        |SPI Master.                                  |i2c               |
+|3  |0x40003000   |TWI         |TWI0        |I2C compatible Two-Wire Interface 0.         |i2c               |
 |4  |0x40004000   |SPIS        |SPIS1       |SPI Slave.                                   |                  |
 |4  |0x40004000   |SPI         |SPI1        |SPI Master.                                  |                  |
 |4  |0x40004000   |TWI         |TWI1        |I2C compatible Two-Wire Interface 1.         |                  |
@@ -42,8 +42,6 @@ SoC [nRF51822](https://www.nordicsemi.com/eng/nordic/download_resource/62726/14/
 |NA |0x50000000   |GPIO        |GPIO        |General Purpose Input and Output.            |                  |
 |NA |0x10000000   |FICR        |FICR        |Factory Information Configuration Registers. |SoftDevice        |
 |NA |0x10001000   |UICR        |UICR        |User Information Configuration Registers.    |SoftDevice        |
-
-[INFOCENTER](http://infocenter.nordicsemi.com)
 
 ## SoftDevices
 Nordic Semiconductor protocol stacks are known as SoftDevices.
