@@ -13,6 +13,27 @@ Todo módulo deberá tener la función de inicialización:
 void modulo_init(void);
 ```
 
+## Interrupciones
+
+Las interrupciones son controladas por el NVIC (Nested Vector Interrupt Controller), el mismo forma parte del procesador CorteX-M0 que hay en el SoC. 
+
+Para habilitar una interrupción hay que hacer dos cosas:
+
+- Habilitar el vector de interrupciones en el NVIC
+- Habilitar la interrupción en el periférico
+
+Para habilitar el vector de interrupciones se debe llamar a la función ```sd_nvic_EnableIRQ(IRQn_Type IRQn)```, donde ```IRQn_Type``` es uno de los declarados en el archvo ```components/device/nrf51.h```.
+
+Las rutinas de atención a interrupciones están declaradas en el archivo ```components/toolchain/iar/startup_nrf51.s``` en la sección bajo el comentario
+ ```External Interrupts```. Deben ser declaradas en el código con la forma: 
+ 
+ ```c
+ void PERIFERICOX_IRQHandler(void)
+ {
+    /* ... */
+ }
+ ```
+ 
 ## Secciones críticas
 
 Las secciones críticas del código deben manejarse de la siguiente forma:
@@ -286,7 +307,7 @@ typedef struct {                                    /*!< TWI Structure */
 /* ... */
 ```
 
-```NRF_TWI0``` es un puntero a una estructura ```NRF_TWI_Type```, para manipular los valores de ducha estructura se debe usar ```NRF_TWI0->miembro_de_la_estructura```.
+```NRF_TWI0``` es un puntero a una estructura ```NRF_TWI_Type```, para manipular los valores de dicha estructura se debe usar ```NRF_TWI0->miembro_de_la_estructura```.
 
 Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este se definen los distintos valores que pueden llegar a tener los registros.
 
@@ -310,17 +331,6 @@ Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este
 /* ... */
 
 ```
-
-Interrupts are essentially enabled by using two steps:
-
-- Enable the interrupt vector using ```NVIC_EnableIRQ(IRQ_type);```
-- Set the appropriate bit in ```NRF_wantedperipheral->INTENSET = MASK_ENABLE;```
-
-The interrupt handler is located in the file ```startup_nrf51.s``` under the comment ```External Interrupts```. These should be declared in your source file in this fashion: ```void PERIPHERALX_IRQHandler(void){ .. }```.
-
-When enabling the IRQ, using NVIC-functions, they take in the type ```IRQn_Type```. This is declared in ```nrf51.h```, line 65.
-
-NVIC significa Nested Vector Interrupt Controller y dado que estamos usando el SoftDevice lo correcto sería llamar a la función ```sd_nvic_EnableIRQ(IRQn_Type IRQn)``` para no pisarnos con las interrupciones.
 
 ### GPIO
 
