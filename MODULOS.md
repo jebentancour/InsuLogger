@@ -91,7 +91,8 @@ void i2c_init();
 
 /**
 * Begin a transmission to the I2C slave device with the given address. 
-* Subsequently, queue bytes for transmission with the i2c_write() function and transmit them by calling i2c_end_transmission().
+* Subsequently, queue bytes for transmission with the i2c_write() 
+* function and transmit them by calling i2c_end_transmission().
 * address: the 7-bit address of the device to transmit to
 */
 void i2c_begin_transmission(uint8_t address);
@@ -108,6 +109,119 @@ void i2c_write(uint8_t value);
 * and transmits the bytes that were queued by i2c_write().
 */
 void i2c_end_transmission();
+```
+
+Los registros se encuentran declarados en el archivo ```components/device/nrf51.h```.
+
+```c
+/* ... */
+
+/* ================================================================================ */
+/* ================                       TWI                      ================ */
+/* ================================================================================ */
+
+
+/**
+  * @brief Two-wire interface master 0. (TWI)
+  */
+
+typedef struct {                                    /*!< TWI Structure */
+  /* ... */
+  __IO uint32_t  ENABLE;                            /*!< Enable two-wire master. */
+  __I  uint32_t  RESERVED12;
+  __IO uint32_t  PSELSCL;                           /*!< Pin select for SCL. */
+  __IO uint32_t  PSELSDA;                           /*!< Pin select for SDA. */
+  __I  uint32_t  RESERVED13[2];
+  __I  uint32_t  RXD;                               /*!< RX data register. */
+  __IO uint32_t  TXD;                               /*!< TX data register. */
+  __I  uint32_t  RESERVED14;
+  __IO uint32_t  FREQUENCY;                         /*!< Two-wire frequency. */
+  __I  uint32_t  RESERVED15[24];
+  __IO uint32_t  ADDRESS;                           /*!< Address used in the two-wire transfer. */
+  __I  uint32_t  RESERVED16[668];
+  __IO uint32_t  POWER;                             /*!< Peripheral power control. */
+} NRF_TWI_Type;
+
+/* ... */
+
+/* ================================================================================ */
+/* ================             Peripheral declaration             ================ */
+/* ================================================================================ */
+
+/* ... */
+#define NRF_TWI0                        ((NRF_TWI_Type            *) NRF_TWI0_BASE)
+/* ... */
+```
+
+```NRF_TWI0``` es un puntero a una estructura ```NRF_TWI_Type```, para manipular los valores de ducha estructura se debe usar ```NRF_TWI0->```.
+
+Por ejemplo:
+
+```c
+NRF_TWI0->ENABLE = X;
+```
+
+Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este se definen los distintos valores que pueden llegar a tener los registros.
+
+```c
+/* ... */
+
+/* Peripheral: TWI */
+/* Description: Two-wire interface master 0. */
+
+/* ... */
+
+/* Register: TWI_ENABLE */
+/* Description: Enable two-wire master. */
+
+/* Bits 2..0 : Enable or disable W2M */
+#define TWI_ENABLE_ENABLE_Pos (0UL) /*!< Position of ENABLE field. */
+#define TWI_ENABLE_ENABLE_Msk (0x7UL << TWI_ENABLE_ENABLE_Pos) /*!< Bit mask of ENABLE field. */
+#define TWI_ENABLE_ENABLE_Disabled (0x00UL) /*!< Disabled. */
+#define TWI_ENABLE_ENABLE_Enabled (0x05UL) /*!< Enabled. */
+
+/* Register: TWI_RXD */
+/* Description: RX data register. */
+
+/* Bits 7..0 : RX data from last transfer. */
+#define TWI_RXD_RXD_Pos (0UL) /*!< Position of RXD field. */
+#define TWI_RXD_RXD_Msk (0xFFUL << TWI_RXD_RXD_Pos) /*!< Bit mask of RXD field. */
+
+/* Register: TWI_TXD */
+/* Description: TX data register. */
+
+/* Bits 7..0 : TX data for next transfer. */
+#define TWI_TXD_TXD_Pos (0UL) /*!< Position of TXD field. */
+#define TWI_TXD_TXD_Msk (0xFFUL << TWI_TXD_TXD_Pos) /*!< Bit mask of TXD field. */
+
+/* Register: TWI_FREQUENCY */
+/* Description: Two-wire frequency. */
+
+/* Bits 31..0 : Two-wire master clock frequency. */
+#define TWI_FREQUENCY_FREQUENCY_Pos (0UL) /*!< Position of FREQUENCY field. */
+#define TWI_FREQUENCY_FREQUENCY_Msk (0xFFFFFFFFUL << TWI_FREQUENCY_FREQUENCY_Pos) /*!< Bit mask of FREQUENCY field. */
+#define TWI_FREQUENCY_FREQUENCY_K100 (0x01980000UL) /*!< 100 kbps. */
+#define TWI_FREQUENCY_FREQUENCY_K250 (0x04000000UL) /*!< 250 kbps. */
+#define TWI_FREQUENCY_FREQUENCY_K400 (0x06680000UL) /*!< 400 kbps (actual rate 410.256 kbps). */
+
+/* Register: TWI_ADDRESS */
+/* Description: Address used in the two-wire transfer. */
+
+/* Bits 6..0 : Two-wire address. */
+#define TWI_ADDRESS_ADDRESS_Pos (0UL) /*!< Position of ADDRESS field. */
+#define TWI_ADDRESS_ADDRESS_Msk (0x7FUL << TWI_ADDRESS_ADDRESS_Pos) /*!< Bit mask of ADDRESS field. */
+
+/* Register: TWI_POWER */
+/* Description: Peripheral power control. */
+
+/* Bit 0 : Peripheral power control. */
+#define TWI_POWER_POWER_Pos (0UL) /*!< Position of POWER field. */
+#define TWI_POWER_POWER_Msk (0x1UL << TWI_POWER_POWER_Pos) /*!< Bit mask of POWER field. */
+#define TWI_POWER_POWER_Disabled (0UL) /*!< Module power disabled. */
+#define TWI_POWER_POWER_Enabled (1UL) /*!< Module power enabled. */
+
+/* ... */
+
 ```
 
 ### GPIO
