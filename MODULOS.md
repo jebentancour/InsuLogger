@@ -34,6 +34,58 @@ Las rutinas de atención a interrupciones están declaradas en el archivo ```com
  }
  ```
  
+ Ejemplo con ADC:
+ 
+  ```c
+static uint8_t result = 0;
+
+void adc_conf(void);
+
+/**
+ * main() function
+ * @return 0. int return type required by ANSI/ISO standard.
+ */
+int main(void)
+{
+  adc_conf();	
+  while(true)
+  {
+    // Wait for interrupt
+    __WFI();
+    // When interrupt is done, read result for debugging purpose
+    result = result;
+  }
+}
+
+void ADC_IRQHandler(void)
+{
+	if (NRF_ADC->EVENTS_END != 0)
+	{
+		NRF_ADC->EVENTS_END = 0;
+		result = NRF_ADC->RESULT;
+		NRF_ADC->TASKS_STOP = 1;
+		NRF_ADC->TASKS_START = 1;
+	}
+}
+
+void adc_conf(void)
+{
+    // Configure ADC
+    NRF_ADC->INTENSET   = ADC_INTENSET_END_Msk;
+    NRF_ADC->CONFIG     = (ADC_CONFIG_RES_8bit << ADC_CONFIG_RES_Pos) |
+                          (ADC_CONFIG_INPSEL_AnalogInputOneThirdPrescaling << ADC_CONFIG_INPSEL_Pos) |
+                          (ADC_CONFIG_REFSEL_SupplyOneHalfPrescaling << ADC_CONFIG_REFSEL_Pos) |
+                          (ADC_CONFIG_PSEL_AnalogInput5 << ADC_CONFIG_PSEL_Pos) |
+                          (ADC_CONFIG_EXTREFSEL_AnalogReference0 << ADC_CONFIG_EXTREFSEL_Pos);
+    NRF_ADC->EVENTS_END = 0;
+    NRF_ADC->ENABLE     = 1;
+    NRF_ADC->TASKS_START = 1;
+    // Enable ADC interrupt    
+	NVIC_ClearPendingIRQ(ADC_IRQn);    		
+    NVIC_EnableIRQ(ADC_IRQn);
+}
+ ``` 
+ 
 ## Secciones críticas
 
 Las secciones críticas del código deben manejarse de la siguiente forma:
