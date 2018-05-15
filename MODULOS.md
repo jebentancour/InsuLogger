@@ -81,11 +81,24 @@ void adc_conf(void)
     NRF_ADC->ENABLE     = 1;
     NRF_ADC->TASKS_START = 1;
     // Enable ADC interrupt    
-	NVIC_ClearPendingIRQ(ADC_IRQn);    		
+    NVIC_ClearPendingIRQ(ADC_IRQn);    		
     NVIC_EnableIRQ(ADC_IRQn);
 }
  ``` 
- 
+
+### Prioridades
+
+Hay que tener cuidado al setear el nivel de prioridad de las interrupciones.
+
+![interrupt_priority](https://github.com/jebentancour/InsuLogger/blob/master/interrupt_priority.PNG)
+
+Podemos usar los niveles 1 o 3.
+
+```c
+sd_nvic_SetPriority(SPI0_TWI0_IRQn, 1);
+sd_nvic_EnableIRQ(SPI0_TWI0_IRQn);
+```
+
 ## Secciones críticas
 
 Las secciones críticas del código deben manejarse de la siguiente forma:
