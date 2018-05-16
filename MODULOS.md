@@ -34,7 +34,7 @@ Las rutinas de atención a interrupciones están declaradas en el archivo ```com
  }
  ```
  
- Ejemplo con ADC:
+ Ejemplo con ADC (ojo no considera al SoftDevice):
  
   ```c
 static uint8_t result = 0;
@@ -92,10 +92,12 @@ Hay que tener cuidado al setear el nivel de prioridad de las interrupciones.
 
 ![interrupt_priority](https://github.com/jebentancour/InsuLogger/blob/master/interrupt_priority.PNG)
 
-Podemos usar los niveles 1 o 3.
+Podemos usar los niveles 1 o 3:
 
 ```c
-sd_nvic_SetPriority(SPI0_TWI0_IRQn, 1);
+#define I2C_PRIORITY	1
+
+sd_nvic_SetPriority(SPI0_TWI0_IRQn, I2C_PRIORITY);
 sd_nvic_EnableIRQ(SPI0_TWI0_IRQn);
 ```
 
