@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define MAX_LEN                         50                      /* Largo de mensaje maximo */
+#define MAX_LEN                         50      /* Largo de mensaje maximo. */
 
 /* Estructura que repesenta el estado interno del modulo */
 typedef struct {

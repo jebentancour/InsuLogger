@@ -1,27 +1,31 @@
 #include <stdint.h>
 
-/**
-* Initiate the moduley and join the I2C bus as a master.
-*/
+/**@brief Funcion de inicializacion del modulo.
+ */
 void i2c_init(void);
 
-/**
-* Begin a transmission to the I2C slave device with the given address. 
-* Subsequently, queue bytes for transmission with the i2c_write() 
-* function and transmit them by calling i2c_end_transmission().
-* address: the 7-bit address of the device to transmit to
-*/
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un byte.
+ *
+ * @param main_tx_flag    Puntero a una flag donde se indicara el fin de trasnmision de un byte.
+ */
+void i2c_tx_set_flag(volatile uint8_t* main_tx_flag);
+
+
+/**@brief Funcion para iniciar una transferencia de datos a un esclavo.
+ *
+ * @param address    La direccion de 7 bits del esclavo.
+ */
 void i2c_begin_transmission(uint8_t address);
 
-/**
-* Queues bytes for transmission from a master to slave device.
-* Must be called in-between calls to i2c_begin_transmission() and i2c_end_transmission().
-* value: a value to send as a single byte
-*/
+
+/**@brief Funcion para trasnmitir un byte a un esclavo.
+ *
+ * @param value    El dato a trasnmitir.
+ */
 void i2c_write(uint8_t value);
 
-/**
-* Ends a transmission to a slave device that was begun by i2c_begin_transmission() 
-* and transmits the bytes that were queued by i2c_write().
-*/
+
+/**@brief Funcion para terminar la trasnsaccion.
+ */
 void i2c_end_transmission(void);

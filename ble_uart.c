@@ -89,14 +89,14 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo */
-static uint8_t*                         m_rx_flag;              /* Bandera que indica nuevo mensaje recibido */
-static uint8_t*                         m_tx_flag;              /* Bandera que indica mensaje trasmitido */
-static uint8_t                          m_rx_msg[MAX_LEN];      /* Buffer que guarda el mensaje recibido */
-static uint8_t                          m_tx_msg[MAX_LEN];      /* Buffer que guarda el mensaje a enviar */
-static uint16_t                         m_rx_len;               /* Largo del mensaje recibido */
-static uint16_t                         m_tx_len;               /* Largo del mensaje a enviar */
-static uint16_t                         m_tx_index;             /* Indice del buffer de salida */
+ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo. */
+static uint8_t*                         m_rx_flag;              /* Bandera que indica nuevo mensaje recibido. */
+static uint8_t*                         m_tx_flag;              /* Bandera que indica mensaje trasmitido. */
+static uint8_t                          m_rx_msg[MAX_LEN];      /* Buffer que guarda el mensaje recibido. */
+static uint8_t                          m_tx_msg[MAX_LEN];      /* Buffer que guarda el mensaje a enviar. */
+static uint16_t                         m_rx_len;               /* Largo del mensaje recibido. */
+static uint16_t                         m_tx_len;               /* Largo del mensaje a enviar. */
+static uint16_t                         m_tx_index;             /* Indice del buffer de salida. */
 
 
 /**@brief Function for assert macro callback.
@@ -169,7 +169,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             m_rx_msg[m_rx_len] = p_data[i];
             m_rx_len++;
             
-            if (p_data[i] == 0x0A)          // El caracter '\n' indica el fin del mensaje    
+            if (p_data[i] == 0x0A)          // El caracter '\n' indica el fin del mensaje   
             {
                 *m_rx_flag = 1;
                 break;
