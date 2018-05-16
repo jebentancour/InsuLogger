@@ -1244,6 +1244,12 @@
             <name>$PROJ_DIR$\ble_uart.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\i2c.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\i2c.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\main.c</name>
         </file>
         <file>

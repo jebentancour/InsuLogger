@@ -5,6 +5,7 @@
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 #include "ble_uart.h"
+#include "i2c.h"
 
 /* Placa circular */
 //#define LED NRF_GPIO_PIN_MAP(0, 29)
@@ -15,7 +16,6 @@
 #define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
 #define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
 #define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
-
 
 ble_uart_status_t ble_uart_status;
 uint32_t btn_new;
@@ -49,9 +49,25 @@ int main(void)
     ble_uart_tx_set_flag(&ble_uart_tx_flag);
     ble_uart_init();
     
+    i2c_init();
+    
     /* Enter main loop. */
     for (;;)
     {
+        NRF_LOG_FLUSH();
+        
+        nrf_gpio_pin_set(LED);
+        i2c_begin_transmission(0x48);
+        i2c_write(0x01);
+        //nrf_delay_ms(1);
+        i2c_write(0x55);
+        nrf_delay_ms(1);
+        i2c_end_transmission();
+        nrf_delay_ms(500);
+        nrf_gpio_pin_clear(LED);
+        nrf_delay_ms(500);
+        
+        /*
         ble_uart_status = ble_uart_get_status();
         
         btn_new = nrf_gpio_pin_read(BTN_OK);
@@ -117,8 +133,6 @@ int main(void)
             }
         }
         ble_uart_tx_flag_old = ble_uart_tx_flag;
-        
-        
-        NRF_LOG_FLUSH();
+        */
     }
 }
