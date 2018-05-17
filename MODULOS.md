@@ -416,13 +416,9 @@ Poner debouncing de 1ms/5ms.
 ```c
 /**
 * Entradas: botones con pull up, el boton lleva el pin a 0 cuando se presiona
-* Salidas: led y pin on/off del display
+* Salidas: led (on/off del display)
 */
-void gpio_inti();
-
-void gpio_display_on();
-
-void gpio_display_off();
+void gpio_init();
 
 void gpio_led_on();
 
@@ -435,19 +431,15 @@ void gpio_led_toggle();
 
 /**
 */
-void gpio_boton_ok_set_flag(uint8_t* gpio_boton_ok_flag);
+void gpio_boton_ok_set_flag(volatile uint8_t* gpio_boton_ok_flag);
 
 /**
 */
-void gpio_boton_up_set_flag(uint8_t* gpio_boton_up_flag);
+void gpio_boton_up_set_flag(volatile uint8_t* gpio_boton_up_flag);
 
 /**
 */
-void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
-
-/**
-* ACA VAN LAS ISR TMAMBÉN
-*/
+void gpio_boton_down_set_flag(volatile uint8_t* gpio_boton_down_flag);
 ```
 
 InsuLogger:
