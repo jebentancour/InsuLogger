@@ -166,7 +166,7 @@ Use the macro ```APP_TIMER_INIT``` to initialize the library. This macro allocat
 APP_TIMER_INIT(PRESCALER, OP_QUEUE_SIZE, scheduler_function)
 ```
 
-To define a timer, use the APP_TIMER_DEF macro. This macro allocates memory for the timer instance and declares an identifier that can later on be used to refer to the specific instance. Before starting a timer, the timer must be created.
+To define a timer, use the ```APP_TIMER_DEF``` macro. This macro allocates memory for the timer instance and declares an identifier that can later on be used to refer to the specific instance. Before starting a timer, the timer must be created.
 
 ```c
 APP_TIMER_DEF(my_timer_id);
@@ -174,3 +174,21 @@ err_code = app_timer_create(&my_timer_id, mode, timeout_handler)
 ```
 
 After the timer is created, it can be controlled using ```app_timer_start``` and ```app_timer_stop```.
+
+#### Token concatenation
+
+The ## operator (known as the "Token Pasting Operator") concatenates two tokens into one token.
+
+Example:
+
+```c
+#define DECLARE_STRUCT_TYPE(name) typedef struct name##_s name##_t
+
+DECLARE_STRUCT_TYPE(g_object); // Outputs: typedef struct g_object_s g_object_t;
+```
+
+```c
+#define APP_TIMER_DEF(timer_id)                                  \
+    static app_timer_t timer_id##_data = { {0} };                  \
+    static const app_timer_id_t timer_id = &timer_id##_data
+```
