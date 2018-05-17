@@ -446,7 +446,7 @@ void gpio_boton_up_set_flag(uint8_t* gpio_boton_up_flag);
 void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
 
 /**
-* ACA VAN LAS ISR TMAMBÉN (son static)
+* ACA VAN LAS ISR TMAMBÉN
 */
 ```
 
@@ -479,6 +479,23 @@ Utiliza los datos suministrados por RTC para registrar el momento en que dan los
 ### USER INTERFACE
 
 Es el encargado de la interacción con el usuario. Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
+
+```c
+
+/* Estructura para representar los eventos */
+enum event_type {
+    wellcome,
+    good_bye,
+    pressed_ok,
+    pressed_up,
+    pressed_down
+};
+
+void ui_inti();
+
+void ui_process_event(enum event_type);
+
+```
 
 ### DISPLAY
 
