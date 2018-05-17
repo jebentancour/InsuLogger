@@ -16,7 +16,7 @@ SoC [nRF51822](https://www.nordicsemi.com/eng/nordic/download_resource/62726/14/
 |4  |0x40004000   |SPIS        |SPIS1       |SPI Slave.                                   |                  |
 |4  |0x40004000   |SPI         |SPI1        |SPI Master.                                  |                  |
 |4  |0x40004000   |TWI         |TWI1        |I2C compatible Two-Wire Interface 1.         |                  |
-|6  |0x40006000   |GPIOTE      |GPIOTE      |GPIO Task and Events.                        |                  |
+|6  |0x40006000   |GPIOTE      |GPIOTE      |GPIO Task and Events.                        |gpio              |
 |7  |0x40007000   |ADC         |ADC         |Analog to Digital Converter.                 |                  |
 |8  |0x40008000   |TIMER       |TIMER0      |Timer/Counter 0.                             |SoftDevice        |
 |9  |0x40009000   |TIMER       |TIMER1      |Timer/Counter 1.                             |                  |
@@ -39,7 +39,7 @@ SoC [nRF51822](https://www.nordicsemi.com/eng/nordic/download_resource/62726/14/
 |25 |0x40019000   |SWI         |SWI5        |Software interrupt.                          |SoftDevice        |
 |30 |0x4001E000   |NVMC        |NVMC        |Non-Volatile Memory Controller.              |SoftDevice        |
 |31 |0x4001F000   |PPI         |PPI         |Programmable Peripheral Interconnect.        |                  |
-|NA |0x50000000   |GPIO        |GPIO        |General Purpose Input and Output.            |                  |
+|NA |0x50000000   |GPIO        |GPIO        |General Purpose Input and Output.            |gpio              |
 |NA |0x10000000   |FICR        |FICR        |Factory Information Configuration Registers. |SoftDevice        |
 |NA |0x10001000   |UICR        |UICR        |User Information Configuration Registers.    |SoftDevice        |
 
