@@ -246,7 +246,6 @@ Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstrac
 Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el primero es el que inicializa TIMER LIBRARY, con el cual se comparte el RTC1 (llamar a **ble_uart_init**). Hay que leer el infocenter sobre Timer Library (Software Development Kit > nRF5 SDK > nRF5 SDK v12.3.0 > Libraries > Timer Library).
 
 ```c
-
 /* Definir una estructura para el tiempo */
 
 /**
@@ -271,7 +270,6 @@ void rtc_set();
 /**
 */
 void rtc_get();
-
 ```
 
 ### I2C
@@ -318,31 +316,35 @@ void ACROBOTIC_SSD1306::sendData(unsigned char Data)
 Se plantea implementar las siguientes funciones:
 
 ```c
-/**
-* Initiate the moduley and join the I2C bus as a master.
-*/
-void i2c_init();
+/**@brief Funcion de inicializacion del modulo.
+ */
+void i2c_init(void);
 
-/**
-* Begin a transmission to the I2C slave device with the given address. 
-* Subsequently, queue bytes for transmission with the i2c_write() 
-* function and transmit them by calling i2c_end_transmission().
-* address: the 7-bit address of the device to transmit to
-*/
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un byte.
+ *
+ * @param main_tx_flag    Puntero a una flag donde se indicara el fin de trasnmision de un byte.
+ */
+void i2c_tx_set_flag(volatile uint8_t* main_tx_flag);
+
+
+/**@brief Funcion para iniciar una transferencia de datos a un esclavo.
+ *
+ * @param address    La direccion de 7 bits del esclavo.
+ */
 void i2c_begin_transmission(uint8_t address);
 
-/**
-* Queues bytes for transmission from a master to slave device.
-* Must be called in-between calls to i2c_begin_transmission() and i2c_end_transmission().
-* value: a value to send as a single byte
-*/
+
+/**@brief Funcion para trasnmitir un byte a un esclavo.
+ *
+ * @param value    El dato a trasnmitir.
+ */
 void i2c_write(uint8_t value);
 
-/**
-* Ends a transmission to a slave device that was begun by i2c_begin_transmission() 
-* and transmits the bytes that were queued by i2c_write().
-*/
-void i2c_end_transmission();
+
+/**@brief Funcion para terminar la trasnsaccion.
+ */
+void i2c_end_transmission(void);
 ```
 
 Los registros se encuentran declarados en el archivo ```components/device/nrf51.h```.
@@ -396,7 +398,13 @@ Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este
 #define TWI_ENABLE_ENABLE_Enabled (0x05UL) /*!< Enabled. */
 
 /* ... */
+```
 
+Los pines usados para la comunicación son:
+
+```c
+#define SCL_PIN         5
+#define SDA_PIN 	6
 ```
 
 ### GPIO
@@ -407,7 +415,7 @@ Poner debouncing de 1ms/5ms.
 
 ```c
 /**
-* Entradas: botones con pull up, el boton lo lleva a 0 cuando se presiona
+* Entradas: botones con pull up, el boton lleva el pin a 0 cuando se presiona
 * Salidas: led y pin on/off del display
 */
 void gpio_inti();
@@ -445,17 +453,17 @@ void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
 InsuLogger:
 
 ```c
-#define LED NRF_GPIO_PIN_MAP(0, 0)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
-#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
-#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
+#define LED 		0
+#define BTN_OK 		2
+#define BTN_DOWN 	3
+#define BTN_UP 		4
 ```
 
 Circular:
 
 ```c
-#define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
+#define LED 		29
+#define BTN_OK 		28
 ```
 
 ### ESTADOS
