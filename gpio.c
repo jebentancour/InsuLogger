@@ -68,7 +68,6 @@ typedef struct {                                    !< GPIO Structure
  
  
  */
- 
 #include "nrf.h"
 #include "nrf_peripherals.h"
 #include "nrf_assert.h"
@@ -187,3 +186,19 @@ void gpio_boton_up_set_flag(volatile uint8_t* main_boton_up_flag)
 {
     m_gpio_boton_up_flag = main_boton_up_flag;
 }
+
+void gpio_led_on()
+{
+    //NRF_GPIO->OUT = GPIO_OUT_PIN0_High
+    NRF_GPIO->OUTCLR = GPIO_OUTCLR_PIN0_Low
+    NRF_GPIO->OUTSET = GPIO_OUTSET_PIN0_High
+}
+
+void gpio_led_off()
+{
+    //NRF_GPIO->OUT = GPIO_OUT_PIN0_Low
+    NRF_GPIO->OUTSET = GPIO_OUTSET_PIN0_Low
+    NRF_GPIO->OUTCLR = GPIO_OUTCLR_PIN0_High
+}
+
+
