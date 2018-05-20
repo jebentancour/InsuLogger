@@ -253,12 +253,6 @@ Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el prime
 */
 void rtc_init();
 
-/** 
-* Funcion a la que se llamará cuando se genera una interrupcion del RTC
-* Incrementa el tiempo
-*/
-void rtc_callback();
-
 /**
 */
 void rtc_reset();
