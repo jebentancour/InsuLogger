@@ -122,13 +122,13 @@ Las banderas que sean necesarias usar en el Round Robin y sean modificadas por e
  *
  * @param main_flag    Puntero a una flag.
  */
-void modulo_nombre_set_flag(uint8_t*);
+void modulo_nombre_set_flag(volatile uint8_t*);
 ```
 
 Internamente serán manejadas de la siguiente forma:
 
 ```c
-static uint8_t* m_nombre_flag; /* Declaracion interna de la flag */
+static volatile uint8_t* m_nombre_flag; /* Declaracion interna de la flag */
 
 /**@brief Funcion para setear una flag.
  *
@@ -136,7 +136,7 @@ static uint8_t* m_nombre_flag; /* Declaracion interna de la flag */
  *
  * @param main_flag    Puntero a una flag.
  */
-void modulo_nombre_set_flag(uint8_t* main_flag)
+void modulo_nombre_set_flag(volatile uint8_t* main_flag)
 {
     m_nombre_flag = main_flag;
 }
@@ -151,7 +151,7 @@ void funcion_que_modfica_flag(void){
 En el main:
 
 ```c
-uint8_t modulo_nombre_flag; /* Declaracion global de la flag */
+volatile uint8_t modulo_nombre_flag; /* Declaracion global de la flag */
 
 int main(void)
 {
@@ -206,11 +206,11 @@ ble_uart_status_t ble_uart_get_status(void);
 
 /**@brief Funcion para setear la flag donde indicar la llegada de un mensaje completo.
  */
-void ble_uart_rx_set_flag(uint8_t*);
+void ble_uart_rx_set_flag(volatile uint8_t*);
 
 /**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
  */
-void ble_uart_tx_set_flag(uint8_t*);
+void ble_uart_tx_set_flag(volatile uint8_t*);
 
 /**@brief Funcion para obtener el mensaje recibido.
  */
@@ -246,24 +246,27 @@ Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstrac
 Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el primero es el que inicializa TIMER LIBRARY, con el cual se comparte el RTC1 (llamar a **ble_uart_init**). Hay que leer el infocenter sobre Timer Library (Software Development Kit > nRF5 SDK > nRF5 SDK v12.3.0 > Libraries > Timer Library).
 
 ```c
-/* Definir una estructura para el tiempo */
-
 /**
 * Setar el timer por software con el tiempo que querramos. Se pasa una funcion para hacer un callback
 */
-void rtc_init();
+void rtc_init(void);
+
+/**
+*
+*/
+void rtc_tick_set_flag(volatile uint8_t* main_tick_flag)
 
 /**
 */
-void rtc_reset();
+void rtc_reset(void);
 
 /**
 */
-void rtc_set();
+void rtc_set(uint32_t);
 
 /**
 */
-void rtc_get();
+uint32_t rtc_get(void);
 ```
 
 ### I2C
@@ -433,6 +436,10 @@ void gpio_led_on();
 /**
 */
 void gpio_led_off();
+
+/**
+*/
+void gpio_led_toggle();
 ```
 
 InsuLogger:
