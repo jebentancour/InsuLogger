@@ -34,6 +34,73 @@ Las rutinas de atención a interrupciones están declaradas en el archivo ```com
  }
  ```
  
+ Ejemplo con ADC (ojo no considera al SoftDevice):
+ 
+  ```c
+static uint8_t result = 0;
+
+void adc_conf(void);
+
+/**
+ * main() function
+ * @return 0. int return type required by ANSI/ISO standard.
+ */
+int main(void)
+{
+  adc_conf();	
+  while(true)
+  {
+    // Wait for interrupt
+    __WFI();
+    // When interrupt is done, read result for debugging purpose
+    result = result;
+  }
+}
+
+void ADC_IRQHandler(void)
+{
+	if (NRF_ADC->EVENTS_END != 0)
+	{
+		NRF_ADC->EVENTS_END = 0;
+		result = NRF_ADC->RESULT;
+		NRF_ADC->TASKS_STOP = 1;
+		NRF_ADC->TASKS_START = 1;
+	}
+}
+
+void adc_conf(void)
+{
+    // Configure ADC
+    NRF_ADC->INTENSET   = ADC_INTENSET_END_Msk;
+    NRF_ADC->CONFIG     = (ADC_CONFIG_RES_8bit << ADC_CONFIG_RES_Pos) |
+                          (ADC_CONFIG_INPSEL_AnalogInputOneThirdPrescaling << ADC_CONFIG_INPSEL_Pos) |
+                          (ADC_CONFIG_REFSEL_SupplyOneHalfPrescaling << ADC_CONFIG_REFSEL_Pos) |
+                          (ADC_CONFIG_PSEL_AnalogInput5 << ADC_CONFIG_PSEL_Pos) |
+                          (ADC_CONFIG_EXTREFSEL_AnalogReference0 << ADC_CONFIG_EXTREFSEL_Pos);
+    NRF_ADC->EVENTS_END = 0;
+    NRF_ADC->ENABLE     = 1;
+    NRF_ADC->TASKS_START = 1;
+    // Enable ADC interrupt    
+    NVIC_ClearPendingIRQ(ADC_IRQn);    		
+    NVIC_EnableIRQ(ADC_IRQn);
+}
+ ``` 
+
+### Prioridades
+
+Hay que tener cuidado al setear el nivel de prioridad de las interrupciones.
+
+![interrupt_priority](https://github.com/jebentancour/InsuLogger/blob/master/interrupt_priority.PNG)
+
+Podemos usar los niveles 1 o 3:
+
+```c
+#define I2C_PRIORITY	1
+
+sd_nvic_SetPriority(SPI0_TWI0_IRQn, I2C_PRIORITY);
+sd_nvic_EnableIRQ(SPI0_TWI0_IRQn);
+```
+
 ## Secciones críticas
 
 Las secciones críticas del código deben manejarse de la siguiente forma:
@@ -179,7 +246,6 @@ Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstrac
 Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el primero es el que inicializa TIMER LIBRARY, con el cual se comparte el RTC1 (llamar a **ble_uart_init**). Hay que leer el infocenter sobre Timer Library (Software Development Kit > nRF5 SDK > nRF5 SDK v12.3.0 > Libraries > Timer Library).
 
 ```c
-
 /* Definir una estructura para el tiempo */
 
 /**
@@ -204,7 +270,6 @@ void rtc_set();
 /**
 */
 void rtc_get();
-
 ```
 
 ### I2C
@@ -251,31 +316,35 @@ void ACROBOTIC_SSD1306::sendData(unsigned char Data)
 Se plantea implementar las siguientes funciones:
 
 ```c
-/**
-* Initiate the moduley and join the I2C bus as a master.
-*/
-void i2c_init();
+/**@brief Funcion de inicializacion del modulo.
+ */
+void i2c_init(void);
 
-/**
-* Begin a transmission to the I2C slave device with the given address. 
-* Subsequently, queue bytes for transmission with the i2c_write() 
-* function and transmit them by calling i2c_end_transmission().
-* address: the 7-bit address of the device to transmit to
-*/
+
+/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un byte.
+ *
+ * @param main_tx_flag    Puntero a una flag donde se indicara el fin de trasnmision de un byte.
+ */
+void i2c_tx_set_flag(volatile uint8_t* main_tx_flag);
+
+
+/**@brief Funcion para iniciar una transferencia de datos a un esclavo.
+ *
+ * @param address    La direccion de 7 bits del esclavo.
+ */
 void i2c_begin_transmission(uint8_t address);
 
-/**
-* Queues bytes for transmission from a master to slave device.
-* Must be called in-between calls to i2c_begin_transmission() and i2c_end_transmission().
-* value: a value to send as a single byte
-*/
+
+/**@brief Funcion para trasnmitir un byte a un esclavo.
+ *
+ * @param value    El dato a trasnmitir.
+ */
 void i2c_write(uint8_t value);
 
-/**
-* Ends a transmission to a slave device that was begun by i2c_begin_transmission() 
-* and transmits the bytes that were queued by i2c_write().
-*/
-void i2c_end_transmission();
+
+/**@brief Funcion para terminar la trasnsaccion.
+ */
+void i2c_end_transmission(void);
 ```
 
 Los registros se encuentran declarados en el archivo ```components/device/nrf51.h```.
@@ -329,7 +398,13 @@ Otro archivo para mirar es el ```components/device/nrf51_bitfields.h```, en este
 #define TWI_ENABLE_ENABLE_Enabled (0x05UL) /*!< Enabled. */
 
 /* ... */
+```
 
+Los pines usados para la comunicación son:
+
+```c
+#define SCL_PIN         5
+#define SDA_PIN 	6
 ```
 
 ### GPIO
@@ -340,14 +415,10 @@ Poner debouncing de 1ms/5ms.
 
 ```c
 /**
-* Entradas: botones con pull up, el boton lo lleva a 0 cuando se presiona
-* Salidas: led y pin on/off del display
+* Entradas: botones con pull up, el boton lleva el pin a 0 cuando se presiona
+* Salidas: led (on/off del display)
 */
-void gpio_inti();
-
-void gpio_display_on();
-
-void gpio_display_off();
+void gpio_init();
 
 void gpio_led_on();
 
@@ -360,35 +431,31 @@ void gpio_led_toggle();
 
 /**
 */
-void gpio_boton_ok_set_flag(uint8_t* gpio_boton_ok_flag);
+void gpio_boton_ok_set_flag(volatile uint8_t* gpio_boton_ok_flag);
 
 /**
 */
-void gpio_boton_up_set_flag(uint8_t* gpio_boton_up_flag);
+void gpio_boton_up_set_flag(volatile uint8_t* gpio_boton_up_flag);
 
 /**
 */
-void gpio_boton_down_set_flag(uint8_t* gpio_boton_down_flag);
-
-/**
-* ACA VAN LAS ISR TMAMBÉN (son static)
-*/
+void gpio_boton_down_set_flag(volatile uint8_t* gpio_boton_down_flag);
 ```
 
 InsuLogger:
 
 ```c
-#define LED NRF_GPIO_PIN_MAP(0, 0)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 2)
-#define BTN_DOWN NRF_GPIO_PIN_MAP(0, 3)
-#define BTN_UP NRF_GPIO_PIN_MAP(0, 4)
+#define LED 		0
+#define BTN_OK 		2
+#define BTN_DOWN 	3
+#define BTN_UP 		4
 ```
 
 Circular:
 
 ```c
-#define LED NRF_GPIO_PIN_MAP(0, 29)
-#define BTN_OK NRF_GPIO_PIN_MAP(0, 28)
+#define LED 		29
+#define BTN_OK 		28
 ```
 
 ### ESTADOS
@@ -404,6 +471,23 @@ Utiliza los datos suministrados por RTC para registrar el momento en que dan los
 ### USER INTERFACE
 
 Es el encargado de la interacción con el usuario. Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
+
+```c
+
+/* Estructura para representar los eventos */
+enum event_type {
+    wellcome,
+    good_bye,
+    pressed_ok,
+    pressed_up,
+    pressed_down
+};
+
+void ui_inti();
+
+void ui_process_event(enum event_type);
+
+```
 
 ### DISPLAY
 
