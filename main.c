@@ -10,16 +10,14 @@
 #include "rtc.h"
 
 ble_uart_status_t ble_uart_status;
-
-uint8_t ble_uart_rx_flag;
-uint8_t ble_uart_tx_flag;
-uint8_t ble_uart_tx_flag_old;
 uint8_t ble_uart_rx_msg[MAX_LEN];
 
+volatile uint8_t ble_uart_rx_flag;
+volatile uint8_t ble_uart_tx_flag;
+volatile uint8_t rtc_tick_flag;
 volatile uint8_t gpio_ok_flag;
 volatile uint8_t gpio_up_flag;
 volatile uint8_t gpio_down_flag;
-
 //volatile uint8_t i2c_tx_flag;
 
 /**@brief Application main function.
@@ -32,6 +30,8 @@ int main(void)
     ble_uart_tx_set_flag(&ble_uart_tx_flag);
     ble_uart_init();
     
+    rtc_tick_flag = 0;
+    rtc_tick_set_flag(&rtc_tick_flag);
     rtc_init();
     
     gpio_boton_ok_set_flag(&gpio_ok_flag);
@@ -71,7 +71,7 @@ int main(void)
         
         if (gpio_up_flag)
         {
-            NRF_LOG_INFO("gpio UP %d\r\n", rtc_get());
+            NRF_LOG_INFO("gpio UP\r\n");
             nrf_delay_ms(50);
             gpio_up_flag = 0;
             
@@ -83,7 +83,7 @@ int main(void)
         
         if (gpio_down_flag)
         {
-            NRF_LOG_INFO("gpio DOWN %d\r\n", rtc_get());
+            NRF_LOG_INFO("gpio DOWN\r\n");
             nrf_delay_ms(50);
             gpio_down_flag = 0;
             
@@ -93,16 +93,19 @@ int main(void)
             }
         }
         
-        if (ble_uart_status.connected) {
-            gpio_led_on();
-        } else {
-            if (ble_uart_status.advertising) {
-                gpio_led_off();
-                nrf_delay_ms(50);
+        
+        if(rtc_tick_flag)
+        {
+            rtc_tick_flag = 0;
+            NRF_LOG_INFO("TIME: %d\r\n", rtc_get());
+            if (ble_uart_status.connected) {
                 gpio_led_on();
-                nrf_delay_ms(50);
             } else {
-                gpio_led_off();
+                if (ble_uart_status.advertising) {
+                    gpio_led_toggle();
+                } else {
+                    gpio_led_off();
+                }
             }
         }
         

@@ -2,41 +2,42 @@
 
 #include <stdint.h>
 
-#include "nrf_log_ctrl.h"
+#include "app_util_platform.h"
 #include "app_timer.h"
 #include "ble_uart.h"
 
 #define MS 250
 
-static uint32_t rtc_ms_counter = 0;
-
-APP_TIMER_DEF(rtc_id);            
-
-app_timer_mode_t rtc_mode = APP_TIMER_MODE_REPEATED;	        //timer se reinicia cada vez que expira el tiempo
+APP_TIMER_DEF(rtc_id);
 
 uint32_t rtc_ticks = APP_TIMER_TICKS(MS, APP_TIMER_PRESCALER);
 
-void * rtc_handler_parameters = NULL;
+static uint32_t rtc_ms_counter = 0;
+static volatile uint8_t* m_tick_flag;
 
-void * p_context = NULL;
-
-//funcion a ejecutar cuando expira el timer
+/* Funcion a ejecutar cuando expira el timer */
 static void rtc_timeout_handler(void * rtc_timeout_handler_pointer)
 {
-    rtc_ms_counter+=250;
+    rtc_ms_counter += MS;
+    *m_tick_flag = 1;
 }
 
 void rtc_init()
 {	
-    app_timer_create(&rtc_id, rtc_mode, rtc_timeout_handler);
-    app_timer_start(rtc_id, rtc_ticks, rtc_handler_parameters);
+    app_timer_create(&rtc_id, APP_TIMER_MODE_REPEATED, rtc_timeout_handler); /* El timer se reinicia cada vez que expira el tiempo */
+    app_timer_start(rtc_id, rtc_ticks, NULL);
+}
+
+void rtc_tick_set_flag(volatile uint8_t* main_tick_flag)
+{
+    m_tick_flag = main_tick_flag;
 }
 
 void rtc_reset()
 {
     app_timer_stop(rtc_id);
     rtc_ms_counter = 0;
-    app_timer_start(rtc_id, rtc_ticks, p_context);
+    app_timer_start(rtc_id, rtc_ticks, NULL);
 }
 
 uint32_t rtc_get()
@@ -52,5 +53,5 @@ void rtc_set(uint32_t rtc_counter_new)
 {
     app_timer_stop(rtc_id);
     rtc_ms_counter = rtc_counter_new;
-    app_timer_start(rtc_id, rtc_ticks, p_context);
+    app_timer_start(rtc_id, rtc_ticks, NULL);
 }

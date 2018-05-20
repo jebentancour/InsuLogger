@@ -63,6 +63,8 @@ static volatile uint8_t* m_gpio_boton_ok_flag;
 static volatile uint8_t* m_gpio_boton_down_flag;
 static volatile uint8_t* m_gpio_boton_up_flag;
 
+static uint8_t led_status;      /* Sombre del estado del led para el toggle */
+
 void GPIOTE_IRQHandler(void)
 {
     if (NRF_GPIOTE->EVENTS_IN[0] != 0)
@@ -99,6 +101,7 @@ void gpio_init()
     NRF_GPIO->PIN_CNF[BTN_UP] = m_boton_up_gpio_config;
     NRF_GPIOTE->CONFIG[2] = m_boton_up_config;
     
+    /* INTERRUPCIONES */
     NRF_GPIOTE->INTENSET = gpio_intenset;
     NRF_GPIOTE->INTENCLR = gpio_intenclr;
     
@@ -123,10 +126,24 @@ void gpio_boton_up_set_flag(volatile uint8_t* main_boton_up_flag)
 
 void gpio_led_on()
 {
-    NRF_GPIO->OUTSET = GPIO_OUTSET_PIN0_Msk;
+    led_status = 1;
+    NRF_GPIO->OUTSET = 0x1UL << LED;
 }
 
 void gpio_led_off()
 {
-    NRF_GPIO->OUTCLR = GPIO_OUTCLR_PIN0_Msk;
+    led_status = 0;
+    NRF_GPIO->OUTCLR = 0x1UL << LED;
+}
+
+void gpio_led_toggle()
+{
+    if(led_status)
+    {
+        gpio_led_off();
+    }
+    else
+    {
+        gpio_led_on();
+    }
 }

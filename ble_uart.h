@@ -26,14 +26,14 @@ ble_uart_status_t ble_uart_get_status(void);
  *
  * @param main_rx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
-void ble_uart_rx_set_flag(uint8_t*);
+void ble_uart_rx_set_flag(volatile uint8_t*);
 
 
 /**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
  *
  * @param main_tx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
-void ble_uart_tx_set_flag(uint8_t*);
+void ble_uart_tx_set_flag(volatile uint8_t*);
 
 
 /**@brief Funcion para obtener el mensaje recibido.

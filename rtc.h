@@ -3,6 +3,9 @@
 void rtc_init(void);
 
 
+void rtc_tick_set_flag(volatile uint8_t* main_tick_flag);
+
+
 void rtc_reset(void);
 
 

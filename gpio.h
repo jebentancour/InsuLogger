@@ -36,3 +36,8 @@ void gpio_led_on();
 */
 void gpio_led_off();
 
+
+/**
+*
+*/
+void gpio_led_toggle();
