@@ -420,15 +420,6 @@ Poner debouncing de 1ms/5ms.
 */
 void gpio_init();
 
-void gpio_led_on();
-
-void gpio_led_off();
-
-/**
-* Conmutar estado led
-*/
-void gpio_led_toggle();
-
 /**
 */
 void gpio_boton_ok_set_flag(volatile uint8_t* gpio_boton_ok_flag);
@@ -440,6 +431,14 @@ void gpio_boton_up_set_flag(volatile uint8_t* gpio_boton_up_flag);
 /**
 */
 void gpio_boton_down_set_flag(volatile uint8_t* gpio_boton_down_flag);
+
+/**
+*/
+void gpio_led_on();
+
+/**
+*/
+void gpio_led_off();
 ```
 
 InsuLogger:
