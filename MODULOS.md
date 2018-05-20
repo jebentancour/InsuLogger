@@ -480,7 +480,8 @@ enum event_type {
     good_bye,
     pressed_ok,
     pressed_up,
-    pressed_down
+    pressed_down,
+    time_update
 };
 
 void ui_inti();
