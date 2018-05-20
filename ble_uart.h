@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#define APP_TIMER_PRESCALER             0       /**< Value of the RTC1 PRESCALER register. */
 #define MAX_LEN                         50      /* Largo de mensaje maximo. */
 
 /* Estructura que repesenta el estado interno del modulo */

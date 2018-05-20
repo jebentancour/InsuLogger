@@ -1,3 +1,5 @@
+#include "gpio.h"
+
 #include <stdint.h>
 
 #include "nrf.h"

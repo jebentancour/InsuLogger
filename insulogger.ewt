@@ -1209,6 +1209,12 @@
             <name>$PROJ_DIR$\main.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\rtc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\rtc.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\config\sdk_config.h</name>
         </file>
     </group>
