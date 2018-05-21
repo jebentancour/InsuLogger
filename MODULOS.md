@@ -246,27 +246,33 @@ Por esto el módulo RTC utiliza la librería TIMER LIBRARY de la capa de abstrac
 Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el primero es el que inicializa TIMER LIBRARY, con el cual se comparte el RTC1 (llamar a **ble_uart_init**). Hay que leer el infocenter sobre Timer Library (Software Development Kit > nRF5 SDK > nRF5 SDK v12.3.0 > Libraries > Timer Library).
 
 ```c
-/**
-* Setar el timer por software con el tiempo que querramos. Se pasa una funcion para hacer un callback
-*/
+/**@brief Funcion de inicializacion del modulo.
+ *
+ * @warning Se debe inicializar el modulo ble_uart antes de llamar a esta funcion
+ */
 void rtc_init(void);
 
-/**
-*
-*/
-void rtc_tick_set_flag(volatile uint8_t* main_tick_flag)
+/**@brief Funcion para setear la flag donde indicar que hubo un incremento en el rtc.
+ *
+ * @param main_tick_flag    Puntero a una flag donde se indicara que que hubo un incremento en el rtc.
+ */
+void rtc_tick_set_flag(volatile uint8_t* main_tick_flag);
 
-/**
-*/
+/**@brief Funcion para llevar a cero la cuenta del rtc.
+ */
 void rtc_reset(void);
 
-/**
-*/
-void rtc_set(uint32_t);
-
-/**
-*/
+/**@brief Funcion para obtener la cuenta del rtc.
+ *
+ * @return rtc        La cuenta del rtc en ms.
+ */
 uint32_t rtc_get(void);
+
+/**@brief Funcion para sobreescribir la cuenta del rtc.
+ *
+ * @param rtc_counter_new    Nuevo valor para el rtc en ms.
+ */
+void rtc_set(uint32_t rtc_counter_new);
 ```
 
 ### I2C
@@ -404,6 +410,11 @@ Los pines usados para la comunicación son:
 #define SDA_PIN 	6
 ```
 
+### DISPLAY
+
+Libreria que permite el manejo del display utilizado.
+Proporciona funciones para la inicializar el hardware y controlar los píxeles.
+
 ### GPIO
 
 Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
@@ -411,35 +422,35 @@ Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON
 Poner debouncing de 1ms/5ms.
 
 ```c
-/**
-* Entradas: botones con pull up, el boton lleva el pin a 0 cuando se presiona
-* Salidas: led (on/off del display)
-*/
-void gpio_init();
+/**@brief Funcion de inicializacion del modulo.
+ */
+void gpio_init(void);
 
-/**
-*/
-void gpio_boton_ok_set_flag(volatile uint8_t* gpio_boton_ok_flag);
+/**@brief Funcion para setear la flag donde indicar que el boton OK fue presionado.
+ *
+ * @param main_boton_ok_flag    Puntero a una flag donde se indicara que el boton OK fue presionado.
+ */
+void gpio_boton_ok_set_flag(volatile uint8_t* main_boton_ok_flag);
 
-/**
-*/
-void gpio_boton_up_set_flag(volatile uint8_t* gpio_boton_up_flag);
+/**@brief Funcion para setear la flag donde indicar que el boton DOWN fue presionado.
+ *
+ * @param main_boton_down_flag    Puntero a una flag donde se indicara que el boton DOWN fue presionado.
+ */
+void gpio_boton_down_set_flag(volatile uint8_t* main_boton_down_flag);
 
-/**
-*/
-void gpio_boton_down_set_flag(volatile uint8_t* gpio_boton_down_flag);
+/**@brief Funcion para setear la flag donde indicar que el boton UP fue presionado.
+ *
+ * @param main_boton_up_flag    Puntero a una flag donde se indicara que el boton UP fue presionado.
+ */
+void gpio_boton_up_set_flag(volatile uint8_t* main_boton_up_flag);
 
-/**
-*/
+/**@brief Funcion para encender el LED.
+ */
 void gpio_led_on();
 
-/**
-*/
+/**@brief Funcion para apagar el LED.
+ */
 void gpio_led_off();
-
-/**
-*/
-void gpio_led_toggle();
 ```
 
 InsuLogger:
@@ -458,9 +469,35 @@ Circular:
 #define BTN_OK 		28
 ```
 
-### ESTADOS
+### USER INTERFACE
 
-Es el encargado de gestionar el estado general del sistema, distribuir tareas y enviar el chip a dormir.
+Es el encargado de la interacción con el usuario. Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
+
+```c
+/* Estructura para representar los eventos */
+typedef enum {
+    pressed_ok,
+    pressed_up,
+    pressed_down,
+    time_update
+} event_t;
+
+/**@brief Funcion de inicializacion del modulo.
+ *
+ * @warning Se debe inicializar el modulo gpio antes de llamar a esta funcion
+ */
+void ui_init(void);
+
+/**@brief Funcion procesar los eventos.
+ *
+ * @param event    Evento del tipo event_t.
+ */
+void ui_process_event(event_t event);
+
+/**@brief Funcion para apagar ui.
+ */
+void ui_off(void);
+```
 
 ### LOGGER
 
@@ -468,33 +505,10 @@ Es el encargado de llevar el registro.
 Recibe comandos desde SHELL y ESTADOS pra registrar los diferentes eventos.
 Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
 
-### USER INTERFACE
-
-Es el encargado de la interacción con el usuario. Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
-
-```c
-
-/* Estructura para representar los eventos */
-enum event_type {
-    wellcome,
-    good_bye,
-    pressed_ok,
-    pressed_up,
-    pressed_down,
-    time_update
-};
-
-void ui_inti();
-
-void ui_process_event(enum event_type);
-
-```
-
-### DISPLAY
-
-Libreria que permite el manejo del display utilizado.
-Proporciona funciones para la inicializar el hardware y controlar los píxeles.
-
 ### SHELL
 
 Es capaz de procesar los comandos recibidos por UART, llamar a las funciones correspondientes y devolver el resultado.
+
+### ESTADOS
+
+Es el encargado de gestionar el estado general del sistema, distribuir tareas y enviar el chip a dormir.
