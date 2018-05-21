@@ -13,7 +13,7 @@ struct registro{
 }logger_registro
 
 
-
+//cambio codigo
 
 //CONVERSION ESTRUCTURA_TIEMPO/CONTADOR
 struct estructura_tiempo{
