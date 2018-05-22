@@ -439,6 +439,59 @@ void display_put_char(uint8_t ch);
 void display_put_number(uint8_t n);
 ```
 
+Datos a ingresar:
+
+- Glucemia: valor entre 30 mg/dL y 600 mg/dL con pasos de 1 mg/dL, por debajo de
+30 se indica un estado Bajo y sobre 600 un estado Alto.
+- Tipo de insulina: A o B.
+- Dosis: valor entre 10 y 100 con pasos de 1.
+
+Los caracteres son de 8x8 píxeles y la pantalla es de 32x64, entonces entran 4x8 caracteres en la pantalla.
+
+Las coordenadas a usar con ```display_set_text_xy(uint8_t row, uint8_t col)```:
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |  |  |  |  |  |  |  |  |
+|5  |I |n |s |u |  |  |  |  |
+|6  |  |  |L |o |g |g |e |r |
+|7  |  |  |  |  |  |  |  |  |
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |T |i |p |o |  |A |: |  |
+|5  |H |H |: |M |M |: |S |S |
+|6  |T |i |p |o |  |B |: |  |
+|7  |H |H |: |M |M |: |S |S |
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |M |e |n |u |: |  |  |  |
+|5  |> |S |i |n |c |. |  |  |
+|6  |  |N |u |e |v |o |  |  |
+|7  |  |  |  |  |  |  |  |  |
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |G |l |i |c |e |m |. |: |
+|5  |  |  |  |  |  |  |  |  |
+|6  |X |X |X |m |g |/ |d |L |
+|7  |_ |  |  |  |  |  |  |  |
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |T |i |p |o |: |  |  |  |
+|5  |> |A |  |  |  |  |  |  |
+|6  |  |B |  |  |  |  |  |  |
+|7  |  |  |  |  |  |  |  |  |
+
+|X\Y| 4| 5| 6| 7| 8| 9|10|11|
+|---|--|--|--|--|--|--|--|--|
+|4  |D |o |s |i |s |: |  |  |
+|5  |  |  |  |  |  |  |  |  |
+|6  |X |X |X |  |  |  |  |  |
+|7  |  |  |  |  |  |  |  |  |
+
 ### GPIO
 
 Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
