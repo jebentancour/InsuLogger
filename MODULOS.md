@@ -420,7 +420,7 @@ void display_init(void);
 
 void display_set_normal_display(void);
 
-void display_set_inverse_display();
+void display_set_inverse_display(void);
 
 void display_send_command(uint8_t command);
 
