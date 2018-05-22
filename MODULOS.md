@@ -489,7 +489,7 @@ Las coordenadas a usar con ```display_set_text_xy(uint8_t row, uint8_t col)```:
 |---|--|--|--|--|--|--|--|--|
 |4  |D |o |s |i |s |: |  |  |
 |5  |  |  |  |  |  |  |  |  |
-|6  |X |X |X |  |  |  |  |  |
+|6  |X |X |X |U |  |  |  |  |
 |7  |  |  |  |  |  |  |  |  |
 
 ### GPIO
