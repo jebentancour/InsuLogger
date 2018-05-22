@@ -415,11 +415,33 @@ Los pines usados para la comunicación son:
 Libreria que permite el manejo del display utilizado.
 Proporciona funciones para la inicializar el hardware y controlar los píxeles.
 
+```c
+void display_init(void);
+
+void display_set_normal_display(void);
+
+void display_set_inverse_display();
+
+void display_send_command(uint8_t command);
+
+void display_send_data(uint8_t data);
+
+void display_set_page_mode(void);
+
+void display_set_text_xy(uint8_t row, uint8_t col);
+
+void display_clear(void);
+
+void display_set_brightness(uint8_t brightness);
+
+void display_put_char(uint8_t ch);
+
+void display_put_number(uint8_t n);
+```
+
 ### GPIO
 
 Proporciona funciones para manejar pines de entrada (botones) y salida (led y ON/OFF de display).
-
-Poner debouncing de 1ms/5ms.
 
 ```c
 /**@brief Funcion de inicializacion del modulo.
@@ -453,7 +475,7 @@ void gpio_led_on();
 void gpio_led_off();
 ```
 
-InsuLogger:
+Prototipo InsuLogger:
 
 ```c
 #define LED 		0
@@ -462,7 +484,7 @@ InsuLogger:
 #define BTN_UP 		4
 ```
 
-Circular:
+Placa circular:
 
 ```c
 #define LED 		29
