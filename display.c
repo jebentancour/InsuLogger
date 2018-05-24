@@ -133,6 +133,15 @@ void display_put_number(uint8_t n)
     display_put_char('0' + (n % 10));
 }
 
+void display_print(uint8_t* buffer, uint8_t len)
+{
+    uint8_t i;
+    for(i=0;i<len;i++)
+    {
+        display_put_char(buffer[i]);
+    }
+}
+
 void display_set_normal_display(void)
 {
     display_send_command(SSD1306_Normal_Display_Cmd);

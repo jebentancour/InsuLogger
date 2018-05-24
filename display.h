@@ -32,3 +32,5 @@ void display_set_brightness(uint8_t brightness);
 void display_put_char(uint8_t ch);
 
 void display_put_number(uint8_t n);
+
+void display_print(uint8_t* buffer, uint8_t len);
