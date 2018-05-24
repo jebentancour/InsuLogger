@@ -574,15 +574,15 @@ void ui_process_event(event_t event);
 void ui_off(void);
 ```
 
+### SHELL
+
+Es capaz de procesar los comandos recibidos por UART y llamar a las funciones correspondientes.
+
 ### LOGGER
 
 Es el encargado de llevar el registro. 
 Recibe comandos desde SHELL y ESTADOS pra registrar los diferentes eventos.
 Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
-
-### SHELL
-
-Es capaz de procesar los comandos recibidos por UART, llamar a las funciones correspondientes y devolver el resultado.
 
 ### ESTADOS
 
