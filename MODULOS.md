@@ -248,7 +248,7 @@ Primero hay que inicializar el Modulo UART antes del Modulo RTC, ya que el prime
 ```c
 /**@brief Funcion de inicializacion del modulo.
  *
- * @warning Se debe inicializar el modulo ble_uart antes de llamar a esta funcion
+ * @warning Se debe inicializar el modulo ble_uart antes de llamar a esta funcion.
  */
 void rtc_init(void);
 
@@ -416,26 +416,55 @@ Libreria que permite el manejo del display utilizado.
 Proporciona funciones para la inicializar el hardware y controlar los píxeles.
 
 ```c
+/**@brief Funcion de inicializacion del modulo.
+ *
+ * @warning Se debe inicializar el modulo i2c antes de llamar a esta funcion.
+ */
 void display_init(void);
 
-void display_set_normal_display(void);
-
-void display_set_inverse_display(void);
-
+/**@brief Funcion para enviar un comando al display.
+ *
+ * @param command    Comando a enviar.
+ */
 void display_send_command(uint8_t command);
 
+/**@brief Funcion para enviar un dato al display.
+ *
+ * @param data    Dato a enviar.
+ */
 void display_send_data(uint8_t data);
 
-void display_set_page_mode(void);
-
+/**@brief Funcion para setear el comienzo del caracter en el display.
+ *
+ * |X\Y| 4| 5| 6| 7| 8| 9|10|11|
+ * |4  |  |  |  |  |  |  |  |  |
+ * |5  |  |  |  |  |  |  |  |  |
+ * |6  |  |  |  |  |  |  |  |  |
+ * |7  |  |  |  |  |  |  |  |  |
+ *
+ * @param row    Fila  (entre 4 y 7).
+ * @param col    Columna  (entre 4 y 11).
+ */
 void display_set_text_xy(uint8_t row, uint8_t col);
 
+/**@brief Funcion para borrar el contenido del display.
+ */
 void display_clear(void);
 
-void display_set_brightness(uint8_t brightness);
-
+/**@brief Funcion para desplegar un caracter en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param ch    Caracter a mostrar.
+ */
 void display_put_char(uint8_t ch);
 
+/**@brief Funcion para desplegar un numero en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param n   Numero a mostrar (de 0 a 9).
+ */
 void display_put_number(uint8_t n);
 ```
 
