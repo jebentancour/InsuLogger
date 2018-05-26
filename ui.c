@@ -17,9 +17,9 @@ typedef enum {
     menu_a,
     menu_b,
     sync,
-    input_glicemia_cent,
-    input_glicemia_dec,
-    input_glimemia_un,
+    input_glucemia_cent,
+    input_glucemia_dec,
+    input_glucemia_un,
     input_type_a,
     input_type_b,
     input_dosis,
@@ -28,12 +28,19 @@ typedef enum {
 
 #define HELLO_TICKS     4       /* 1 s          */
 #define SHOW_TICKS      40      /* 10 s         */
-#define BYE_TICKS       4       /* 0.5 s        */
+#define BYE_TICKS       4       /* 1 s          */
 
 static uint8_t m_sinc_i;
 
 static internal_state_t        m_state;
 static uint8_t                 m_timer;
+
+static uint8_t                m_glucemia_un;
+static uint8_t                m_glucemia_dec;
+static uint8_t                m_glucemia_cent;
+static uint8_t                m_type;           /* 0 -> A, 1 -> B */
+static uint8_t                m_dosis;
+
 
 static ble_uart_status_t ui_ble_uart_status;
 
@@ -44,62 +51,59 @@ static ble_uart_status_t ui_ble_uart_status;
 void ui_init(void)
 {
     m_state = off;
+    m_glucemia_un = 0;
+    m_glucemia_dec = 0;
+    m_glucemia_cent = 0;
+    m_type = 0;
+    m_dosis = 0;
     gpio_led_off();
     i2c_init();	
     display_init();
     display_clear();
 }
 
+/**@brief Funcion interna para manejar el contenido del display.
+ */
 static void ui_process_display(void)
 {    
     switch(m_state)
     {
         case off:
-            // La pantalla esta apagada
             display_clear();
             break;
         case hello:
-            // La pantalla muestra: InsuLogger
-            //display_clear();
             display_set_text_xy(5,4);
             display_print("Insu",4);
             display_set_text_xy(6,6);
             display_print("Logger",6);
             break;
         case show_time:
-            // La pantalla muestra el tiempo transcurrido desde la ultima inyeccion
-            //display_clear();
             display_set_text_xy(4,4);
-            display_print("A:      ",8);
+            display_print("A:",2);
             display_set_text_xy(5,4);
             display_print("   HH:MM",8);
             display_set_text_xy(6,4);
             display_print("B:      ",8);
-            display_set_text_xy(7,4);
-            display_print("   HH:MM",8);
+            display_set_text_xy(7,7);
+            display_print("HH:MM",8);
             break;
         case menu_a:
-            // La pantalle muestra el menu con opcion Nueva dosis seleccionada
-            //display_clear();
             display_set_text_xy(4,4);
             display_print("Menu:",5);
             display_set_text_xy(5,4);
             display_print(">Regist.",8);
             display_set_text_xy(6,4);
-            display_print(" Sinc.",6);            
+            display_print(" Sinc.",6);
+            display_set_text_xy(7,7);
+            display_print("     ",8);
             break;
         case menu_b:
-            // La pantalle muestra el menu con opcion Sinconizar seleccionada
-            //display_clear();
-            display_set_text_xy(4,4);
-            display_print("Menu:",5);
             display_set_text_xy(5,4);
             display_print(" Regist.",8);
             display_set_text_xy(6,4);
             display_print(">Sinc.",6); 
             break;
         case sync:
-            //display_clear();
             display_set_text_xy(4,4);
             switch(m_sinc_i)
             {
@@ -121,31 +125,96 @@ static void ui_process_display(void)
                 m_sinc_i = 0;
             }
             break;
-        case input_glicemia_cent:
-            //display_clear();
+        case input_glucemia_un:
+            display_set_text_xy(4,4);
+            display_print("Glucem.:",8);
+            display_set_text_xy(5,4);
+            display_print("        ",8);
+            display_set_text_xy(6,4);
+            display_put_number(m_glucemia_cent);
+            display_put_number(m_glucemia_dec);
+            display_put_number(m_glucemia_un);
+            display_print("mg/dL",5);
+            display_set_text_xy(7,4);
+            display_print("  ^",3); 
             break;
-        case input_glicemia_dec:
-            //display_clear();
+        case input_glucemia_dec:
+            display_set_text_xy(6,4);
+            display_put_number(m_glucemia_cent);
+            display_put_number(m_glucemia_dec);
+            display_put_number(m_glucemia_un);
+            display_set_text_xy(7,4);
+            display_print(" ^ ",3); 
             break;
-        case input_glimemia_un:
-            //display_clear();
+        case input_glucemia_cent:         
+            display_set_text_xy(6,4);
+            display_put_number(m_glucemia_cent);
+            display_put_number(m_glucemia_dec);
+            display_put_number(m_glucemia_un);
+            display_set_text_xy(7,4);
+            display_print("^  ",3);     
             break;
         case input_type_a:
-            //display_clear();
+            display_set_text_xy(4,4);
+            display_print("Tipo:   ",8);
+            display_set_text_xy(5,4);
+            display_print(">A      ",8);
+            display_set_text_xy(6,4);
+            display_print(" B      ",8);
+            display_set_text_xy(7,4);
+            display_print("        ",8); 
             break;
         case input_type_b:
-            //display_clear();
+            display_set_text_xy(4,4);
+            display_print("Tipo:   ",8);
+            display_set_text_xy(5,4);
+            display_print(" A      ",8);
+            display_set_text_xy(6,4);
+            display_print(">B      ",8);
+            display_set_text_xy(7,4);
+            display_print("        ",8); 
             break;
         case input_dosis:
-            //display_clear();
+            display_set_text_xy(4,4);
+            display_print("Dosis:",6);
+            display_set_text_xy(5,4);
+            display_print("  ",2); 
+            display_set_text_xy(6,4);
+            display_print("    ",4);
+            uint8_t cent;
+            cent = m_dosis / 100;
+            if(cent > 0)
+            {
+                display_put_number(cent);
+            }
+            else
+            {
+                display_put_char(' ');
+            }
+            uint8_t dec;
+            dec = (m_dosis % 100) / 10;
+            if((dec > 0)||(cent >0))
+            {
+                display_put_number(dec);
+            }
+            else
+            {
+                display_put_char(' ');
+            }
+            uint8_t un;
+            un = m_dosis % 10;
+            display_put_number(un);
+            display_put_char('U');
             break;
         case bye:
-            // La pantalla muestra un mensaje de despedida
-            //display_clear();
+            display_set_text_xy(4,4);
+            display_print("        ",8);
             display_set_text_xy(5,4);
-            display_print("Hasta",5);
-            display_set_text_xy(6,6);
-            display_print("luego!",6);
+            display_print("Hasta   ",8);
+            display_set_text_xy(6,4);
+            display_print("  luego!",8);
+            display_set_text_xy(7,4);
+            display_print("        ",8);
             break;
         default:
             // Nunca deberia llegar a este lugar
@@ -165,78 +234,64 @@ void ui_process_event(event_t event)
         case off:
             // La pantalla esta apagada
             if(event == pressed_ok){
-                NRF_LOG_INFO("UI: Hello!\r\n");
-                m_timer = HELLO_TICKS;
                 m_state = hello;
                 ui_process_display();
+                m_timer = HELLO_TICKS;
             }
             break;
         case hello:
             // La pantalla muestra: InsuLogger
             if(event == time_update){
                 m_timer -= 1;
-                NRF_LOG_INFO("UI: Hello time %d\r\n", m_timer);
                 if(m_timer == 0)
                 {
-                    m_timer = SHOW_TICKS;
                     m_state = show_time;
                     ui_process_display();
+                    m_timer = SHOW_TICKS;
                 }
             }
             break;
         case show_time:
             // La pantalla muestra el tiempo transcurrido desde la ultima inyeccion
             if(event == time_update){
-                m_timer -= 1;
-                NRF_LOG_INFO("UI: Show time %d\r\n", rtc_get());
                 if(m_timer == 0)
                 {
-                    m_timer = BYE_TICKS;
                     m_state = bye;
-                    display_clear();
                     ui_process_display();
+                    m_timer = BYE_TICKS;
                 }
             }
             if(event == pressed_ok){
-                NRF_LOG_INFO("UI: Menu -> Nuevo\r\n");
                 m_state = menu_a;
-                display_clear();
                 ui_process_display();
             }
             break;
         case menu_a:
             // La pantalle muestra el menu con opcion Nueva dosis seleccionada
             if(event == pressed_up){
-                NRF_LOG_INFO("UI: Menu -> Nuevo\r\n");
                 m_state = menu_a;
                 ui_process_display();
             }
             if(event == pressed_down){
-                NRF_LOG_INFO("UI: Menu -> Sincronizar\r\n");
                 m_state = menu_b;
                 ui_process_display();
             }
             if(event == pressed_ok){
-                NRF_LOG_INFO("UI: Glicemia\r\n");
-                m_state = input_glicemia_cent;
-                display_clear();
+                m_state = input_glucemia_un;
                 ui_process_display();
             }
             break;
         case menu_b:
             // La pantalle muestra el menu con opcion Sinconizar seleccionada
             if(event == pressed_up){
-                NRF_LOG_INFO("UI: Menu -> Nuevo\r\n");
                 m_state = menu_a;
                 ui_process_display();
             }
             if(event == pressed_down){
-                NRF_LOG_INFO("UI: Menu -> Sincronizar\r\n");
                 m_state = menu_b;
                 ui_process_display();
             }
             if(event == pressed_ok){
-                NRF_LOG_INFO("UI: Sincronizando...\r\n");
                 m_sinc_i = 0;
                 ble_uart_advertising_start();
                 m_state = sync;
@@ -245,6 +300,7 @@ void ui_process_event(event_t event)
             }
             break;
         case sync:
+            // // La pantalle muestra Sinc...
             if(event == time_update){
                 ui_process_display();
                 ui_ble_uart_status = ble_uart_get_status();
@@ -257,24 +313,127 @@ void ui_process_event(event_t event)
                     gpio_led_on();
                 }
                 if(!ui_ble_uart_status.advertising && !ui_ble_uart_status.connected){
-                    m_timer = BYE_TICKS;
                     m_state = bye;
-                    display_clear();
                     ui_process_display();
+                    m_timer = BYE_TICKS;
                 }
             }
             break;
-        case input_glicemia_cent:
+        case input_glucemia_un:
+            // La pantalle muestra Glucemia con unidades seleccionada
+            if(event == pressed_up){
+                if(m_glucemia_un < 9)
+                {
+                  m_glucemia_un++;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_down){
+                if(m_glucemia_un > 0)
+                {
+                  m_glucemia_un--;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                m_state = input_glucemia_dec;
+                ui_process_display();
+            }
             break;
-        case input_glicemia_dec:
+        case input_glucemia_dec:
+            // La pantalle muestra Glucemia con decenas seleccionada
+            if(event == pressed_up){
+                if(m_glucemia_dec < 9)
+                {
+                  m_glucemia_dec++;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_down){
+                if(m_glucemia_dec > 0)
+                {
+                  m_glucemia_dec--;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                m_state = input_glucemia_cent;
+                ui_process_display();
+            }
             break;
-        case input_glimemia_un:
+        case input_glucemia_cent:
+            // La pantalle muestra Glucemia con centenas seleccionada
+            if(event == pressed_up){
+                if(m_glucemia_cent < 9)
+                {
+                  m_glucemia_cent++;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_down){
+                if(m_glucemia_cent > 0)
+                {
+                  m_glucemia_cent--;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                if(m_type > 0)
+                {
+                    m_state = input_type_b;
+                }
+                else
+                {
+                    m_state = input_type_a;
+                }
+                ui_process_display();
+            }
             break;
         case input_type_a:
+            // La pantalle muestra Tipo con opcion A seleccionada
+            if(event == pressed_down){
+                m_state = input_type_b;
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                m_type = 0;
+                m_state = input_dosis;
+                ui_process_display();
+            }
             break;
         case input_type_b:
+            // La pantalle muestra Tipo con opcion A seleccionada
+            if(event == pressed_up){
+                m_state = input_type_a;
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                m_type = 1;
+                m_state = input_dosis;
+                ui_process_display();
+            }
             break;
         case input_dosis:
+            // La pantalle muestra la cantidad de Dosis
+            if(event == pressed_up){
+                if(m_dosis < 100)
+                {
+                  m_dosis++;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_down){
+                if(m_dosis > 0)
+                {
+                  m_dosis--;
+                }
+                ui_process_display();
+            }
+            if(event == pressed_ok){
+                m_state = bye;
+                ui_process_display();
+                m_timer = BYE_TICKS;
+            }
             break;
         case bye:
             // La pantalla muestra un mensaje de despedida

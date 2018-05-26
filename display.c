@@ -67,12 +67,6 @@ void display_init(void)
     display_set_font(font8x8);
 }
 
-void display_set_brightness(uint8_t brightness)
-{
-   display_send_command(SSD1306_Set_Brightness_Cmd);
-   display_send_command(brightness);
-}
-
 void display_set_text_xy(uint8_t row, uint8_t col)
 {
     display_send_command(0xB0 + row);                                   // Set page address
@@ -140,14 +134,4 @@ void display_print(uint8_t* buffer, uint8_t len)
     {
         display_put_char(buffer[i]);
     }
-}
-
-void display_set_normal_display(void)
-{
-    display_send_command(SSD1306_Normal_Display_Cmd);
-}
-
-void display_set_inverse_display()
-{
-    display_send_command(SSD1306_Inverse_Display_Cmd);
 }

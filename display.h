@@ -11,26 +11,63 @@
 #define SSD1306_Dectivate_Scroll_Cmd  0x2E
 #define SSD1306_Set_Brightness_Cmd    0x81
 
+/**@brief Funcion de inicializacion del modulo.
+ *
+ * @warning Se debe inicializar el modulo i2c antes de llamar a esta funcion.
+ */
 void display_init(void);
 
-void display_set_normal_display(void);
-
-void display_set_inverse_display();
-
+/**@brief Funcion para enviar un comando al display.
+ *
+ * @param command    Comando a enviar.
+ */
 void display_send_command(uint8_t command);
 
+/**@brief Funcion para enviar un dato al display.
+ *
+ * @param data    Dato a enviar.
+ */
 void display_send_data(uint8_t data);
 
-void display_set_page_mode(void);
-
+/**@brief Funcion para setear el comienzo del caracter en el display.
+ *
+ * |X\Y| 4| 5| 6| 7| 8| 9|10|11|
+ * |4  |  |  |  |  |  |  |  |  |
+ * |5  |  |  |  |  |  |  |  |  |
+ * |6  |  |  |  |  |  |  |  |  |
+ * |7  |  |  |  |  |  |  |  |  |
+ *
+ * @param row    Fila  (entre 4 y 7).
+ * @param col    Columna  (entre 4 y 11).
+ */
 void display_set_text_xy(uint8_t row, uint8_t col);
 
+/**@brief Funcion para borrar el contenido del display.
+ */
 void display_clear(void);
-    
-void display_set_brightness(uint8_t brightness);
-    
+
+/**@brief Funcion para desplegar un caracter en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param ch    Caracter a mostrar.
+ */
 void display_put_char(uint8_t ch);
 
+/**@brief Funcion para desplegar un numero en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param n   Numero a mostrar (de 0 a 9).
+ */
 void display_put_number(uint8_t n);
 
+
+/**@brief Funcion para desplegar un buffer en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param buffer   Puntero al inicio del buffer.
+ * @param len      Largo del buffer.
+ */
 void display_print(uint8_t* buffer, uint8_t len);
