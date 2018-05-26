@@ -466,6 +466,15 @@ void display_put_char(uint8_t ch);
  * @param n   Numero a mostrar (de 0 a 9).
  */
 void display_put_number(uint8_t n);
+
+/**@brief Funcion para desplegar un buffer en el display.
+ *
+ * La posicion horizontal es incrementada automaticamente.
+ *
+ * @param buffer   Puntero al inicio del buffer.
+ * @param len      Largo del buffer.
+ */
+ void display_print(uint8_t* buffer, uint8_t len);
 ```
 
 Datos a ingresar:
