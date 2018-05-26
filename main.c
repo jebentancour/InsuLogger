@@ -6,8 +6,10 @@
 
 #include "ble_uart.h"
 #include "gpio.h"
-#include "i2c.h"
 #include "rtc.h"
+#include "ui.h"
+
+#define IDLE_TICKS 120                  /* Ticks de timeout para ui (30 s)*/
 
 ble_uart_status_t ble_uart_status;
 uint8_t ble_uart_rx_msg[MAX_LEN];
@@ -18,7 +20,8 @@ volatile uint8_t rtc_tick_flag;
 volatile uint8_t gpio_ok_flag;
 volatile uint8_t gpio_up_flag;
 volatile uint8_t gpio_down_flag;
-//volatile uint8_t i2c_tx_flag;
+
+uint8_t idle_timer;
 
 /**@brief Application main function.
  */
@@ -40,10 +43,10 @@ int main(void)
     gpio_init();
     gpio_led_off();
     
-    //i2c_tx_set_flag(&i2c_tx_flag);
-    //i2c_tx_flag = 0;
-    //i2c_init();
+    ui_init();
 
+    idle_timer = 0;
+    
     NRF_LOG_INIT(NULL);
     NRF_LOG_INFO("main init\r\n");
     
@@ -52,44 +55,36 @@ int main(void)
     {
         NRF_LOG_FLUSH();
         
-        ble_uart_status = ble_uart_get_status();
-        
         if (gpio_ok_flag)
         {
-            NRF_LOG_INFO("gpio OK\r\n");
-            nrf_delay_ms(50);
+            idle_timer = 0;
             gpio_ok_flag = 0;
-            
-            if (ble_uart_status.connected) {
-                ble_uart_disconnect();
-            } else {
-                if (!ble_uart_status.advertising){
-                    ble_uart_advertising_start();
-                }
+            nrf_delay_ms(5);
+            if(!gpio_ok_flag)
+            {
+                ui_process_event(pressed_ok);
             }
         }
         
         if (gpio_up_flag)
         {
-            NRF_LOG_INFO("gpio UP\r\n");
-            nrf_delay_ms(50);
+            idle_timer = 0;
             gpio_up_flag = 0;
-            
-            if (ble_uart_status.connected) {
-                while(!ble_uart_tx_flag){};
-                ble_uart_data_send("BTN_UP\n", 7);
+            nrf_delay_ms(5);
+            if(!gpio_up_flag)
+            {
+                ui_process_event(pressed_up);
             }
         }
         
         if (gpio_down_flag)
         {
-            NRF_LOG_INFO("gpio DOWN\r\n");
-            nrf_delay_ms(50);
+            idle_timer = 0;
             gpio_down_flag = 0;
-            
-            if (ble_uart_status.connected) {
-                while(!ble_uart_tx_flag){};
-                ble_uart_data_send("BTN_DOWN\n", 9);
+            nrf_delay_ms(5);
+            if(!gpio_down_flag)
+            {
+                ui_process_event(pressed_down);
             }
         }
         
@@ -97,16 +92,20 @@ int main(void)
         if(rtc_tick_flag)
         {
             rtc_tick_flag = 0;
-            NRF_LOG_INFO("TIME: %d\r\n", rtc_get());
-            if (ble_uart_status.connected) {
-                gpio_led_on();
-            } else {
-                if (ble_uart_status.advertising) {
-                    gpio_led_toggle();
-                } else {
-                    gpio_led_off();
-                }
+            
+            ble_uart_status = ble_uart_get_status();
+            if (ble_uart_status.advertising || ble_uart_status.connected){
+                idle_timer = 0;
             }
+            
+            ui_process_event(time_update);
+            
+            idle_timer += 1;
+            if(idle_timer >= IDLE_TICKS)
+            {
+                ui_off();
+                idle_timer = IDLE_TICKS;
+            }                
         }
         
         if (ble_uart_rx_flag) {
@@ -116,25 +115,5 @@ int main(void)
             NRF_LOG_HEXDUMP_DEBUG(ble_uart_rx_msg, length);
             ble_uart_data_send(ble_uart_rx_msg, length);
         }
-        
-        /*
-        nrf_gpio_pin_set(LED);
-        
-        i2c_begin_transmission(0x48);
-        
-        i2c_tx_flag = 0;
-        i2c_write(0x01);
-        while(!i2c_tx_flag){};
-        
-        i2c_tx_flag = 0;
-        i2c_write(0x55);
-        while(!i2c_tx_flag){};
-        
-        i2c_end_transmission();
-        
-        nrf_delay_ms(500);
-        nrf_gpio_pin_clear(LED);
-        nrf_delay_ms(500);
-        */
     }
 }

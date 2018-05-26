@@ -65,6 +65,7 @@ static volatile uint8_t* m_gpio_boton_up_flag;
 
 static uint8_t led_status;      /* Sombre del estado del led para el toggle */
 
+/* Rutina de atencion a interrupciones del GPIOTE */
 void GPIOTE_IRQHandler(void)
 {
     if (NRF_GPIOTE->EVENTS_IN[0] != 0)
@@ -84,6 +85,8 @@ void GPIOTE_IRQHandler(void)
     }
 }
 
+/**@brief Funcion de inicializacion del modulo.
+ */
 void gpio_init()
 {
     /* LED */
@@ -109,33 +112,51 @@ void gpio_init()
     sd_nvic_EnableIRQ(GPIOTE_IRQn);                          /* Habilito la interrupcion. */
 }
 
+/**@brief Funcion para setear la flag donde indicar que el boton OK fue presionado.
+ *
+ * @param main_boton_ok_flag    Puntero a una flag donde se indicara que el boton OK fue presionado.
+ */
 void gpio_boton_ok_set_flag(volatile uint8_t* main_boton_ok_flag)
 {
     m_gpio_boton_ok_flag = main_boton_ok_flag;
 }
 
+/**@brief Funcion para setear la flag donde indicar que el boton DOWN fue presionado.
+ *
+ * @param main_boton_down_flag    Puntero a una flag donde se indicara que el boton DOWN fue presionado.
+ */
 void gpio_boton_down_set_flag(volatile uint8_t* main_boton_down_flag)
 {
     m_gpio_boton_down_flag = main_boton_down_flag;
 }
 
+/**@brief Funcion para setear la flag donde indicar que el boton UP fue presionado.
+ *
+ * @param main_boton_up_flag    Puntero a una flag donde se indicara que el boton UP fue presionado.
+ */
 void gpio_boton_up_set_flag(volatile uint8_t* main_boton_up_flag)
 {
     m_gpio_boton_up_flag = main_boton_up_flag;
 }
 
+/**@brief Funcion para encender el LED.
+ */
 void gpio_led_on()
 {
     led_status = 1;
     NRF_GPIO->OUTSET = 0x1UL << LED;
 }
 
+/**@brief Funcion para apagar el LED.
+ */
 void gpio_led_off()
 {
     led_status = 0;
     NRF_GPIO->OUTCLR = 0x1UL << LED;
 }
 
+/**@brief Funcion para conmutar el estado del LED.
+ */
 void gpio_led_toggle()
 {
     if(led_status)
