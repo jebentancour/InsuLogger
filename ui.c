@@ -40,6 +40,7 @@ static uint8_t                m_glucemia_dec;
 static uint8_t                m_glucemia_cent;
 static uint8_t                m_type;           /* 0 -> A, 1 -> B */
 static uint8_t                m_dosis;
+static uint8_t                m_time_stamp;
 
 
 static ble_uart_status_t ui_ble_uart_status;
@@ -277,6 +278,7 @@ void ui_process_event(event_t event)
                 ui_process_display();
             }
             if(event == pressed_ok){
+                m_time_stamp = rtc_get();
                 m_state = input_glucemia_un;
                 ui_process_display();
             }
@@ -433,6 +435,7 @@ void ui_process_event(event_t event)
                 m_state = bye;
                 ui_process_display();
                 m_timer = BYE_TICKS;
+                logger_new_register(m_glucemia_un+10*m_glucemia_dec+100*m_glucemia_cent, m_type, m_dosis, m_time_stamp);
             }
             break;
         case bye:

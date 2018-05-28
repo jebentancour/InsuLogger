@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.22.1.15696</state>
+                    <state>8.22.2.15993</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1265,6 +1265,12 @@
             <name>$PROJ_DIR$\i2c.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\logger.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\logger.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\main.c</name>
         </file>
         <file>
@@ -1275,6 +1281,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\config\sdk_config.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\shell.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\shell.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\ui.c</name>
