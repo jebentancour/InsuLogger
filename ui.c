@@ -8,6 +8,7 @@
 #include "ble_uart.h"
 #include "i2c.h"
 #include "display.h"
+#include "logger.h"
 
 /* Estructura interna para representar el estado */
 typedef enum {
@@ -40,8 +41,6 @@ static uint8_t                m_glucemia_dec;
 static uint8_t                m_glucemia_cent;
 static uint8_t                m_type;           /* 0 -> A, 1 -> B */
 static uint8_t                m_dosis;
-static uint8_t                m_time_stamp;
-
 
 static ble_uart_status_t ui_ble_uart_status;
 
@@ -57,8 +56,7 @@ void ui_init(void)
     m_glucemia_cent = 0;
     m_type = 0;
     m_dosis = 0;
-    gpio_led_off();
-    i2c_init();	
+    gpio_led_off();	
     display_init();
     display_clear();
 }
@@ -81,12 +79,43 @@ static void ui_process_display(void)
         case show_time:
             display_set_text_xy(4,4);
             display_print("A:",2);
+            
+            uint32_t ms;
+            ms = logger_get_last_a();
+            uint32_t s;
+            s = (ms / 1000) % 60;
+            uint32_t m;
+            m = (ms / 60000) % 60;
+            uint32_t h;
+            h = ms / 3600000;
+            
             display_set_text_xy(5,4);
-            display_print("   HH:MM",8);
+            display_put_number((h/10)%10);
+            display_put_number(h%10);
+            display_put_char(':');
+            display_put_number((m/10)%10);
+            display_put_number(m%10);
+            display_put_char(':');
+            display_put_number((s/10)%10);
+            display_put_number(s%10);           
+            
             display_set_text_xy(6,4);
             display_print("B:      ",8);
-            display_set_text_xy(7,7);
-            display_print("HH:MM",8);
+            
+            ms = logger_get_last_b();
+            s = (ms / 1000) % 60;
+            m = (ms / 60000) % 60;
+            h = ms / 3600000;
+            
+            display_set_text_xy(7,4);
+            display_put_number((h/10)%10);
+            display_put_number(h%10);
+            display_put_char(':');
+            display_put_number((m/10)%10);
+            display_put_number(m%10);
+            display_put_char(':');
+            display_put_number((s/10)%10);
+            display_put_number(s%10);
             break;
         case menu_a:
             display_set_text_xy(4,4);
@@ -95,8 +124,8 @@ static void ui_process_display(void)
             display_print(">Regist.",8);
             display_set_text_xy(6,4);
             display_print(" Sinc.",6);
-            display_set_text_xy(7,7);
-            display_print("     ",8);
+            display_set_text_xy(7,4);
+            display_print("        ",8);
             break;
         case menu_b:
             display_set_text_xy(5,4);
@@ -255,6 +284,7 @@ void ui_process_event(event_t event)
         case show_time:
             // La pantalla muestra el tiempo transcurrido desde la ultima inyeccion
             if(event == time_update){
+                ui_process_display();
                 if(m_timer == 0)
                 {
                     m_state = bye;
@@ -278,7 +308,6 @@ void ui_process_event(event_t event)
                 ui_process_display();
             }
             if(event == pressed_ok){
-                m_time_stamp = rtc_get();
                 m_state = input_glucemia_un;
                 ui_process_display();
             }
@@ -432,20 +461,18 @@ void ui_process_event(event_t event)
                 ui_process_display();
             }
             if(event == pressed_ok){
+                logger_new_register(m_glucemia_un+10*m_glucemia_dec+100*m_glucemia_cent, m_type, m_dosis, rtc_get());
                 m_state = bye;
                 ui_process_display();
                 m_timer = BYE_TICKS;
-                logger_new_register(m_glucemia_un+10*m_glucemia_dec+100*m_glucemia_cent, m_type, m_dosis, m_time_stamp);
             }
             break;
         case bye:
             // La pantalla muestra un mensaje de despedida
             if(event == time_update){
                 m_timer -= 1;
-                NRF_LOG_INFO("UI: Bye time %d\r\n", m_timer);
                 if(m_timer == 0)
                 {
-                    NRF_LOG_INFO("UI: Off\r\n");
                     gpio_led_off();
                     m_state = off;
                     ui_process_display();
@@ -454,7 +481,7 @@ void ui_process_event(event_t event)
             break;
         default:
             // Nunca deberia llegar a este lugar
-            NRF_LOG_INFO("UI: invalid state\r\n");
+            NRF_LOG_ERROR("UI invalid state\r\n");
             gpio_led_off();
             m_state = off;
             ui_process_display();
@@ -467,7 +494,7 @@ void ui_process_event(event_t event)
 void ui_off(void)
 {
     if(m_state != off){
-        NRF_LOG_INFO("UI: External off\r\n");
+        NRF_LOG_INFO("ui_off\r\n");
         display_clear();
         gpio_led_off();
         m_state = off;

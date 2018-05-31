@@ -30,7 +30,7 @@ cra, 3/2012
 shell_command_t* cmdsrch(char* pcmd, shell_command_t* lista);
 
 // Comandos Internos
-#define EXITNAME		"EXIT"
+#define EXITNAME	"EXIT"
 #define GETREGISTER     "GR"
 #define RESET           "RS"
 

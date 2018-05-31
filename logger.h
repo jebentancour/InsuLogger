@@ -5,7 +5,6 @@
 */
 void logger_init(void);
 
-
 /*
  *@brief funcion para ingresar un nuevo registro a la memoria
  *@param glicemia: variable que guarda el valor de glucosa en sangre
@@ -39,5 +38,9 @@ uint8_t logger_send(uint8_t * p_uart);
  *@param time_ref nueva hora de referencia para los proximos registros
 */
 int logger_reset(unsigned int argc, char** argv);
+
+uint32_t logger_get_last_a(void);
+
+uint32_t logger_get_last_b(void);
 
 //endif
