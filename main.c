@@ -128,38 +128,38 @@ int main(void)
         /* Se recibio un nuevo mensaje por ble_uart */
         if (ble_uart_rx_flag) 
         {
-            // Se recibe un valor nuevo por ble_uart
+            // Se recibe un valor nuevo por ble_uart.
             uint16_t length = ble_uart_get_msg(ble_uart_rx_msg);
             ble_uart_rx_flag = 0;
             
-            //Se agrega delimitador NULL al final del buffer para convertirlo en string
+            //Se agrega delimitador NULL al final del buffer para convertirlo en string.
             ble_uart_rx_msg[length - 1]='\0';
             
             NRF_LOG_DEBUG("ble_uart_rx_msg %s\r\n", (uint32_t) ble_uart_rx_msg);
             
-            // Se revisa si el comando concuerda con alguno de los definidos en shell 
+            // Se revisa si el comando concuerda con alguno de los definidos en shell.
             switch (sisem_shell((char*)ble_uart_rx_msg,&quefuncion, &argc, argv))
             {
                 case OK:						
-                    // Ejecutar la funcion en el caso que se encontro
-                    retval=(quefuncion)(argc, argv);    // Se ejecuta la funcion correspondiente pasando como parametros (unsigned int argc, char** argv)
+                    // Ejecutar la funcion en el caso que se encontro.
+                    retval=(quefuncion)(argc, argv);    // Se ejecuta la funcion correspondiente pasando como parametros (unsigned int argc, char** argv).
                     NRF_LOG_DEBUG("sisem_shell %i\r\n", retval);
                     break;
                     
                 case EXIT:						
-                    // Terminar comunicacion bluetooth
+                    // Terminar comunicacion bluetooth.
                     ble_uart_disconnect();
                     ble_uart_advertising_stop();
                     NRF_LOG_DEBUG("sisem_shell Exit\r\n");
                     break;
 
                 case NOTFOUND:
-                    // Avisar que la funcion no existe
+                    // Avisar que la funcion no existe.
                     NRF_LOG_DEBUG("sisem_shell Funcion no encontrada\r\n");
                     break;
 
                 default:
-                    // Nunca deberiamos llegar aca
+                    // Nunca deberiamos llegar aca.
                     NRF_LOG_ERROR("sisem_shell Error: Nunca deberiamos llegar aca\r\n");
                     break;
             }
@@ -168,18 +168,18 @@ int main(void)
         /* Indica que logger tiene un valor pendiente para enviar */
         if (logger_send_flag)
         {           
-            if (ble_uart_tx_flag) // Revisar si ble_uart esta lito para enviar un nuevo mensaje 
+            if (ble_uart_tx_flag) // Revisar si ble_uart esta lito para enviar un nuevo mensaje.
             {                
-                // Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y en tx_length el largo del mensaje
+                // Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y en tx_length el largo del mensaje.
                 uint8_t tx_length;
                 tx_length = logger_send(ble_uart_tx_msg);
                 
                 NRF_LOG_DEBUG("main tx_length %d\r\n", tx_length);
                 NRF_LOG_FLUSH();
                 
-                // Se le pasa a ble_uart_data_send el puntero con el mensaje
+                // Se le pasa a ble_uart_data_send el puntero con el mensaje.
                 ble_uart_data_send(ble_uart_tx_msg, tx_length);
-                // Una vez logre enviar todo entrará denuevo a este condicional hasta que logger_send considere que no hay más datos para enviar
+                // Una vez logre enviar todo entrará denuevo a este condicional hasta que logger_send considere que no hay más datos para enviar.
             }
         }
     }
