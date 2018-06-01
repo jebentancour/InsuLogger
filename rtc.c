@@ -6,9 +6,9 @@
 #include "app_timer.h"
 #include "ble_uart.h"
 
-#define MS 250
+#define MS 250              /* Incrementos en ms del contador */
 
-APP_TIMER_DEF(rtc_id);
+APP_TIMER_DEF(rtc_id);      /* Macro para la definicion del identificaro del timer en la libreria */
 
 uint32_t rtc_ticks = APP_TIMER_TICKS(MS, APP_TIMER_PRESCALER);
 
