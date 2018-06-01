@@ -30,9 +30,9 @@ cra, 3/2012
 shell_command_t* cmdsrch(char* pcmd, shell_command_t* lista);
 
 // Comandos Internos
-#define EXITNAME	"EXIT"
-#define GETREGISTER     "GR"
-#define RESET           "RS"
+#define EXITNAME	"EXIT"	// Comando para desconectarse
+#define GETREGISTER     "GR"	// Comando para obtener una cantidad X de registros: GR X
+#define RESET           "RS"	// Comando para setear la fecha de referencia: RS DD/MM/AAAA-HH:MM:SS
 
 
 shell_command_t internalcmds[] =
@@ -51,8 +51,8 @@ int sisem_shell(char* cmdline, ShellFunPtr* quefuncion, unsigned int* pargc, cha
     // Definir delimiters para strtok:
     #define DELIMS	" "
 
-    char* pch;					// Puntero temporal a tokens:
-    char* pcmd;					// Puntero al comando
+    char* pch;				// Puntero temporal a tokens:
+    char* pcmd;				// Puntero al comando
 
     shell_command_t* fundescptr;	// puntero a un renglon de una lista de comandos.
 
@@ -66,7 +66,7 @@ int sisem_shell(char* cmdline, ShellFunPtr* quefuncion, unsigned int* pargc, cha
     *pargc = 0;
 
     pch = strtok (cmdline, DELIMS);
-    pcmd=pch;							//guardar el punt al comando
+    pcmd=pch;				//guardar el punt al comando
     while (pch != NULL)
     {
         argv[*pargc]=pch;
@@ -110,7 +110,7 @@ shell_command_t* cmdsrch(char* pcmd, shell_command_t* lista)
 
     for ( ; ( strlen(lista->funname) != 0 ) ; lista++ )
     {
-        if (!strcmp(lista->funname, pcmd))		//strcmp devuelve negado
+        if (!strcmp(lista->funname, pcmd))	//strcmp devuelve negado
             break;
     }
 
