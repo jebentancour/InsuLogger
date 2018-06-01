@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "nrf_log.h"
-#include "nrf_log_ctrl.h"
 
 #include "shell.h"
 #include "rtc.h"
@@ -30,6 +29,9 @@ static uint8_t index;
 static uint32_t last_a;
 static uint32_t last_b;
 
+
+/**@brief Funcion que inicializa al modulo logger, setea los punteros y el numero de registros a 0.
+ */
 void logger_init(void)
 {
     logger_register.head = 0;
@@ -39,6 +41,13 @@ void logger_init(void)
     NRF_LOG_DEBUG("logger_init\r\n");
 }
 
+/**@brief Funcion para ingresar un nuevo registro a la memoria.
+ *
+ * @param glicemia  Variable que guarda el valor de glucosa en sangre.
+ * @param type      Variable que guarda el tipo de insulina inyectada.
+ * @param dosis     Variable que guarda el valor de dosis inyectada.
+ * @param timestamp Variable que guarda el tiempo offset en el momento de la nueva inyeccion.
+ */ 
 void logger_new_register(uint32_t glicemia, uint8_t type, uint8_t dosis, uint32_t timestamp)
 {
     NRF_LOG_DEBUG("logger_new_register glicemia %d, type %d, dosis %d, timestamp %d\r\n", glicemia, type, dosis, timestamp);
@@ -62,11 +71,15 @@ void logger_new_register(uint32_t glicemia, uint8_t type, uint8_t dosis, uint32_
     }
 }
 
+/**@brief Funcion que setea la flag para avisar que hay nuevos mensajes para mandar.
+ */
 void logger_set_flag(volatile uint8_t * m_send_flag)
 {
     m_logger_send_flag = m_send_flag;
 }
 
+/**@brief funcion que llama el shell cuando pide un numero x de registros.
+ */
 int logger_get(unsigned int argc, char** argv)
 {
     if (argc == 2)
@@ -90,23 +103,25 @@ int logger_get(unsigned int argc, char** argv)
         index = 0;
         
         NRF_LOG_DEBUG("logger_get n_registers %d\r\n", n_registers);
-        NRF_LOG_FLUSH();
-    
+        
         *m_logger_send_flag = 1;
         return 1;
     }
     return 0;
 }
 
+/**@brief Funcion que llama el main para enviar por la uart los registros solicitados.
+ *
+ * @param p_uart    Puntero que apunta al mensaje a ser transmitido por la uart.
+ * @return          Devuelve un entero que es el largo del mensaje a ser transmitido.
+ */
 uint8_t logger_send(uint8_t * p_uart)
 {
     NRF_LOG_DEBUG("logger_send index %d\r\n",index);
-    NRF_LOG_FLUSH();
     
     if (index == 0){
         sprintf((char*)p_uart, "{registros %u, referencia %s}\n", n_registers, date_reference);
-        NRF_LOG_DEBUG("p_uart %s\r\n", (uint32_t)p_uart);
-        NRF_LOG_FLUSH();
+        NRF_LOG_DEBUG("p_uart %s\r\n", (uint32_t) p_uart);
     }else{
         char m_type;
         if (logger_register.logger_array[logger_register.tail].type_insulin == 0){
@@ -117,8 +132,7 @@ uint8_t logger_send(uint8_t * p_uart)
         sprintf((char*)p_uart,"{tipo %c, dosis  %u, glicemia %lu, timestamp %lu}\n", m_type, logger_register.logger_array[logger_register.tail].dosis_insulin, logger_register.logger_array[logger_register.tail].glicemia, logger_register.logger_array[logger_register.tail].time_stamp);
         logger_register.tail = (logger_register.tail+1)%MAX_REG;
         logger_register.registers_to_send--;
-        NRF_LOG_DEBUG("p_uart %s\r\n", (uint32_t)p_uart);
-        NRF_LOG_FLUSH();
+        NRF_LOG_DEBUG("p_uart %s\r\n", (uint32_t) p_uart);
     }
     index++;
     if (index == n_registers+1){
@@ -126,7 +140,9 @@ uint8_t logger_send(uint8_t * p_uart)
     }
     return strlen((char*)p_uart);
 }	
-		
+
+/**@brief Funcion que se llama desde el shell y reseta la fecha y hora de referencia, se borran los registros.
+ */
 int logger_reset(unsigned int argc, char** argv)
 {
     if (argc == 2)
@@ -139,11 +155,20 @@ int logger_reset(unsigned int argc, char** argv)
     return 0;
 }
 
+/**@brief Funcion que devuelve el tiempo trasncurrido en ms desde el ultimo registro tipo a.
+ *
+ * @return  Tiempo trasncurrido en ms desde el ultimo registro tipo a.
+ */
 uint32_t logger_get_last_a(void)
 {
     return rtc_get() - last_a;
 }
 
+
+/**@brief Funcion que devuelve el tiempo trasncurrido en ms desde el ultimo registro tipo b.
+ *
+ * @return  Tiempo trasncurrido en ms desde el ultimo registro tipo b.
+ */
 uint32_t logger_get_last_b(void)
 {
     return rtc_get() - last_b;
