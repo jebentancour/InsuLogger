@@ -31,10 +31,10 @@ typedef enum {
 #define SHOW_TICKS      40      /* 10 s         */
 #define BYE_TICKS       4       /* 1 s          */
 
-static uint8_t m_sinc_i;
+static uint8_t                m_sinc_i;         /* Variable para animación en pantalla */
 
-static internal_state_t        m_state;
-static uint8_t                 m_timer;
+static internal_state_t       m_state;          /* Estructura que representa el estado de ui */
+static uint8_t                m_timer;          /* Contador para estados con timeout */
 
 static uint8_t                m_glucemia_un;
 static uint8_t                m_glucemia_dec;
@@ -68,15 +68,24 @@ static void ui_process_display(void)
     switch(m_state)
     {
         case off:
+            // Pantalla vacia
             display_clear();
             break;
         case hello:
+            //
+            // Insu
+            //    Logger
+            //
             display_set_text_xy(5,4);
             display_print("Insu",4);
             display_set_text_xy(6,6);
             display_print("Logger",6);
             break;
         case show_time:
+            // A:
+            // HH:MM:SS
+            // B:
+            // HH:MM:SS
             display_set_text_xy(4,4);
             display_print("A:",2);
             
@@ -118,6 +127,10 @@ static void ui_process_display(void)
             display_put_number(s%10);
             break;
         case menu_a:
+            // Menu:
+            // >Regist.
+            //  Sinc.
+            //
             display_set_text_xy(4,4);
             display_print("Menu:",5);
             display_set_text_xy(5,4);
@@ -128,12 +141,20 @@ static void ui_process_display(void)
             display_print("        ",8);
             break;
         case menu_b:
+            // Menu:
+            //  Regist.
+            // >Sinc.
+            //
             display_set_text_xy(5,4);
             display_print(" Regist.",8);
             display_set_text_xy(6,4);
             display_print(">Sinc.",6); 
             break;
         case sync:
+            // Sinc...
+            //
+            //
+            //
             display_set_text_xy(4,4);
             switch(m_sinc_i)
             {
@@ -156,6 +177,10 @@ static void ui_process_display(void)
             }
             break;
         case input_glucemia_un:
+            // Glucem.:
+            //
+            // 000mg/dL
+            //   ^
             display_set_text_xy(4,4);
             display_print("Glucem.:",8);
             display_set_text_xy(5,4);
@@ -169,6 +194,10 @@ static void ui_process_display(void)
             display_print("  ^",3); 
             break;
         case input_glucemia_dec:
+            // Glucem.:
+            //
+            // 000mg/dL
+            //  ^
             display_set_text_xy(6,4);
             display_put_number(m_glucemia_cent);
             display_put_number(m_glucemia_dec);
@@ -176,7 +205,11 @@ static void ui_process_display(void)
             display_set_text_xy(7,4);
             display_print(" ^ ",3); 
             break;
-        case input_glucemia_cent:         
+        case input_glucemia_cent:
+            // Glucem.:
+            //
+            // 000mg/dL
+            // ^
             display_set_text_xy(6,4);
             display_put_number(m_glucemia_cent);
             display_put_number(m_glucemia_dec);
@@ -185,6 +218,10 @@ static void ui_process_display(void)
             display_print("^  ",3);     
             break;
         case input_type_a:
+            // Tipo:
+            // >A
+            //  B
+            //
             display_set_text_xy(4,4);
             display_print("Tipo:   ",8);
             display_set_text_xy(5,4);
@@ -195,6 +232,10 @@ static void ui_process_display(void)
             display_print("        ",8); 
             break;
         case input_type_b:
+            // Tipo:
+            //  A
+            // >B
+            //
             display_set_text_xy(4,4);
             display_print("Tipo:   ",8);
             display_set_text_xy(5,4);
@@ -205,6 +246,10 @@ static void ui_process_display(void)
             display_print("        ",8); 
             break;
         case input_dosis:
+            // Dosis:
+            // 
+            //     000U
+            //
             display_set_text_xy(4,4);
             display_print("Dosis:",6);
             display_set_text_xy(5,4);
@@ -237,6 +282,10 @@ static void ui_process_display(void)
             display_put_char('U');
             break;
         case bye:
+            //
+            // Hasta
+            //   luego!
+            //
             display_set_text_xy(4,4);
             display_print("        ",8);
             display_set_text_xy(5,4);
@@ -262,7 +311,7 @@ void ui_process_event(event_t event)
     switch(m_state)
     {
         case off:
-            // La pantalla esta apagada
+            // La pantalla esta apagada.
             if(event == pressed_ok){
                 m_state = hello;
                 ui_process_display();
@@ -270,7 +319,7 @@ void ui_process_event(event_t event)
             }
             break;
         case hello:
-            // La pantalla muestra: InsuLogger
+            // La pantalla muestra InsuLogger.
             if(event == time_update){
                 m_timer -= 1;
                 if(m_timer == 0)
@@ -282,7 +331,7 @@ void ui_process_event(event_t event)
             }
             break;
         case show_time:
-            // La pantalla muestra el tiempo transcurrido desde la ultima inyeccion
+            // La pantalla muestra el tiempo transcurrido desde la ultima inyeccion.
             if(event == time_update){
                 ui_process_display();
                 if(m_timer == 0)
@@ -298,7 +347,7 @@ void ui_process_event(event_t event)
             }
             break;
         case menu_a:
-            // La pantalle muestra el menu con opcion Nueva dosis seleccionada
+            // La pantalla muestra el menu con opcion Registrar seleccionada.
             if(event == pressed_up){
                 m_state = menu_a;
                 ui_process_display();
@@ -313,7 +362,7 @@ void ui_process_event(event_t event)
             }
             break;
         case menu_b:
-            // La pantalle muestra el menu con opcion Sinconizar seleccionada
+            // La pantalla muestra el menu con opcion Sinconizar seleccionada.
             if(event == pressed_up){
                 m_state = menu_a;
                 ui_process_display();
@@ -331,7 +380,7 @@ void ui_process_event(event_t event)
             }
             break;
         case sync:
-            // // La pantalle muestra Sinc...
+            // La pantalla muestra Sinc...
             if(event == time_update){
                 ui_process_display();
                 ui_ble_uart_status = ble_uart_get_status();
@@ -351,7 +400,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_glucemia_un:
-            // La pantalle muestra Glucemia con unidades seleccionada
+            // La pantalla muestra Glucemia con unidades seleccionada.
             if(event == pressed_up){
                 if(m_glucemia_un < 9)
                 {
@@ -372,7 +421,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_glucemia_dec:
-            // La pantalle muestra Glucemia con decenas seleccionada
+            // La pantalla muestra Glucemia con decenas seleccionada.
             if(event == pressed_up){
                 if(m_glucemia_dec < 9)
                 {
@@ -393,7 +442,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_glucemia_cent:
-            // La pantalle muestra Glucemia con centenas seleccionada
+            // La pantalla muestra Glucemia con centenas seleccionada.
             if(event == pressed_up){
                 if(m_glucemia_cent < 9)
                 {
@@ -421,7 +470,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_type_a:
-            // La pantalle muestra Tipo con opcion A seleccionada
+            // La pantalla muestra Tipo con opcion A seleccionada.
             if(event == pressed_down){
                 m_state = input_type_b;
                 ui_process_display();
@@ -433,7 +482,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_type_b:
-            // La pantalle muestra Tipo con opcion A seleccionada
+            // La pantalla muestra Tipo con opcion A seleccionada.
             if(event == pressed_up){
                 m_state = input_type_a;
                 ui_process_display();
@@ -445,7 +494,7 @@ void ui_process_event(event_t event)
             }
             break;
         case input_dosis:
-            // La pantalle muestra la cantidad de Dosis
+            // La pantalla muestra la cantidad de Dosis.
             if(event == pressed_up){
                 if(m_dosis < 100)
                 {
@@ -468,7 +517,7 @@ void ui_process_event(event_t event)
             }
             break;
         case bye:
-            // La pantalla muestra un mensaje de despedida
+            // La pantalla muestra un mensaje de despedida.
             if(event == time_update){
                 m_timer -= 1;
                 if(m_timer == 0)
