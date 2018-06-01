@@ -64,7 +64,7 @@ int sisem_shell(char* cmdline, ShellFunPtr* quefuncion, unsigned int* pargc, cha
 // Retorna:
 //	un codigo de error segun las defs:
 
-#define OK			0
+#define OK		0
 #define EXIT		1
 #define NOTFOUND	2
 #define ERROR		99
