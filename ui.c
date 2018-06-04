@@ -65,11 +65,12 @@ void ui_init(void)
  */
 static void ui_process_display(void)
 {    
+    display_send_command(SSD1306_Display_On_Cmd);
     switch(m_state)
     {
         case off:
             // Pantalla vacia
-            display_clear();
+            display_send_command(SSD1306_Display_Off_Cmd);
             break;
         case hello:
             //
@@ -312,6 +313,7 @@ void ui_process_event(event_t event)
     {
         case off:
             // La pantalla esta apagada.
+            display_send_command(SSD1306_Display_Off_Cmd);
             if(event == pressed_ok){
                 m_state = hello;
                 ui_process_display();
@@ -545,6 +547,7 @@ void ui_off(void)
     if(m_state != off){
         NRF_LOG_INFO("ui_off\r\n");
         display_clear();
+        display_send_command(SSD1306_Display_Off_Cmd);
         gpio_led_off();
         m_state = off;
     }
