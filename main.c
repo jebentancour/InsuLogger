@@ -64,6 +64,18 @@ int main(void)
 
     idle_timer = 0;
     
+    /* Low power */
+    uint32_t error_code;
+    error_code = sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
+    if(error_code == NRF_SUCCESS)
+    {
+        NRF_LOG_DEBUG("main the power mode was set\r\n");
+    }
+    if(error_code == NRF_ERROR_SOC_POWER_MODE_UNKNOWN)
+    {
+        NRF_LOG_DEBUG("main the power mode was unknown\r\n");
+    }
+    
     /* Loop principal. */
     for (;;)
     {
@@ -168,7 +180,7 @@ int main(void)
         /* Indica que logger tiene un valor pendiente para enviar */
         if (logger_send_flag)
         {           
-            if (ble_uart_tx_flag) // Revisar si ble_uart esta lito para enviar un nuevo mensaje.
+            if (ble_uart_tx_flag) // Revisar si ble_uart esta listo para enviar un nuevo mensaje.
             {                
                 // Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y en tx_length el largo del mensaje.
                 uint8_t tx_length;
@@ -181,6 +193,14 @@ int main(void)
                 ble_uart_data_send(ble_uart_tx_msg, tx_length);
                 // Una vez logre enviar todo entrará denuevo a este condicional hasta que logger_send considere que no hay más datos para enviar.
             }
+        }
+        
+        if(!gpio_ok_flag && !gpio_up_flag && !gpio_down_flag && !rtc_tick_flag && !ble_uart_rx_flag && !logger_send_flag && (idle_timer == IDLE_TICKS))
+        {
+            NRF_LOG_DEBUG("main sd_app_evt_wait enter\r\n");
+            NRF_LOG_FLUSH();
+            sd_app_evt_wait();
+            NRF_LOG_DEBUG("main sd_app_evt_wait exit %d\r\n", rtc_get());
         }
     }
 }

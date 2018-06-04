@@ -85,12 +85,10 @@ int logger_get(unsigned int argc, char** argv)
     if (argc == 2)
     {  
         NRF_LOG_DEBUG("logger_get %s\r\n", (uint32_t) *(argv+1));
-        NRF_LOG_FLUSH();
       
         uint8_t num_registers = strtol(*(argv+1), NULL, 10);
         
         NRF_LOG_DEBUG("strtol %d\r\n", num_registers);
-        NRF_LOG_FLUSH();
         
         if (num_registers > logger_register.registers_to_send){
             n_registers = logger_register.registers_to_send;
