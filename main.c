@@ -1,7 +1,6 @@
 #include <stdint.h>
 
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
+#include "softdevice_handler.h"
 #include "nrf_delay.h"
 
 #include "ble_uart.h"
@@ -11,8 +10,10 @@
 #include "shell.h"
 #include "logger.h"
 
-#define IDLE_TICKS 120                  /* Ticks de timeout (30 s). */
-uint8_t idle_timer;                     /* Variable para el timeout. */
+#define IDLE_TICKS      40
+
+/* Variable para el timeout. */
+uint8_t idle_timer;
 
 /* Variables para ble_uart. */
 ble_uart_status_t ble_uart_status;
@@ -34,13 +35,11 @@ unsigned int argc;
 char* argv[64];
 int retval;
 
+
 /**@brief Main.
  */
 int main(void)
-{
-    NRF_LOG_INIT(NULL);
-    NRF_LOG_INFO("main init\r\n");
-    
+{  
     /* Inicializacion de modulos y variables. */
     ble_uart_rx_set_flag(&ble_uart_rx_flag);
     ble_uart_tx_flag = 1;
@@ -51,36 +50,24 @@ int main(void)
     rtc_tick_set_flag(&rtc_tick_flag);
     rtc_init();
     
+    logger_set_flag(&logger_send_flag);
+    logger_init();
+    
     gpio_boton_ok_set_flag(&gpio_ok_flag);
     gpio_boton_up_set_flag(&gpio_up_flag);
     gpio_boton_down_set_flag(&gpio_down_flag);
     gpio_init();
-    gpio_led_off();
-    
-    logger_set_flag(&logger_send_flag);
-    logger_init();
     
     ui_init();
 
     idle_timer = 0;
     
     /* Low power */
-    uint32_t error_code;
-    error_code = sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
-    if(error_code == NRF_SUCCESS)
-    {
-        NRF_LOG_DEBUG("main the power mode was set\r\n");
-    }
-    if(error_code == NRF_ERROR_SOC_POWER_MODE_UNKNOWN)
-    {
-        NRF_LOG_DEBUG("main the power mode was unknown\r\n");
-    }
+    sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
     
     /* Loop principal. */
     for (;;)
-    {
-        NRF_LOG_FLUSH();
-        
+    {      
         /* Se resiono el boton OK. */
         if (gpio_ok_flag)
         {
@@ -105,7 +92,7 @@ int main(void)
             }
         }
         
-        /* Se resiono el boton DOWN */
+        /* Se resiono el boton DOWN. */
         if (gpio_down_flag)
         {
             idle_timer = 0;
@@ -137,47 +124,42 @@ int main(void)
             }                
         }
         
-        /* Se recibio un nuevo mensaje por ble_uart */
+        /* Se recibio un nuevo mensaje por ble_uart. */
         if (ble_uart_rx_flag) 
         {
             // Se recibe un valor nuevo por ble_uart.
             uint16_t length = ble_uart_get_msg(ble_uart_rx_msg);
             ble_uart_rx_flag = 0;
             
-            //Se agrega delimitador NULL al final del buffer para convertirlo en string.
+            // Se agrega delimitador NULL al final del buffer para convertirlo en string.
             ble_uart_rx_msg[length - 1]='\0';
-            
-            NRF_LOG_DEBUG("ble_uart_rx_msg %s\r\n", (uint32_t) ble_uart_rx_msg);
             
             // Se revisa si el comando concuerda con alguno de los definidos en shell.
             switch (sisem_shell((char*)ble_uart_rx_msg,&quefuncion, &argc, argv))
             {
                 case OK:						
                     // Ejecutar la funcion en el caso que se encontro.
-                    retval=(quefuncion)(argc, argv);    // Se ejecuta la funcion correspondiente pasando como parametros (unsigned int argc, char** argv).
-                    NRF_LOG_DEBUG("sisem_shell %i\r\n", retval);
+                    // Se ejecuta la funcion correspondiente pasando como parametros (unsigned int argc, char** argv).
+                    retval=(quefuncion)(argc, argv);
                     break;
                     
                 case EXIT:						
                     // Terminar comunicacion bluetooth.
                     ble_uart_disconnect();
                     ble_uart_advertising_stop();
-                    NRF_LOG_DEBUG("sisem_shell Exit\r\n");
                     break;
 
                 case NOTFOUND:
                     // Avisar que la funcion no existe.
-                    NRF_LOG_DEBUG("sisem_shell Funcion no encontrada\r\n");
                     break;
 
                 default:
                     // Nunca deberiamos llegar aca.
-                    NRF_LOG_ERROR("sisem_shell Error: Nunca deberiamos llegar aca\r\n");
                     break;
             }
         }
         
-        /* Indica que logger tiene un valor pendiente para enviar */
+        /* Indica que logger tiene un valor pendiente para enviar. */
         if (logger_send_flag)
         {           
             if (ble_uart_tx_flag) // Revisar si ble_uart esta listo para enviar un nuevo mensaje.
@@ -185,9 +167,6 @@ int main(void)
                 // Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y en tx_length el largo del mensaje.
                 uint8_t tx_length;
                 tx_length = logger_send(ble_uart_tx_msg);
-                
-                NRF_LOG_DEBUG("main tx_length %d\r\n", tx_length);
-                NRF_LOG_FLUSH();
                 
                 // Se le pasa a ble_uart_data_send el puntero con el mensaje.
                 ble_uart_data_send(ble_uart_tx_msg, tx_length);
@@ -197,10 +176,8 @@ int main(void)
         
         if(!gpio_ok_flag && !gpio_up_flag && !gpio_down_flag && !rtc_tick_flag && !ble_uart_rx_flag && !logger_send_flag && (idle_timer == IDLE_TICKS))
         {
-            NRF_LOG_DEBUG("main sd_app_evt_wait enter\r\n");
-            NRF_LOG_FLUSH();
-            sd_app_evt_wait();
-            NRF_LOG_DEBUG("main sd_app_evt_wait exit %d\r\n", rtc_get());
+            sd_app_evt_wait();          // Se va a System ON Low Power Mode, cuando se despierta sigue la ejecucion normal.
+            //sd_power_system_off();      // Se va a System OFF, no vuelve, cuando se despierta es como si hubieramos resetado.
         }
     }
 }

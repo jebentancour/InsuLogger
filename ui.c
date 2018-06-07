@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-#include "nrf_log.h"
 #include "rtc.h"
 #include "gpio.h"
 #include "ble_uart.h"
@@ -28,7 +27,7 @@ typedef enum {
 } internal_state_t;
 
 #define HELLO_TICKS     4       /* 1 s          */
-#define SHOW_TICKS      40      /* 10 s         */
+#define SHOW_TICKS      20      /* 5 s          */
 #define BYE_TICKS       4       /* 1 s          */
 
 static uint8_t                m_sinc_i;         /* Variable para animación en pantalla */
@@ -43,6 +42,7 @@ static uint8_t                m_type;           /* 0 -> A, 1 -> B */
 static uint8_t                m_dosis;
 
 static ble_uart_status_t ui_ble_uart_status;
+
 
 /**@brief Funcion de inicializacion del modulo.
  *
@@ -60,6 +60,7 @@ void ui_init(void)
     display_init();
     display_clear();
 }
+
 
 /**@brief Funcion interna para manejar el contenido del display.
  */
@@ -303,6 +304,7 @@ static void ui_process_display(void)
     }    
 }
 
+
 /**@brief Funcion procesar los eventos.
  *
  * @param event    Evento del tipo event_t.
@@ -532,7 +534,6 @@ void ui_process_event(event_t event)
             break;
         default:
             // Nunca deberia llegar a este lugar
-            NRF_LOG_ERROR("UI invalid state\r\n");
             gpio_led_off();
             m_state = off;
             ui_process_display();
@@ -540,12 +541,12 @@ void ui_process_event(event_t event)
     }
 }
 
+
 /**@brief Funcion para apagar ui.
  */
 void ui_off(void)
 {
     if(m_state != off){
-        NRF_LOG_INFO("ui_off\r\n");
         display_clear();
         display_send_command(SSD1306_Display_Off_Cmd);
         gpio_led_off();

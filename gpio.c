@@ -11,59 +11,60 @@
 #define BTN_DOWN 	        3
 #define BTN_UP 		        4
 
-#define m_led_dir               GPIO_PIN_CNF_DIR_Output
-#define m_led_pull              (GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos)
-#define m_led_drive             (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-#define m_led_sense             (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
-#define m_led_gpio_config       (m_led_dir | m_led_pull | m_led_drive | m_led_sense)
+#define m_led_dir                   GPIO_PIN_CNF_DIR_Output
+#define m_led_pull                  (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
+#define m_led_drive                 (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+#define m_led_sense                 (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos)
+#define m_led_gpio_config           (m_led_dir | m_led_pull | m_led_drive | m_led_sense)
 
-#define m_boton_ok_dir          GPIO_PIN_CNF_DIR_Input
-#define m_boton_ok_pull         (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
-#define m_boton_ok_drive        (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-#define m_boton_ok_sense        (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
-#define m_boton_ok_gpio_config  (m_boton_ok_dir | m_boton_ok_pull | m_boton_ok_drive | m_boton_ok_sense)
+#define m_boton_ok_dir              GPIO_PIN_CNF_DIR_Input
+#define m_boton_ok_pull             (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
+#define m_boton_ok_drive            (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+#define m_boton_ok_sense            (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
+#define m_boton_ok_gpio_config      (m_boton_ok_dir | m_boton_ok_pull | m_boton_ok_drive | m_boton_ok_sense)
 
-#define m_boton_down_dir        GPIO_PIN_CNF_DIR_Input
-#define m_boton_down_pull       (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
-#define m_boton_down_drive      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-#define m_boton_down_sense      (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
-#define m_boton_down_gpio_config (m_boton_down_dir | m_boton_down_pull | m_boton_down_drive | m_boton_down_sense)
+#define m_boton_down_dir            GPIO_PIN_CNF_DIR_Input
+#define m_boton_down_pull           (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
+#define m_boton_down_drive          (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+#define m_boton_down_sense          (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
+#define m_boton_down_gpio_config    (m_boton_down_dir | m_boton_down_pull | m_boton_down_drive | m_boton_down_sense)
 
-#define m_boton_up_dir          GPIO_PIN_CNF_DIR_Input
-#define m_boton_up_pull         (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
-#define m_boton_up_drive        (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
-#define m_boton_up_sense        (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
-#define m_boton_up_gpio_config  (m_boton_up_dir | m_boton_up_pull | m_boton_up_drive | m_boton_up_sense)
+#define m_boton_up_dir              GPIO_PIN_CNF_DIR_Input
+#define m_boton_up_pull             (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)
+#define m_boton_up_drive            (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)
+#define m_boton_up_sense            (GPIO_PIN_CNF_SENSE_Low << GPIO_PIN_CNF_SENSE_Pos)
+#define m_boton_up_gpio_config      (m_boton_up_dir | m_boton_up_pull | m_boton_up_drive | m_boton_up_sense)
 
-/* GPIO Task and Event */
-#define m_boton_ok_psel_pos     (BTN_OK << GPIOTE_CONFIG_PSEL_Pos)                                         /* Boton OK : Posicion 1*/
-#define m_boton_ok_polarity     (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_ok_mode         (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
-#define m_boton_ok_config       (m_boton_ok_psel_pos | m_boton_ok_polarity | m_boton_ok_mode)
-#define m_boton_ok_intenset     GPIOTE_INTENSET_IN0_Msk                                                 /*  */
+/* GPIO Task and Event */   
+#define m_boton_ok_psel_pos         (BTN_OK << GPIOTE_CONFIG_PSEL_Pos)                                      /* Boton OK : Posicion 1*/
+#define m_boton_ok_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
+#define m_boton_ok_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_ok_config           (m_boton_ok_psel_pos | m_boton_ok_polarity | m_boton_ok_mode)
+#define m_boton_ok_intenset         GPIOTE_INTENSET_IN0_Msk
 
-#define m_boton_down_psel_pos   (BTN_DOWN << GPIOTE_CONFIG_PSEL_Pos)                                         /* Boton DOWN : Posicion 2*/
-#define m_boton_down_polarity   (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_down_mode       (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
-#define m_boton_down_config     (m_boton_down_psel_pos | m_boton_down_polarity | m_boton_down_mode)
-#define m_boton_down_intenset   GPIOTE_INTENSET_IN1_Msk                                                 /*  */
+#define m_boton_down_psel_pos       (BTN_DOWN << GPIOTE_CONFIG_PSEL_Pos)                                    /* Boton DOWN : Posicion 2*/
+#define m_boton_down_polarity       (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
+#define m_boton_down_mode           (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_down_config         (m_boton_down_psel_pos | m_boton_down_polarity | m_boton_down_mode)
+#define m_boton_down_intenset       GPIOTE_INTENSET_IN1_Msk
 
-#define m_boton_up_psel_pos     (BTN_UP << GPIOTE_CONFIG_PSEL_Pos)                                         /* Boton UP : Posicion 3*/
-#define m_boton_up_polarity     (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_up_mode         (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
-#define m_boton_up_config       (m_boton_up_psel_pos | m_boton_up_polarity | m_boton_up_mode)
-#define m_boton_up_intenset     GPIOTE_INTENSET_IN2_Msk                                                 /*  */
+#define m_boton_up_psel_pos         (BTN_UP << GPIOTE_CONFIG_PSEL_Pos)                                      /* Boton UP : Posicion 3*/
+#define m_boton_up_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
+#define m_boton_up_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_up_config           (m_boton_up_psel_pos | m_boton_up_polarity | m_boton_up_mode)
+#define m_boton_up_intenset         GPIOTE_INTENSET_IN2_Msk
 
-#define gpio_intenset           (m_boton_ok_intenset | m_boton_down_intenset | m_boton_up_intenset)
-#define gpio_intenclr           (GPIOTE_INTENCLR_IN3_Msk | GPIOTE_INTENCLR_PORT_Msk)
-
-#define GPIOTE_PRIORITY         1
+#define gpio_intenset               (m_boton_ok_intenset | m_boton_down_intenset | m_boton_up_intenset)
+#define gpio_intenclr               (GPIOTE_INTENCLR_IN3_Msk | GPIOTE_INTENCLR_PORT_Msk)
+    
+#define GPIOTE_PRIORITY             1
 
 static volatile uint8_t* m_gpio_boton_ok_flag;
 static volatile uint8_t* m_gpio_boton_down_flag;
 static volatile uint8_t* m_gpio_boton_up_flag;
 
-static uint8_t led_status;      /* Sombre del estado del led para el toggle */
+static uint8_t led_status;          /* Sombra del estado del led para el toggle */
+
 
 /* Rutina de atencion a interrupciones del GPIOTE */
 void GPIOTE_IRQHandler(void)
@@ -85,10 +86,17 @@ void GPIOTE_IRQHandler(void)
     }
 }
 
+
 /**@brief Funcion de inicializacion del modulo.
  */
 void gpio_init()
 {
+    int i;
+    for(i=0;i<28;i++)
+    {
+        NRF_GPIO->PIN_CNF[i] = GPIO_PIN_CNF_INPUT_Disconnect <<  GPIO_PIN_CNF_INPUT_Pos;
+    }
+    
     /* LED */
     NRF_GPIO->PIN_CNF[LED] = m_led_gpio_config;
     

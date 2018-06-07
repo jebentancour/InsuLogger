@@ -46,11 +46,10 @@
 #include "ble_advdata.h"
 #include "ble_advertising.h"
 #include "ble_conn_params.h"
+#include "ble_nus.h"
 #include "softdevice_handler.h"
 #include "app_timer.h"
-#include "ble_nus.h"
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
+#include "app_util_platform.h"
 
 #define NRF_CLOCK_LFCLKSRC              {.source = NRF_CLOCK_LF_SRC_XTAL, .rc_ctiv = 0, .rc_temp_ctiv = 0, .xtal_accuracy=NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}
 
@@ -109,8 +108,6 @@ static uint16_t                         m_tx_index;             /* Indice del bu
  */
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
-    NRF_LOG_ERROR("assert_nrf_callback\r\n");
-    NRF_LOG_FINAL_FLUSH();
     sd_nvic_SystemReset();                      // Reset the device
 }
 
@@ -200,7 +197,7 @@ static void services_init(void)
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
-    NRF_LOG_ERROR("conn_params_error_handler\r\n");
+
 }
 
 
@@ -237,11 +234,9 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
-            NRF_LOG_DEBUG("on_adv_evt: BLE_ADV_EVT_FAST\r\n");
             m_ble_uart_status.advertising = 1;
             break;
         case BLE_ADV_EVT_IDLE:
-            NRF_LOG_DEBUG("on_adv_evt: BLE_ADV_EVT_IDLE\r\n");
             m_ble_uart_status.advertising = 0;
             break;
         default:
@@ -261,13 +256,11 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-            NRF_LOG_DEBUG("on_ble_evt: BLE_GAP_EVT_CONNECTED\r\n");
             m_ble_uart_status.connected = 1;
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break; // BLE_GAP_EVT_CONNECTED
 
         case BLE_GAP_EVT_DISCONNECTED:
-            NRF_LOG_DEBUG("on_ble_evt: BLE_GAP_EVT_DISCONNECTED\r\n");
             m_ble_uart_status.connected = 0;
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
             break; // BLE_GAP_EVT_DISCONNECTED
@@ -305,7 +298,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             
         case BLE_EVT_TX_COMPLETE:
             // Transmission complete.
-            NRF_LOG_DEBUG("on_ble_evt: BLE_EVT_TX_COMPLETE\r\n");
             if (m_tx_index < m_tx_len)
             {
                 uint16_t len;
@@ -390,8 +382,6 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
  */
 static void ble_stack_init(void)
 {
-    NRF_LOG_DEBUG("ble_stack_init\r\n");
-    
     uint32_t err_code;
 
     nrf_clock_lf_cfg_t clock_lf_cfg = NRF_CLOCK_LFCLKSRC;
@@ -425,9 +415,6 @@ static void ble_stack_init(void)
  */
 static void advertising_init(void)
 {
-    NRF_LOG_DEBUG("advertising_init\r\n");
-    
-    uint32_t               err_code;
     ble_advdata_t          advdata;
     ble_advdata_t          scanrsp;
     ble_adv_modes_config_t options;
@@ -447,11 +434,7 @@ static void advertising_init(void)
     options.ble_adv_fast_interval = APP_ADV_INTERVAL;
     options.ble_adv_fast_timeout  = APP_ADV_TIMEOUT_IN_SECONDS;
 
-    err_code = ble_advertising_init(&advdata, &scanrsp, &options, on_adv_evt, NULL);
-    if (err_code != NRF_SUCCESS)
-    {
-        NRF_LOG_DEBUG("advertising_init NOT NRF_SUCCESS\r\n");
-    }
+    ble_advertising_init(&advdata, &scanrsp, &options, on_adv_evt, NULL);
 }
 
 
@@ -459,8 +442,6 @@ static void advertising_init(void)
  */
 void ble_uart_init(void)
 {
-    NRF_LOG_INFO("ble_uart_init\r\n");
-    
     m_ble_uart_status.advertising = 0;
     m_ble_uart_status.connected = 0;
 
@@ -569,13 +550,7 @@ void ble_uart_data_send(uint8_t * msg_main, uint16_t length)
  */
 void ble_uart_advertising_start(void)
 {
-    uint32_t err_code;
-    
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-    if (err_code != NRF_SUCCESS)
-    {
-        NRF_LOG_DEBUG("ble_uart_advertising_start NRF_ERROR_INVALID_STATE\r\n");   
-    }
+    ble_advertising_start(BLE_ADV_MODE_FAST);
 }
 
 
@@ -583,13 +558,7 @@ void ble_uart_advertising_start(void)
  */
 void ble_uart_advertising_stop(void)
 {
-    uint32_t err_code;
-    
-    err_code = ble_advertising_start(BLE_ADV_MODE_IDLE);
-    if (err_code != NRF_SUCCESS)
-    {
-        NRF_LOG_DEBUG("ble_uart_advertising_stop NRF_ERROR_INVALID_STATE\r\n");
-    }
+    ble_advertising_start(BLE_ADV_MODE_IDLE);
 }
 
 
@@ -597,18 +566,5 @@ void ble_uart_advertising_stop(void)
  */
 void ble_uart_disconnect(void)
 {
-    uint32_t err_code;
-  
-    err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-    if (err_code != NRF_ERROR_INVALID_STATE || err_code != NRF_SUCCESS)
-    {
-        if ( err_code == NRF_ERROR_INVALID_PARAM)
-        {
-            NRF_LOG_DEBUG("ble_uart_disconnect NRF_ERROR_INVALID_PARAM\r\n");
-        }
-        if ( err_code == BLE_ERROR_INVALID_CONN_HANDLE)
-        {
-            NRF_LOG_DEBUG("ble_uart_disconnect BLE_ERROR_INVALID_CONN_HANDLE\r\n");
-        }
-    }
+    sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
 }
