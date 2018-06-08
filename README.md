@@ -192,3 +192,24 @@ DECLARE_STRUCT_TYPE(g_object); // Outputs: typedef struct g_object_s g_object_t;
     static app_timer_t timer_id##_data = { {0} };                  \
     static const app_timer_id_t timer_id = &timer_id##_data
 ```
+
+## Power
+
+### Power modes System OFF
+
+```c
+uint32_t sd_power_system_off(void)  // Puts the chip in System OFF mode.
+```
+
+### Power modes System ON
+
+Constant latency mode ```NRF_POWER_MODE_CONSTLAT```.
+
+Low power mode ```NRF_POWER_MODE_LOWPWR```.
+
+```c
+uint32_t sd_power_mode_set(uint8_t power_mode)  // Sets the power mode when in CPU sleep.
+uint32_t sd_app_evt_wait(void)                  // Waits for an application event.
+```
+
+An application event is either an application interrupt or a pended interrupt when the interrupt is disabled. When the interrupt is enabled it will be taken immediately since this function will wait in thread mode, then the execution will return in the application's main thread. When an interrupt is disabled and gets pended it will return to the application's thread main. The application must ensure that the pended flag is cleared using ```sd_nvic_ClearPendingIRQ``` in order to sleep using this function. This is only necessary for disabled interrupts, as the interrupt handler will clear the pending flag automatically for enabled interrupts.
