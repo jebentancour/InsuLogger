@@ -1,25 +1,43 @@
-/*--------------------------------------------------------
-Sisem: Obligatorio
-
-Modulo shell
-
-Recibe un string de comando.
-Lo parsea en palabras.
-Toma el primero como comado.
-Lo busca en una lista
-	Si no esta devuelve ErrCod: NOTFOUND
-	Si esta devuelve puntero a la funcion a ejecutar, argc y argv con la cmdline parseada
-Ademas reconoce cmds internos:
-	Help: devuelve lista de comnameandos
-	Help comando conocido: devuelve string asociada
-	Help comando desconocido: devuelve notfound
-	Exit: devuelve ErrCod: EXIT
-Si tiene exito devuelve ErrCod: OK
-
-
-cra, 3/2012
-
-----------------------------------------------------------*/
+/**
+ * @defgroup SHELL
+ * @{
+ *
+ * @paragraph 
+ * 
+ * Sistemas Embebidos. Curso 2012
+ *
+ * Obligatorio.
+ *
+ * Recibe un string de comando.
+ *
+ * Lo parsea en palabras.
+ *
+ * Toma el primero como comando.
+ *
+ * Lo busca en una lista:
+ *
+ * Si no esta devuelve ErrCod: NOTFOUND
+ *
+ * Si esta devuelve puntero a la función a ejecutar, argc y argv con la cmdline parseada
+ *
+ * Además reconoce cmds internos:
+ *
+ * Help: devuelve lista de comandos
+ *
+ * Help comando conocido: devuelve string asociada
+ *
+ * Help comando desconocido: devuelve notfound
+ *
+ * Exit: devuelve ErrCod: EXIT
+ *
+ * Si tiene éxito devuelve ErrCod: OK
+ * 
+ * @file    shell.c
+ * @author  Conrado Rossi.
+ * @date    Marzo 2012
+ *
+ * @brief Módulo capaz de procesar los comandos recibidos.
+ */
 
 #include "shell.h"
 #include <string.h>
@@ -30,9 +48,9 @@ cra, 3/2012
 shell_command_t* cmdsrch(char* pcmd, shell_command_t* lista);
 
 // Comandos Internos
-#define EXITNAME	"EXIT"	// Comando para desconectarse
-#define GETREGISTER     "GR"	// Comando para obtener una cantidad X de registros: GR X
-#define RESET           "RS"	// Comando para setear la fecha de referencia: RS DD/MM/AAAA-HH:MM:SS
+#define EXITNAME	"EXIT"	    /**< Comando para desconectarse */
+#define GETREGISTER     "GR"	/**< Comando para obtener una cantidad X de registros: GR X */
+#define RESET           "RS"	/**< Comando para setear la fecha de referencia: RS DD/MM/AAAA-HH:MM:SS */
 
 
 shell_command_t internalcmds[] =

@@ -1,3 +1,21 @@
+/**
+ * @defgroup LOGGER
+ * @{
+ * 
+ * @paragraph 
+ * 
+ * Recibe comandos desde SHELL y UI para registrar los diferentes eventos. 
+ * Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
+ *
+ * @file logger.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo encargado de llevar el registro.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,13 +26,15 @@
 
 #define MAX_REG 100
 
+/** Estructura que representa un arreglo de datos en el registro. */
 typedef struct {
 	uint8_t type_insulin;
-	uint32_t glicemia;
+	uint32_t glucemia;
 	uint8_t dosis_insulin;
 	uint32_t time_stamp;
 } register_t;
 
+/** Estructura que representa la cola circular donde se guardan los datos. */
 struct {
 	register_t logger_array[MAX_REG];
 	uint8_t head;
@@ -30,7 +50,9 @@ static uint32_t last_a;
 static uint32_t last_b;
 
 
-/**@brief Funcion que inicializa al modulo logger, setea los punteros y el numero de registros a 0.
+/**@brief Función de Inicialización del módulo.
+ *
+ * @details Setea los punteros y el numero de registros a 0.
  */
 void logger_init(void)
 {
@@ -41,17 +63,17 @@ void logger_init(void)
 }
 
 
-/**@brief Funcion para ingresar un nuevo registro a la memoria.
+/**@brief Función para ingresar un nuevo registro a la memoria.
  *
- * @param glicemia  Variable que guarda el valor de glucosa en sangre.
+ * @param glucemia  Variable que guarda el valor de glucosa en sangre.
  * @param type      Variable que guarda el tipo de insulina inyectada.
  * @param dosis     Variable que guarda el valor de dosis inyectada.
- * @param timestamp Variable que guarda el tiempo offset en el momento de la nueva inyeccion.
+ * @param timestamp Variable que guarda el tiempo offset en el momento de la nueva inyección.
  */ 
-void logger_new_register(uint32_t glicemia, uint8_t type, uint8_t dosis, uint32_t timestamp)
+void logger_new_register(uint32_t glucemia, uint8_t type, uint8_t dosis, uint32_t timestamp)
 {
     logger_register.logger_array[logger_register.head].type_insulin = type;
-    logger_register.logger_array[logger_register.head].glicemia = glicemia;
+    logger_register.logger_array[logger_register.head].glucemia = glucemia;
     logger_register.logger_array[logger_register.head].dosis_insulin = dosis;
     logger_register.logger_array[logger_register.head].time_stamp = timestamp;
     logger_register.head = (logger_register.head+1)%MAX_REG;
@@ -71,7 +93,7 @@ void logger_new_register(uint32_t glicemia, uint8_t type, uint8_t dosis, uint32_
 }
 
 
-/**@brief Funcion que setea la flag para avisar que hay nuevos mensajes para mandar.
+/**@brief Función que setea la flag para avisar que hay nuevos mensajes para mandar.
  */
 void logger_set_flag(volatile uint8_t * m_send_flag)
 {
@@ -79,7 +101,7 @@ void logger_set_flag(volatile uint8_t * m_send_flag)
 }
 
 
-/**@brief funcion que llama el shell cuando pide un numero x de registros.
+/**@brief Función que llama el shell cuando pide un numero x de registros.
  */
 int logger_get(unsigned int argc, char** argv)
 {
@@ -101,7 +123,7 @@ int logger_get(unsigned int argc, char** argv)
 }
 
 
-/**@brief Funcion que llama el main para enviar por la uart los registros solicitados.
+/**@brief Función que llama el main para enviar por la uart los registros solicitados.
  *
  * @param p_uart    Puntero que apunta al mensaje a ser transmitido por la uart.
  * @return          Devuelve un entero que es el largo del mensaje a ser transmitido.
@@ -117,7 +139,7 @@ uint8_t logger_send(uint8_t * p_uart)
         }else{
             m_type = 'B';
         }
-        sprintf((char*)p_uart,"{tipo %c, dosis  %u, glicemia %lu, timestamp %lu}\n", m_type, logger_register.logger_array[logger_register.tail].dosis_insulin, logger_register.logger_array[logger_register.tail].glicemia, logger_register.logger_array[logger_register.tail].time_stamp);
+        sprintf((char*)p_uart,"{tipo %c, dosis  %u, glucemia %lu, timestamp %lu}\n", m_type, logger_register.logger_array[logger_register.tail].dosis_insulin, logger_register.logger_array[logger_register.tail].glucemia, logger_register.logger_array[logger_register.tail].time_stamp);
         logger_register.tail = (logger_register.tail+1)%MAX_REG;
         logger_register.registers_to_send--;
     }
@@ -129,7 +151,7 @@ uint8_t logger_send(uint8_t * p_uart)
 }	
 
 
-/**@brief Funcion que se llama desde el shell y reseta la fecha y hora de referencia, se borran los registros.
+/**@brief Función que se llama desde el shell y reseta la fecha y hora de referencia, se borran los registros.
  */
 int logger_reset(unsigned int argc, char** argv)
 {
@@ -143,9 +165,9 @@ int logger_reset(unsigned int argc, char** argv)
 }
 
 
-/**@brief Funcion que devuelve el tiempo trasncurrido en ms desde el ultimo registro tipo a.
+/**@brief Función que devuelve el tiempo transcurrido en ms desde el ultimo registro tipo a.
  *
- * @return  Tiempo trasncurrido en ms desde el ultimo registro tipo a.
+ * @return  Tiempo transcurrido en ms desde el ultimo registro tipo a.
  */
 uint32_t logger_get_last_a(void)
 {
@@ -153,9 +175,9 @@ uint32_t logger_get_last_a(void)
 }
 
 
-/**@brief Funcion que devuelve el tiempo trasncurrido en ms desde el ultimo registro tipo b.
+/**@brief Función que devuelve el tiempo transcurrido en ms desde el ultimo registro tipo b.
  *
- * @return  Tiempo trasncurrido en ms desde el ultimo registro tipo b.
+ * @return  Tiempo transcurrido en ms desde el ultimo registro tipo b.
  */
 uint32_t logger_get_last_b(void)
 {

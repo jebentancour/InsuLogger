@@ -1,4 +1,33 @@
 /**
+ * @defgroup BLE_UART
+ * @{
+ * 
+ * @paragraph
+ * 
+ * Posee buffers de recepción y transmisión que permiten enviar y recibir más de 20 bytes (limitación de NUS).
+ * 
+ * Nordic UART Service es una librería proporcionada por Nordic. BLE NUS es un servicio patentado BLE, 
+ * que tiene un servicio llamado "UART Service" para imitar una comunicación serial sobre Bluetooth. 
+ * NUS configura un "RX" (característica con propiedades de "escritura") y un canal de transmisión "TX" 
+ * (característica con propiedades de "notificación"), para adaptarse a las necesidades básicas de comunicación UART. 
+ * Depende de SOFTDEVICE y TIMER LIBRARY.
+ *
+ * SOFTDEVICE es el encargado de manejar la radio del SoC. Es un archivo binario precompilado proporcionado por Nordic 
+ * que implementa el stack Bluetooth.
+ * 
+ * TIMER LIBRARY es una librería proporcionada por Nordic que permite crear diferentes timers en software partiendo 
+ * de un mismo recurso de hardware (RTC1).
+ *
+ * @file ble_uart.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo que enmascara y adapta al proyecto la librería NUS (Nordic UART Service). 
+ *
+ * @copyright
+ *
  * Copyright (c) 2014 - 2017, Nordic Semiconductor ASA
  * 
  * All rights reserved.
@@ -37,6 +66,7 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
+ 
 #include "ble_uart.h"
 
 #include <stdint.h>
@@ -87,14 +117,14 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
 static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, NUS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-ble_uart_status_t                       m_ble_uart_status;      /* Estructura que repesenta el estado interno del modulo. */
-static volatile uint8_t*                m_rx_flag;              /* Bandera que indica nuevo mensaje recibido. */
-static volatile uint8_t*                m_tx_flag;              /* Bandera que indica mensaje trasmitido. */
-static uint8_t                          m_rx_msg[MAX_LEN];      /* Buffer que guarda el mensaje recibido. */
-static uint8_t                          m_tx_msg[MAX_LEN];      /* Buffer que guarda el mensaje a enviar. */
-static uint16_t                         m_rx_len;               /* Largo del mensaje recibido. */
-static uint16_t                         m_tx_len;               /* Largo del mensaje a enviar. */
-static uint16_t                         m_tx_index;             /* Indice del buffer de salida. */
+ble_uart_status_t                       m_ble_uart_status;      /**< Estructura que representa el estado interno del módulo. */
+static volatile uint8_t*                m_rx_flag;              /**< Bandera que indica nuevo mensaje recibido. */
+static volatile uint8_t*                m_tx_flag;              /**< Bandera que indica mensaje trasmitido. */
+static uint8_t                          m_rx_msg[MAX_LEN];      /**< Buffer que guarda el mensaje recibido. */
+static uint8_t                          m_tx_msg[MAX_LEN];      /**< Buffer que guarda el mensaje a enviar. */
+static uint16_t                         m_rx_len;               /**< Largo del mensaje recibido. */
+static uint16_t                         m_tx_len;               /**< Largo del mensaje a enviar. */
+static uint16_t                         m_tx_index;             /**< Indice del buffer de salida. */
 
 
 /**@brief Function for assert macro callback.
@@ -108,7 +138,7 @@ static uint16_t                         m_tx_index;             /* Indice del bu
  */
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
-    sd_nvic_SystemReset();                      // Reset the device
+    sd_nvic_SystemReset();
 }
 
 
@@ -153,11 +183,11 @@ static void gap_params_init(void)
  */
 static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    if (!*m_rx_flag)    // La recepcion queda bloqueada hasta que se reconozca el mensaje recibido
+    if (!*m_rx_flag)    /* La recepción queda bloqueada hasta que se reconozca el mensaje recibido. */
     {
         for (uint32_t i = 0; i < length; i++)
         {
-            if (m_rx_len >= MAX_LEN)            // El mensaje que truncado en MAX_LEN
+            if (m_rx_len >= MAX_LEN)            /* El mensaje que truncado en MAX_LEN. */
             {
                 m_rx_len = MAX_LEN - 1;
             }
@@ -165,7 +195,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
             m_rx_msg[m_rx_len] = p_data[i];
             m_rx_len++;
             
-            if (p_data[i] == 0x0A)          // El caracter '\n' indica el fin del mensaje   
+            if (p_data[i] == 0x0A)          /* El caracter '\n' indica el fin del mensaje. */  
             {
                 *m_rx_flag = 1;
                 break;
@@ -438,7 +468,7 @@ static void advertising_init(void)
 }
 
 
-/**@brief Funcion de inicializacion del modulo.
+/**@brief Función de inicialización del módulo.
  */
 void ble_uart_init(void)
 {
@@ -455,7 +485,7 @@ void ble_uart_init(void)
 }
 
 
-/**@brief Funcion para obtener el estado del modulo.
+/**@brief Función para obtener el estado del módulo.
  */
 ble_uart_status_t ble_uart_get_status(void)
 {
@@ -467,9 +497,9 @@ ble_uart_status_t ble_uart_get_status(void)
 };
 
 
-/**@brief Funcion para setear la flag donde indicar la llegada de un mensaje completo.
+/**@brief Función para setear la flag donde indicar la llegada de un mensaje completo.
  *
- * @details Se considera que un mensaje esta completo cuando se recibe el caracter '\n'.
+ * @details Se considera que un mensaje esta completo cuando se recibe el caracter "\n".
  *
  * @param main_rx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
@@ -478,7 +508,7 @@ void ble_uart_rx_set_flag(volatile uint8_t* main_rx_flag)
     m_rx_flag = main_rx_flag;
 }
 
-/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un mensaje completo.
+/**@brief Función para setear la flag donde indicar el fin de transmisión de un mensaje completo.
  *
  * @param main_tx_flag    Puntero a una flag donde se indicara la llegada de un mensaje completo.
  */
@@ -488,11 +518,11 @@ void ble_uart_tx_set_flag(volatile uint8_t* main_tx_flag)
 }
 
 
-/**@brief Funcion para obtener el mensaje recibido.
+/**@brief Función para obtener el mensaje recibido.
  *
  * @param msg_main    Puntero al arreglo donde se copiara el mensaje.
  *
- * @return len        El largo del mensaje.
+ * @return El largo del mensaje.
  */
 uint16_t ble_uart_get_msg(uint8_t* msg_main)
 {
@@ -512,7 +542,7 @@ uint16_t ble_uart_get_msg(uint8_t* msg_main)
 }
 
 
-/**@brief Funcion para enviar un mensaje.
+/**@brief Función para enviar un mensaje.
  *
  * @param msg_main  Puntero al arreglo donde se encuentra el mensaje.
  * @param length    El largo del mensaje.
@@ -544,9 +574,9 @@ void ble_uart_data_send(uint8_t * msg_main, uint16_t length)
 }
 
 
-/**@brief Funcion iniciar el descubrimiento por bluetooth.
+/**@brief Función iniciar el descubrimiento por Bluetooth.
  *
- * @details Se debe esperar a que transcurra el tiempo APP_ADV_TIMEOUT_IN_SECONDS para volver a llamarla.
+ * @warning Se debe esperar a que transcurra el tiempo APP_ADV_TIMEOUT_IN_SECONDS para volver a llamarla.
  */
 void ble_uart_advertising_start(void)
 {
@@ -554,7 +584,7 @@ void ble_uart_advertising_start(void)
 }
 
 
-/**@brief Funcion detener el descubrimiento por bluetooth.
+/**@brief Función detener el descubrimiento por Bluetooth.
  */
 void ble_uart_advertising_stop(void)
 {
@@ -562,7 +592,7 @@ void ble_uart_advertising_stop(void)
 }
 
 
-/**@brief Funcion terminar la conexion bluetooth con otro dispositivo.
+/**@brief Función terminar la conexión Bluetooth con otro dispositivo.
  */
 void ble_uart_disconnect(void)
 {

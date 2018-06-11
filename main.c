@@ -1,3 +1,22 @@
+/**
+ * @defgroup ESTADOS
+ * @{
+ *
+ * @paragraph
+ *
+ * Módulo encargado de gestionar el estado general del sistema, 
+ * distribuir tareas y enviar el chip a dormir.
+ *
+ * @file main.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo encargado de gestionar el estado general del sistema, 
+ * distribuir tareas y enviar el chip a dormir.
+ */
+ 
 #include <stdint.h>
 
 #include "softdevice_handler.h"
@@ -9,8 +28,9 @@
 #include "ui.h"
 #include "shell.h"
 #include "logger.h"
+#include "i2c.h"
 
-#define IDLE_TICKS      40
+#define IDLE_TICKS      80      /**< Timeout de 20s de inactividad para enviar el micro a dormir */
 
 /* Variable para el timeout. */
 uint8_t idle_timer;
@@ -40,7 +60,7 @@ int retval;
  */
 int main(void)
 {  
-    /* Inicializacion de modulos y variables. */
+    /* Inicialización de módulos y variables. */
     ble_uart_rx_set_flag(&ble_uart_rx_flag);
     ble_uart_tx_flag = 1;
     ble_uart_tx_set_flag(&ble_uart_tx_flag);
@@ -68,7 +88,7 @@ int main(void)
     /* Loop principal. */
     for (;;)
     {      
-        /* Se resiono el boton OK. */
+        /* Se presionó el botón ok. */
         if (gpio_ok_flag)
         {
             idle_timer = 0;
@@ -76,11 +96,11 @@ int main(void)
             nrf_delay_ms(5);
             if(!gpio_ok_flag)
             {
-                ui_process_event(pressed_ok); /* Se envia el evento a ui. */
+                ui_process_event(pressed_ok); /* Se envía el evento a ui. */
             }
         }
         
-        /* Se resiono el boton UP. */
+        /* Se presionó el botón up. */
         if (gpio_up_flag)
         {
             idle_timer = 0;
@@ -88,11 +108,11 @@ int main(void)
             nrf_delay_ms(5);
             if(!gpio_up_flag)
             {
-                ui_process_event(pressed_up); /* Se envia el evento a ui. */
+                ui_process_event(pressed_up); /* Se envía el evento a ui. */
             }
         }
         
-        /* Se resiono el boton DOWN. */
+        /* Se presionó el botón down. */
         if (gpio_down_flag)
         {
             idle_timer = 0;
@@ -100,11 +120,11 @@ int main(void)
             nrf_delay_ms(5);
             if(!gpio_down_flag)
             {
-                ui_process_event(pressed_down); /* Se envia el evento a ui. */
+                ui_process_event(pressed_down); /* Se envía el evento a ui. */
             }
         }
          
-        /* Se incremento el rtc, este evento es periodico. */
+        /* Se incremento el rtc, este evento es periódico. */
         if(rtc_tick_flag)
         {
             rtc_tick_flag = 0;
@@ -114,7 +134,7 @@ int main(void)
                 idle_timer = 0;
             }
             
-            ui_process_event(time_update); /* Se envia el evento a ui. */
+            ui_process_event(time_update); /* Se envía el evento a ui. */
             
             idle_timer += 1;
             if(idle_timer >= IDLE_TICKS)
@@ -127,34 +147,34 @@ int main(void)
         /* Se recibio un nuevo mensaje por ble_uart. */
         if (ble_uart_rx_flag) 
         {
-            // Se recibe un valor nuevo por ble_uart.
+            /* Se recibe un valor nuevo por ble_uart. */
             uint16_t length = ble_uart_get_msg(ble_uart_rx_msg);
             ble_uart_rx_flag = 0;
             
-            // Se agrega delimitador NULL al final del buffer para convertirlo en string.
+            /* Se agrega delimitador NULL al final del buffer para convertirlo en string. */
             ble_uart_rx_msg[length - 1]='\0';
             
-            // Se revisa si el comando concuerda con alguno de los definidos en shell.
+            /* Se revisa si el comando concuerda con alguno de los definidos en shell. */
             switch (sisem_shell((char*)ble_uart_rx_msg,&quefuncion, &argc, argv))
             {
                 case OK:						
-                    // Ejecutar la funcion en el caso que se encontro.
-                    // Se ejecuta la funcion correspondiente pasando como parametros (unsigned int argc, char** argv).
+                    /* Ejecutar la función en el caso que se encontró. */
+                    /* Se ejecuta la función correspondiente pasando como parámetros (unsigned int argc, char** argv). */
                     retval=(quefuncion)(argc, argv);
                     break;
                     
                 case EXIT:						
-                    // Terminar comunicacion bluetooth.
+                    /* Terminar comunicación Bluetooth. */
                     ble_uart_disconnect();
                     ble_uart_advertising_stop();
                     break;
 
                 case NOTFOUND:
-                    // Avisar que la funcion no existe.
+                    /* La función no existe. */
                     break;
 
                 default:
-                    // Nunca deberiamos llegar aca.
+                    /* Nunca deberíamos llegar acá. */
                     break;
             }
         }
@@ -164,20 +184,22 @@ int main(void)
         {           
             if (ble_uart_tx_flag) // Revisar si ble_uart esta listo para enviar un nuevo mensaje.
             {                
-                // Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y en tx_length el largo del mensaje.
+                /* Se llama a logger_send para que ponga en ble_uart_tx_msg el mensaje que se quiere enviar y 
+                   en tx_length el largo del mensaje. */
                 uint8_t tx_length;
                 tx_length = logger_send(ble_uart_tx_msg);
                 
-                // Se le pasa a ble_uart_data_send el puntero con el mensaje.
+                /* Se le pasa a ble_uart_data_send el puntero con el mensaje. */
                 ble_uart_data_send(ble_uart_tx_msg, tx_length);
-                // Una vez logre enviar todo entrará denuevo a este condicional hasta que logger_send considere que no hay más datos para enviar.
+                /* Una vez logre enviar todo entrará de nuevo a este condicional hasta que logger_send considere 
+                   que no hay más datos para enviar. */
             }
         }
         
         if(!gpio_ok_flag && !gpio_up_flag && !gpio_down_flag && !rtc_tick_flag && !ble_uart_rx_flag && !logger_send_flag && (idle_timer == IDLE_TICKS))
         {
-            sd_app_evt_wait();          // Se va a System ON Low Power Mode, cuando se despierta sigue la ejecucion normal.
-            //sd_power_system_off();      // Se va a System OFF, no vuelve, cuando se despierta es como si hubieramos resetado.
+            sd_app_evt_wait();          /* Se va a System ON Low Power Mode, 
+                                           cuando se despierta sigue la ejecución normal. */
         }
     }
 }

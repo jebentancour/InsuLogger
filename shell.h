@@ -1,34 +1,42 @@
 /**
- * \defgroup sisem_shell
+ * @defgroup SHELL
  * @{
- * Modulo shell
- */
-
-/*
+ *
+ * @paragraph 
+ * 
  * Sistemas Embebidos. Curso 2012
+ *
  * Obligatorio.
- * Modulo shell
-
-Recibe un string de comando.
-Lo parsea en palabras.
-Toma el primero como comado.
-Lo busca en una lista
-	Si no esta devuelve ErrCod: NOTFOUND
-	Si esta devuelve puntero a la funcion a ejecutar, argc y argv con la cmdline parseada
-Ademas reconoce cmds internos:
-	Help: devuelve lista de comandos
-	Help comando conocido: devuelve string asociada
-	Help comando desconocido: devuelve notfound
-	Exit: devuelve ErrCod: EXIT
-Si tiene exito devuelve ErrCod: OK
-
- */
-
-/**
- * \file
- *         modulo shell
- * \author
- *         Conrado Rossi, marzo 2012
+ *
+ * Recibe un string de comando.
+ *
+ * Lo parsea en palabras.
+ *
+ * Toma el primero como comando.
+ *
+ * Lo busca en una lista:
+ *
+ * Si no esta devuelve ErrCod: NOTFOUND
+ *
+ * Si esta devuelve puntero a la función a ejecutar, argc y argv con la cmdline parseada
+ *
+ * Además reconoce cmds internos:
+ *
+ * Help: devuelve lista de comandos
+ *
+ * Help comando conocido: devuelve string asociada
+ *
+ * Help comando desconocido: devuelve notfound
+ *
+ * Exit: devuelve ErrCod: EXIT
+ *
+ * Si tiene éxito devuelve ErrCod: OK
+ * 
+ * @file    shell.h
+ * @author  Conrado Rossi.
+ * @date    Marzo 2012
+ *
+ * @brief Módulo capaz de procesar los comandos recibidos.
  */
 
 #ifndef SHELL_H_INCLUDED
@@ -43,9 +51,8 @@ Si tiene exito devuelve ErrCod: OK
 // Defino tipo para funciones a llamar con interface std
 typedef  int (*ShellFunPtr)(unsigned int argc, char** argv);
 
-// Defino tipo para cada entrada a la tabla de funciones
-typedef struct fundesc
-{
+/** Tipo para cada entrada a la tabla de funciones. */
+typedef struct {
     char funname[LENNAME];			//nombre del comando
     ShellFunPtr pfun;				//puntero a la funcion
 } shell_command_t;

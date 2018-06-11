@@ -1,3 +1,21 @@
+/**
+ * @defgroup GPIO
+ * @{
+ *
+ * @paragraph 
+ * 
+ * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
+ * para generar los eventos con los botones y manipular un led.
+ *
+ * @file gpio.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo que proporciona funciones para manejar pines de entrada y salida.
+ */
+
 #include "gpio.h"
 
 #include <stdint.h>
@@ -6,10 +24,10 @@
 #include "nrf_nvic.h"
 
 /* GPIO */
-#define LED 		        0
-#define BTN_OK 		        2
-#define BTN_DOWN 	        3
-#define BTN_UP 		        4
+#define LED 		        0       /**< Pin donde se conecta el LED. */
+#define BTN_OK 		        2       /**< Pin donde se conecta el botón OK. */
+#define BTN_DOWN 	        3       /**< Pin donde se conecta el botón DOWN. */
+#define BTN_UP 		        4       /**< Pin donde se conecta el botón UP  */
 
 #define m_led_dir                   GPIO_PIN_CNF_DIR_Output
 #define m_led_pull                  (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos)
@@ -36,21 +54,21 @@
 #define m_boton_up_gpio_config      (m_boton_up_dir | m_boton_up_pull | m_boton_up_drive | m_boton_up_sense)
 
 /* GPIO Task and Event */   
-#define m_boton_ok_psel_pos         (BTN_OK << GPIOTE_CONFIG_PSEL_Pos)                                      /* Boton OK : Posicion 1*/
-#define m_boton_ok_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_ok_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_ok_psel_pos         (BTN_OK << GPIOTE_CONFIG_PSEL_Pos)                                      /**< Boton OK : Posicion 1. */
+#define m_boton_ok_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /**< Polaridad : HiToLo. */
+#define m_boton_ok_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /**< Modo : Event. */
 #define m_boton_ok_config           (m_boton_ok_psel_pos | m_boton_ok_polarity | m_boton_ok_mode)
 #define m_boton_ok_intenset         GPIOTE_INTENSET_IN0_Msk
 
-#define m_boton_down_psel_pos       (BTN_DOWN << GPIOTE_CONFIG_PSEL_Pos)                                    /* Boton DOWN : Posicion 2*/
-#define m_boton_down_polarity       (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_down_mode           (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_down_psel_pos       (BTN_DOWN << GPIOTE_CONFIG_PSEL_Pos)                                    /**< Boton DOWN : Posicion 2. */
+#define m_boton_down_polarity       (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /**< Polaridad : HiToLo. */
+#define m_boton_down_mode           (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /**< Modo : Event. */
 #define m_boton_down_config         (m_boton_down_psel_pos | m_boton_down_polarity | m_boton_down_mode)
 #define m_boton_down_intenset       GPIOTE_INTENSET_IN1_Msk
 
-#define m_boton_up_psel_pos         (BTN_UP << GPIOTE_CONFIG_PSEL_Pos)                                      /* Boton UP : Posicion 3*/
-#define m_boton_up_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /* Polaridad : HiToLo */
-#define m_boton_up_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /* Modo : Event */
+#define m_boton_up_psel_pos         (BTN_UP << GPIOTE_CONFIG_PSEL_Pos)                                      /**< Boton UP : Posicion 3. */
+#define m_boton_up_polarity         (2UL << GPIOTE_CONFIG_POLARITY_Pos)                                     /**< Polaridad : HiToLo. */
+#define m_boton_up_mode             (0x1UL << GPIOTE_CONFIG_MODE_Pos)                                       /**< Modo : Event. */
 #define m_boton_up_config           (m_boton_up_psel_pos | m_boton_up_polarity | m_boton_up_mode)
 #define m_boton_up_intenset         GPIOTE_INTENSET_IN2_Msk
 
@@ -63,10 +81,11 @@ static volatile uint8_t* m_gpio_boton_ok_flag;
 static volatile uint8_t* m_gpio_boton_down_flag;
 static volatile uint8_t* m_gpio_boton_up_flag;
 
-static uint8_t led_status;          /* Sombra del estado del led para el toggle */
+static uint8_t led_status;          /**< Sombra del estado del led para el toggle. */
 
 
-/* Rutina de atencion a interrupciones del GPIOTE */
+/**@brief Rutina de atención a interrupciones del GPIOTE. 
+ */
 void GPIOTE_IRQHandler(void)
 {
     if (NRF_GPIOTE->EVENTS_IN[0] != 0)
@@ -87,10 +106,11 @@ void GPIOTE_IRQHandler(void)
 }
 
 
-/**@brief Funcion de inicializacion del modulo.
+/**@brief Función de inicialización del módulo.
  */
 void gpio_init()
 {
+    /* Desconecto el buffer de entrada para no tener pines con estado indefinido */
     int i;
     for(i=0;i<28;i++)
     {
@@ -116,38 +136,38 @@ void gpio_init()
     NRF_GPIOTE->INTENSET = gpio_intenset;
     NRF_GPIOTE->INTENCLR = gpio_intenclr;
     
-    sd_nvic_SetPriority(GPIOTE_IRQn, GPIOTE_PRIORITY);       /* Seteo la prioridad de la interrupcion. */
-    sd_nvic_EnableIRQ(GPIOTE_IRQn);                          /* Habilito la interrupcion. */
+    sd_nvic_SetPriority(GPIOTE_IRQn, GPIOTE_PRIORITY);       /* Seteo la prioridad de la interrupción. */
+    sd_nvic_EnableIRQ(GPIOTE_IRQn);                          /* Habilito la interrupción. */
 }
 
-/**@brief Funcion para setear la flag donde indicar que el boton OK fue presionado.
+/**@brief Función para setear la flag donde indicar que el botón OK fue presionado.
  *
- * @param main_boton_ok_flag    Puntero a una flag donde se indicara que el boton OK fue presionado.
+ * @param main_boton_ok_flag    Puntero a una flag donde se indicara que el botón OK fue presionado.
  */
 void gpio_boton_ok_set_flag(volatile uint8_t* main_boton_ok_flag)
 {
     m_gpio_boton_ok_flag = main_boton_ok_flag;
 }
 
-/**@brief Funcion para setear la flag donde indicar que el boton DOWN fue presionado.
+/**@brief Función para setear la flag donde indicar que el botón DOWN fue presionado.
  *
- * @param main_boton_down_flag    Puntero a una flag donde se indicara que el boton DOWN fue presionado.
+ * @param main_boton_down_flag    Puntero a una flag donde se indicara que el botón DOWN fue presionado.
  */
 void gpio_boton_down_set_flag(volatile uint8_t* main_boton_down_flag)
 {
     m_gpio_boton_down_flag = main_boton_down_flag;
 }
 
-/**@brief Funcion para setear la flag donde indicar que el boton UP fue presionado.
+/**@brief Función para setear la flag donde indicar que el botón UP fue presionado.
  *
- * @param main_boton_up_flag    Puntero a una flag donde se indicara que el boton UP fue presionado.
+ * @param main_boton_up_flag    Puntero a una flag donde se indicara que el botón UP fue presionado.
  */
 void gpio_boton_up_set_flag(volatile uint8_t* main_boton_up_flag)
 {
     m_gpio_boton_up_flag = main_boton_up_flag;
 }
 
-/**@brief Funcion para encender el LED.
+/**@brief Función para encender el LED.
  */
 void gpio_led_on()
 {
@@ -155,7 +175,7 @@ void gpio_led_on()
     NRF_GPIO->OUTSET = 0x1UL << LED;
 }
 
-/**@brief Funcion para apagar el LED.
+/**@brief Función para apagar el LED.
  */
 void gpio_led_off()
 {
@@ -163,7 +183,7 @@ void gpio_led_off()
     NRF_GPIO->OUTCLR = 0x1UL << LED;
 }
 
-/**@brief Funcion para conmutar el estado del LED.
+/**@brief Función para conmutar el estado del LED.
  */
 void gpio_led_toggle()
 {

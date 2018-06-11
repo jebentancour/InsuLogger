@@ -1,3 +1,21 @@
+/**
+ * @defgroup I2C
+ * @{
+ * 
+ * @paragraph 
+ * 
+ * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
+ * para enviar datos. No soporta recepción.
+ *
+ * @file i2c.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo que proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C).
+ */
+ 
 #include "i2c.h"
 
 #include <stdint.h>
@@ -10,14 +28,14 @@
 #define SCL_PIN         5
 #define SDA_PIN         6
 
-static volatile uint8_t*         m_tx_flag;              /* Bandera que indica que un byte fue enviado. */
+static volatile uint8_t*         m_tx_flag;              /**< Bandera que indica que un byte fue enviado. */
 
 
 /**@brief Rutina de atencion a la interrupcion del periferico TWI.
  */ 
 void SPI0_TWI0_IRQHandler(void)
 {
-    *m_tx_flag = 1;                     /* Aviso incluso si hay error, el error se muestra en el LOG */
+    *m_tx_flag = 1;                     /* Aviso incluso si hay error. */
     if (NRF_TWI0->EVENTS_TXDSENT != 0)
     {
         NRF_TWI0->EVENTS_TXDSENT = 0;   /* Event clear. */
@@ -30,7 +48,7 @@ void SPI0_TWI0_IRQHandler(void)
 }
 
 
-/**@brief Funcion para configurar el periferico TWI como un master I2C a 100kbps.
+/**@brief Función para configurar el periferico TWI como un master I2C a 100kbps.
  */
 static void twi_conf(void){
     NRF_TWI0->INTENSET       = TWI_INTENSET_TXDSENT_Msk;        /* Enable interrupt on TXDSENT event. */
@@ -45,7 +63,7 @@ static void twi_conf(void){
 }
 
 
-/**@brief Funcion de inicializacion del modulo.
+/**@brief Función de inicializacion del módulo.
  */
 void i2c_init(){
     twi_conf();                                         /* Configuro el periferico TWI. */
@@ -54,7 +72,7 @@ void i2c_init(){
 }
 
 
-/**@brief Funcion para setear la flag donde indicar el fin de trasnmision de un byte.
+/**@brief Función para setear la flag donde indicar el fin de trasnmision de un byte.
  *
  * @param main_tx_flag    Puntero a una flag donde se indicara el fin de trasnmision de un byte.
  */
@@ -64,7 +82,7 @@ void i2c_tx_set_flag(volatile uint8_t* main_tx_flag)
 }
 
 
-/**@brief Funcion para iniciar una transferencia de datos a un esclavo.
+/**@brief Función para iniciar una transferencia de datos a un esclavo.
  *
  * @param address    La direccion de 7 bits del esclavo.
  */
@@ -74,7 +92,7 @@ void i2c_begin_transmission(uint8_t address)
 }
 
 
-/**@brief Funcion para trasnmitir un byte a un esclavo.
+/**@brief Función para trasnmitir un byte a un esclavo.
  *
  * @param value    El dato a trasnmitir.
  */
@@ -85,9 +103,9 @@ void i2c_write(uint8_t value)
 }
 
 
-/**@brief Funcion para terminar la trasnsaccion.
+/**@brief Función para terminar la trasnsaccion.
  */
 void i2c_end_transmission(void)
 {
-    NRF_TWI0->TASKS_STOP = 1;           /* top 2-Wire transaction. */
+    NRF_TWI0->TASKS_STOP = 1;           /* Stop 2-Wire transaction. */
 }

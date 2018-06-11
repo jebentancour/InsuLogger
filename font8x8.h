@@ -1,3 +1,16 @@
+/**
+ * @defgroup DISPLAY
+ * @{
+ * 
+ * @file font8x8.h
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Fuente de texto utilizado para escribir en el display.
+ */
+
 // 8x8 Font ASCII 32 - 127 Implemented
 // Users can modify this to support more characters (glyphs)
 
