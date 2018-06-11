@@ -1,11 +1,6 @@
 /**
  * @defgroup LOGGER
  * @{
- * 
- * @paragraph 
- * 
- * Recibe comandos desde SHELL y UI para registrar los diferentes eventos. 
- * Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
  *
  * @file logger.h
  * 
@@ -14,6 +9,11 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo encargado de llevar el registro.
+ * 
+ * @paragraph 
+ * 
+ * Recibe comandos desde SHELL y UI para registrar los diferentes eventos. 
+ * Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
  */
 
 /**@brief Función de Inicialización del módulo.

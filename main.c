@@ -2,11 +2,6 @@
  * @defgroup ESTADOS
  * @{
  *
- * @paragraph
- *
- * Módulo encargado de gestionar el estado general del sistema, 
- * distribuir tareas y enviar el chip a dormir.
- *
  * @file main.c
  * 
  * @version 1.0
@@ -14,6 +9,11 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo encargado de gestionar el estado general del sistema, 
+ * distribuir tareas y enviar el chip a dormir.
+ *
+ * @paragraph
+ *
+ * Módulo encargado de gestionar el estado general del sistema, 
  * distribuir tareas y enviar el chip a dormir.
  */
  

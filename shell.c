@@ -2,6 +2,12 @@
  * @defgroup SHELL
  * @{
  *
+ * @file    shell.c
+ * @author  Conrado Rossi.
+ * @date    Marzo 2012
+ *
+ * @brief Módulo capaz de procesar los comandos recibidos.
+ *
  * @paragraph 
  * 
  * Sistemas Embebidos. Curso 2012
@@ -31,12 +37,6 @@
  * Exit: devuelve ErrCod: EXIT
  *
  * Si tiene éxito devuelve ErrCod: OK
- * 
- * @file    shell.c
- * @author  Conrado Rossi.
- * @date    Marzo 2012
- *
- * @brief Módulo capaz de procesar los comandos recibidos.
  */
 
 #include "shell.h"
@@ -48,7 +48,7 @@
 shell_command_t* cmdsrch(char* pcmd, shell_command_t* lista);
 
 // Comandos Internos
-#define EXITNAME	"EXIT"	    /**< Comando para desconectarse */
+#define EXITNAME	"EXIT"	/**< Comando para desconectarse */
 #define GETREGISTER     "GR"	/**< Comando para obtener una cantidad X de registros: GR X */
 #define RESET           "RS"	/**< Comando para setear la fecha de referencia: RS DD/MM/AAAA-HH:MM:SS */
 

@@ -2,6 +2,12 @@
  * @defgroup SHELL
  * @{
  *
+ * @file    shell.h
+ * @author  Conrado Rossi.
+ * @date    Marzo 2012
+ *
+ * @brief Módulo capaz de procesar los comandos recibidos.
+ *
  * @paragraph 
  * 
  * Sistemas Embebidos. Curso 2012
@@ -31,12 +37,6 @@
  * Exit: devuelve ErrCod: EXIT
  *
  * Si tiene éxito devuelve ErrCod: OK
- * 
- * @file    shell.h
- * @author  Conrado Rossi.
- * @date    Marzo 2012
- *
- * @brief Módulo capaz de procesar los comandos recibidos.
  */
 
 #ifndef SHELL_H_INCLUDED

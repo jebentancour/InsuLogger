@@ -2,14 +2,6 @@
  * @defgroup RTC
  * @{
  *
- * @paragraph 
- * 
- * Es utilizado para llevar la cuenta del tiempo entre los eventos.
- * El SoC cuenta con dos Real Time Counters (RTC0 y RTC1) uno de ellos es utilizado por SOFTDEVICE (RTC0) y 
- * el otro por TIMER LIBRARY (RTC1). 
- * Por esto el módulo RTC utiliza la librería TIMER LIBRARY que permite crear diferentes timers en software 
- * partiendo de un mismo recurso de hardware.
- *
  * @file rtc.h
  * 
  * @version 1.0
@@ -17,6 +9,14 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo que implementa un reloj de tiempo real (Real Time Clock).
+ *
+ * @paragraph 
+ * 
+ * Es utilizado para llevar la cuenta del tiempo entre los eventos.
+ * El SoC cuenta con dos Real Time Counters (RTC0 y RTC1) uno de ellos es utilizado por SOFTDEVICE (RTC0) y 
+ * el otro por TIMER LIBRARY (RTC1). 
+ * Por esto el módulo RTC utiliza la librería TIMER LIBRARY que permite crear diferentes timers en software 
+ * partiendo de un mismo recurso de hardware.
  */
  
 #include <stdint.h>

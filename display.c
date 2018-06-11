@@ -1,13 +1,6 @@
 /**
  * @defgroup DISPLAY
  * @{
- * 
- * @paragraph 
- * 
- * Proporciona funciones para la inicializar el hardware y controlar los píxeles.
- * El circuito integrado utilizado para manejar el display es el SSD1306.
- * Este módulo fue creado utilizando como base la librería para Arduino:
- * https://github.com/kodera2t/nRF51822_sample/tree/master/ACROBOTIC_SSD1306
  *
  * @file display.c
  * 
@@ -16,6 +9,13 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo que permite el manejo del display utilizado.
+ * 
+ * @paragraph 
+ * 
+ * Proporciona funciones para la inicializar el hardware y controlar los píxeles.
+ * El circuito integrado utilizado para manejar el display es el SSD1306.
+ * Este módulo fue creado utilizando como base la librería para Arduino:
+ * https://github.com/kodera2t/nRF51822_sample/tree/master/ACROBOTIC_SSD1306
  */
  
 #include <stdint.h>

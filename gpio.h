@@ -2,11 +2,6 @@
  * @defgroup GPIO
  * @{
  *
- * @paragraph 
- * 
- * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
- * para generar los eventos con los botones y manipular un led.
- *
  * @file gpio.h
  * 
  * @version 1.0
@@ -14,6 +9,11 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo que proporciona funciones para manejar pines de entrada y salida.
+ *
+ * @paragraph 
+ * 
+ * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
+ * para generar los eventos con los botones y manipular un led.
  */
  
 #include <stdint.h>

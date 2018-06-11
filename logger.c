@@ -1,11 +1,6 @@
 /**
  * @defgroup LOGGER
  * @{
- * 
- * @paragraph 
- * 
- * Recibe comandos desde SHELL y UI para registrar los diferentes eventos. 
- * Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
  *
  * @file logger.c
  * 
@@ -14,6 +9,11 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo encargado de llevar el registro.
+ * 
+ * @paragraph 
+ * 
+ * Recibe comandos desde SHELL y UI para registrar los diferentes eventos. 
+ * Utiliza los datos suministrados por RTC para registrar el momento en que dan los eventos.
  */
 
 #include <stdio.h>
@@ -42,7 +42,7 @@ struct {
 	uint8_t registers_to_send;
 } logger_register;
 
-static char* date_reference;
+static char date_reference[20];
 static volatile uint8_t * m_logger_send_flag;
 static uint8_t n_registers;
 static uint8_t index;
@@ -59,7 +59,6 @@ void logger_init(void)
     logger_register.head = 0;
     logger_register.tail = 0;	
     logger_register.registers_to_send = 0;
-    date_reference = "DD/MM/AAAA-HH:MM:SS";
 }
 
 
@@ -131,7 +130,7 @@ int logger_get(unsigned int argc, char** argv)
 uint8_t logger_send(uint8_t * p_uart)
 {
     if (index == 0){
-        sprintf((char*)p_uart, "{registros %u, referencia %s}\n", n_registers, date_reference);
+        sprintf((char*)p_uart, "{reg %u, ref %s, t %lu}\n", n_registers, date_reference, rtc_get());
     }else{
         char m_type;
         if (logger_register.logger_array[logger_register.tail].type_insulin == 0){
@@ -139,7 +138,7 @@ uint8_t logger_send(uint8_t * p_uart)
         }else{
             m_type = 'B';
         }
-        sprintf((char*)p_uart,"{tipo %c, dosis  %u, glucemia %lu, timestamp %lu}\n", m_type, logger_register.logger_array[logger_register.tail].dosis_insulin, logger_register.logger_array[logger_register.tail].glucemia, logger_register.logger_array[logger_register.tail].time_stamp);
+        sprintf((char*)p_uart,"{tp %c, ds %u, glu %lu, ts %lu}\n", m_type, logger_register.logger_array[logger_register.tail].dosis_insulin, logger_register.logger_array[logger_register.tail].glucemia, logger_register.logger_array[logger_register.tail].time_stamp);
         logger_register.tail = (logger_register.tail+1)%MAX_REG;
         logger_register.registers_to_send--;
     }
@@ -157,8 +156,11 @@ int logger_reset(unsigned int argc, char** argv)
 {
     if (argc == 2)
     {
-        logger_init();
-        date_reference = *(argv+1);
+        rtc_reset();
+        logger_register.head = 0;
+        logger_register.tail = 0;	
+        logger_register.registers_to_send = 0;
+        strcpy(date_reference, *(argv+1));
         return 1;
     }
     return 0;

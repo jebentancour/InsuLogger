@@ -2,6 +2,14 @@
  * @defgroup BLE_UART
  * @{
  * 
+ * @file ble_uart.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo que enmascara y adapta al proyecto la librería NUS (Nordic UART Service). 
+ *
  * @paragraph
  * 
  * Posee buffers de recepción y transmisión que permiten enviar y recibir más de 20 bytes (limitación de NUS).
@@ -17,14 +25,6 @@
  * 
  * TIMER LIBRARY es una librería proporcionada por Nordic que permite crear diferentes timers en software partiendo 
  * de un mismo recurso de hardware (RTC1).
- *
- * @file ble_uart.c
- * 
- * @version 1.0
- * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
- * @date 12 Julio 2018
- * 
- * @brief Módulo que enmascara y adapta al proyecto la librería NUS (Nordic UART Service). 
  *
  * @copyright
  *

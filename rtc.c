@@ -1,6 +1,14 @@
 /**
  * @defgroup RTC
  * @{
+ * 
+ * @file rtc.c
+ * 
+ * @version 1.0
+ * @author  Rodrigo De Soto, Maite Gil, José Bentancour.
+ * @date 12 Julio 2018
+ * 
+ * @brief Módulo que implementa un reloj de tiempo real (Real Time Clock).
  *
  * @paragraph 
  * 
@@ -9,14 +17,6 @@
  * el otro por TIMER LIBRARY (RTC1). 
  * Por esto el módulo RTC utiliza la librería TIMER LIBRARY que permite crear diferentes timers en software 
  * partiendo de un mismo recurso de hardware.
- * 
- * @file rtc.c
- * 
- * @version 1.0
- * @author  Rodrigo De Soto, Maite Gil, Jose Bentancour.
- * @date 12 Julio 2018
- * 
- * @brief Módulo que implementa un reloj de tiempo real (Real Time Clock).
  */
 
 #include "rtc.h"

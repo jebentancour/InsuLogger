@@ -1,11 +1,6 @@
 /**
  * @defgroup I2C
  * @{
- * 
- * @paragraph 
- * 
- * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
- * para enviar datos. No soporta recepción.
  *
  * @file i2c.c
  * 
@@ -14,6 +9,11 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo que proporciona funciones para manejar el periférico TWI (Two Wire Interface, compatible con I2C).
+ * 
+ * @paragraph 
+ * 
+ * Este módulo pertenece a la capa de abstracción de hardware y proporciona interfaces
+ * para enviar datos. No soporta recepción.
  */
  
 #include "i2c.h"

@@ -1,10 +1,6 @@
 /**
  * @defgroup UI
  * @{
- *
- * @paragraph 
- * 
- * Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
  * 
  * @file ui.h
  * 
@@ -13,6 +9,10 @@
  * @date 12 Julio 2018
  * 
  * @brief Módulo encargado de la interacción con el usuario.
+ *
+ * @paragraph 
+ * 
+ * Muestra los diferentes menús en el display y toma como la entrada los botones presionados por el usuario.
  */
 
 #include <stdint.h>
