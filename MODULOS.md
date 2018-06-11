@@ -689,3 +689,95 @@ uint32_t logger_get_last_b(void);
 ### ESTADOS
 
 Es el encargado de gestionar el estado general del sistema, distribuir tareas y enviar el chip a dormir.
+
+```c
+#include ...
+
+#define ...
+
+/* Variables */
+
+...
+
+/**@brief Main.
+ */
+int main(void)
+{  
+    /* Inicializacion de modulos y variables. */
+    
+    ...
+    
+    /* Low power */
+    sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
+    
+    /* Loop principal. */
+    for (;;)
+    {      
+        /* Se resiono el boton OK. */
+        if (gpio_ok_flag)
+        {
+		/* Se envia el evento a ui. */
+        }
+        
+        /* Se resiono el boton UP. */
+        if (gpio_up_flag)
+        {
+            /* Se envia el evento a ui. */
+        }
+        
+        /* Se resiono el boton DOWN. */
+        if (gpio_down_flag)
+        {
+            /* Se envia el evento a ui. */
+        }
+         
+        /* Se incremento el rtc, este evento es periodico. */
+        if(rtc_tick_flag)
+        {
+            /* Se envia el evento a ui. */               
+        }
+        
+        /* Se recibio un nuevo mensaje por ble_uart. */
+        if (ble_uart_rx_flag) 
+        {
+            // Se revisa si el comando concuerda con alguno de los definidos en shell.
+            switch (sisem_shell((char*)ble_uart_rx_msg,&quefuncion, &argc, argv))
+            {
+                case OK:						
+                    // Ejecutar la funcion en el caso que se encontro.
+                    break;
+                case EXIT:						
+                    // Terminar comunicacion bluetooth.
+                    break;
+                case NOTFOUND:
+                    // La funcion no existe.
+                    break;
+                default:
+                    // Nunca deberiamos llegar aca.
+                    break;
+            }
+        }
+        
+        /* Indica que logger tiene un valor pendiente para enviar. */
+        if (logger_send_flag)
+        {           
+            if (ble_uart_tx_flag) // Revisar si ble_uart esta listo para enviar un nuevo mensaje.
+            {                
+                // Se llama a logger_send pedir el nuevo mensaje a enviar.                
+                // Se le pasa a ble_uart_data_send el puntero con el mensaje.
+                // Una vez logre enviar todo entrara de nuevo a este condicional hasta que logger_send 
+		// considere que no hay más datos para enviar.
+            }
+        }
+        
+        if(!gpio_ok_flag && !gpio_up_flag && !gpio_down_flag && !rtc_tick_flag && 
+		!ble_uart_rx_flag && !logger_send_flag && (idle_timer == IDLE_TICKS))
+        {
+            sd_app_evt_wait();          // Se va a System ON Low Power Mode, 
+	    				// cuando se despierta sigue la ejecucion normal.
+            //sd_power_system_off();      // Se va a System OFF, no vuelve, 
+	    				// cuando se despierta es como si hubieramos resetado.
+        }
+    }
+}
+```
