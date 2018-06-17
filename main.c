@@ -30,7 +30,7 @@
 #include "logger.h"
 #include "i2c.h"
 
-#define IDLE_TICKS      80      /**< Timeout de 20s de inactividad para enviar el micro a dormir */
+#define IDLE_TICKS      40      /**< Timeout de 10s de inactividad para enviar el micro a dormir */
 
 /* Variable para el timeout. */
 uint8_t idle_timer;

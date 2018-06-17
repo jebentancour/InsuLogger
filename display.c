@@ -95,6 +95,9 @@ void display_init(void)
     display_send_command(0x20);            // Set Memory Addressing Mode
     display_send_command(0x00);            // Set Memory Addressing Mode ab Horizontal addressing mode
     display_set_font(font8x8);
+    
+    display_send_command(SSD1306_Set_Brightness_Cmd);
+    display_send_command(0x1F);
 }
 
 

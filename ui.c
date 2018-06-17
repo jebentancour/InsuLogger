@@ -51,11 +51,9 @@ typedef enum {
 #define SHOW_DATA_TICKS 12      /** 3 s          */
 #define BYE_TICKS       4       /** 1 s          */
 
-static uint8_t                m_sinc_i;         /** Variable para animación en pantalla */
-
 static internal_state_t       m_state;          /** Estructura que representa el estado de ui */
 static uint8_t                m_timer;          /** Contador para estados con timeout */
-
+static uint8_t                m_sinc_i;         /** Variable para animación en pantalla */
 static uint8_t                m_glucemia_un;
 static uint8_t                m_glucemia_dec;
 static uint8_t                m_glucemia_cent;
@@ -290,7 +288,7 @@ static void ui_process_display(void)
                 display_put_char(' ');
             }
             dec = (m_dosis % 100) / 10;
-            if((dec > 0)||(cent >0))
+            if((dec > 0)||(cent > 0))
             {
                 display_put_number(dec);
             }
@@ -318,11 +316,11 @@ static void ui_process_display(void)
             display_print("Tipo ",5);
             if(m_type)
             {
-                display_print("B   ",4);
+                display_print("B  ",3);
             }
             else
             {
-                display_print("A   ",4);
+                display_print("A  ",3);
             }
             display_set_text_xy(7,4);
             cent = m_dosis / 100;
@@ -331,11 +329,10 @@ static void ui_process_display(void)
                 display_put_number(cent);
             }
             dec = (m_dosis % 100) / 10;
-            if((dec > 0)||(cent >0))
+            if((dec > 0)||(cent > 0))
             {
                 display_put_number(dec);
             }
-            else
             un = m_dosis % 10;
             display_put_number(un);
             display_put_char(' ');
@@ -383,7 +380,6 @@ static void ui_process_display(void)
             break;
         default:
             // Nunca debería llegar a este lugar
-            display_clear();
             break;
     }    
 }
